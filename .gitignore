@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Output directories
+slides_out/
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Environment
+.env
+.env.local

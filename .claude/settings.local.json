@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node build_deck.js)",
+      "Bash(npm install *)",
+      "Bash(python -m markitdown interview_presentation.pptx)",
+      "Bash(python \"C:/Users/dimos/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/50bb8f07-b4ac-4309-897e-bf9f1487129a/f2f30582-cf8a-43e8-9142-9743f642737c/skills/pptx/scripts/office/soffice.py\" --headless --convert-to pdf interview_presentation.pptx)",
+      "Bash(pip install *)",
+      "Bash(where soffice.exe)",
+      "Bash(where \"soffice\")",
+      "Read(//c/Program Files/LibreOffice/program/**)",
+      "Read(//c/Program Files \\(x86\\)/LibreOffice/program/**)",
+      "Bash(powershell -Command \"Get-ItemProperty HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Office\\\\ClickToRun\\\\Configuration -ErrorAction SilentlyContinue | Select-Object -ExpandProperty InstallationPath 2>&1; Test-Path 'C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Office16\\\\POWERPNT.EXE'; Test-Path 'C:\\\\Program Files \\(x86\\)\\\\Microsoft Office\\\\root\\\\Office16\\\\POWERPNT.EXE'\")",
+      "Bash(where pdftoppm.exe)",
+      "Bash(where pdftoppm *)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"C:/Users/dimos/ProtoLab/export_slides.ps1\")"
+    ]
+  }
+}
