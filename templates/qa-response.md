@@ -28,6 +28,20 @@ version: 1.0
 - {{caveat}}
 {{/caveats}}
 
+## Regulatory Compliance Notes
+
+### Applicable Frameworks
+{{compliance_frameworks}}
+
+### Compliance Considerations
+{{#compliance_notes}}
+- **{{framework}}**: {{note}}
+{{/compliance_notes}}
+
+### Human Oversight Requirements
+- **Required for**: {{oversight_requirements}}
+- **Reasoning**: {{oversight_reasoning}}
+
 ## Related Considerations
 
 {{related_considerations}}

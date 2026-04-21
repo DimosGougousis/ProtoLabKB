@@ -52,6 +52,32 @@ version: 1.0
 | Cost | {{cost_score}} | 10% |
 | **Overall** | **{{overall_score}}** | 100% |
 
+## Regulatory Compliance Assessment
+
+### Industry Context
+- **Target Industry**: {{industry}}
+- **Regulatory Frameworks**: {{regulatory_frameworks}}
+- **Compliance Level Required**: {{compliance_level}}
+
+### Compliance Issues
+
+| Framework | Issue | Risk Level | Mitigation Required | Reference |
+|-----------|-------|------------|-------------------|-----------|
+{{#compliance_issues}}
+| {{framework}} | {{issue}} | {{risk_level}} | {{mitigation}} | {{reference}} |
+{{/compliance_issues}}
+
+### AI Governance Considerations
+- **AI Risk Classification**: {{ai_risk_class}}
+- **Human Oversight Required**: {{human_oversight}}
+- **Transparency Requirements**: {{transparency_req}}
+- **Data Governance Status**: {{data_governance}}
+
+### Cybersecurity Assessment
+- **System Exposure Level**: {{exposure_level}}
+- **Required Security Controls**: {{security_controls}}
+- **Monitoring Requirements**: {{monitoring_req}}
+
 ## Manufacturing Recommendations
 
 ### Recommended Process Parameters
