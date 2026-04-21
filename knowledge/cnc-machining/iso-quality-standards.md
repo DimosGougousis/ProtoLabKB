@@ -1,3 +1,11 @@
+---
+type: knowledge-article
+category: compliance
+source_url: https://www.iso.org/standards.html
+fetched_at: 2026-04-21
+summary: ISO quality management standards for CNC machining operations including ISO 9001:2015, ISO 13485:2016 for medical devices, and AS9100D for aerospace, with facility-specific certification details.
+---
+
 # ISO Quality Standards for CNC Machining
 
 ## ISO 9001:2015 - Quality Management Systems

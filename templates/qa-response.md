@@ -28,6 +28,7 @@ version: 1.0
 - {{caveat}}
 {{/caveats}}
 
+{{#regulated}}
 ## Regulatory Compliance Notes
 
 ### Applicable Frameworks
@@ -41,6 +42,7 @@ version: 1.0
 ### Human Oversight Requirements
 - **Required for**: {{oversight_requirements}}
 - **Reasoning**: {{oversight_reasoning}}
+{{/regulated}}
 
 ## Related Considerations
 

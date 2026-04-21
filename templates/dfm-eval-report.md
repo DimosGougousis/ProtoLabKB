@@ -52,6 +52,7 @@ version: 1.0
 | Cost | {{cost_score}} | 10% |
 | **Overall** | **{{overall_score}}** | 100% |
 
+{{#regulated}}
 ## Regulatory Compliance Assessment
 
 ### Industry Context
@@ -77,6 +78,7 @@ version: 1.0
 - **System Exposure Level**: {{exposure_level}}
 - **Required Security Controls**: {{security_controls}}
 - **Monitoring Requirements**: {{monitoring_req}}
+{{/regulated}}
 
 ## Manufacturing Recommendations
 

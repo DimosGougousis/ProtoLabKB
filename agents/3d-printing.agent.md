@@ -12,6 +12,9 @@ loads:
   - knowledge/3d-printing/vapor-smoothing.md
   - knowledge/3d-printing/combining-part-assemblies.md
   - knowledge/3d-printing/3dp-end-use-production.md
+  - knowledge/3d-printing/fda-biocompatibility.md
+  - knowledge/3d-printing/additive-export-controls.md
+  - knowledge/3d-printing/additive-quality-standards.md
   - knowledge/verticals/aerospace-manufacturing.md
   - knowledge/verticals/medical-low-volume.md
 source_urls:
@@ -63,6 +66,9 @@ This agent specializes in Design for Additive Manufacturing (DFAM) for all 3D pr
 | `vapor-smoothing.md` | Post-processing guide for vapor smoothing SLS/MJF parts |
 | `combining-part-assemblies.md` | Part consolidation strategies for additive manufacturing |
 | `3dp-end-use-production.md` | End-use production considerations and case studies |
+| `fda-biocompatibility.md` | FDA biocompatibility requirements, ISO 10993 testing, USP Class VI certifications, sterilization compatibility |
+| `additive-export-controls.md` | ITAR/EAR export controls for AM, deemed export rules, technical data restrictions, end-use certificates |
+| `additive-quality-standards.md` | ASTM F42, ISO/ASTM 52900, AS9100 for AM, process qualification, NDT protocols |
 | `aerospace-manufacturing.md` | AS9100D certification requirements, aerospace-specific materials, and quality standards |
 | `medical-low-volume.md` | ISO 13485, FDA requirements, biocompatible materials, and medical device regulations |
 
@@ -94,7 +100,13 @@ This agent specializes in Design for Additive Manufacturing (DFAM) for all 3D pr
 - For Q&A responses: Use `templates/qa-response.md`
 - For compliance inquiries: Include certification requirements, documentation needs, and facility capabilities
 
-## Compliance & Regulatory Framework
+## Regulatory Framework Integration
+
+This agent integrates comprehensive compliance guidance for regulated industries through specialized knowledge base articles. The compliance framework covers:
+
+- **FDA Biocompatibility**: ISO 10993 testing, USP Class VI certifications, sterilization compatibility, and biocompatible materials for medical devices
+- **Export Controls**: ITAR/EAR requirements specific to additive manufacturing, deemed export rules for 3D printing files, and defense-related compliance
+- **Quality Standards**: ASTM F42 and ISO/ASTM 52900 family, AS9100 for AM, process qualification, and non-destructive testing protocols
 
 ### Certification Matrix by Process
 
@@ -106,95 +118,22 @@ This agent specializes in Design for Additive Manufacturing (DFAM) for all 3D pr
 | SLA | ✅ | ❌ | ❌ | ❌ | NC (Morrisville) |
 | All 3DP | ✅ | ❌ | ❌ | ❌ | Germany (Putzbrunn) |
 
-### Export Control & Defense Regulations
+### Quick Compliance Reference
 
-**ITAR (International Traffic in Arms Regulations)**
-- Applies to: Defense-related articles, technical data, and services
-- ProtoLabs Status: ITAR Registered (valid through 2026)
-- Requirements: 
-  - No foreign nationals can access ITAR-controlled designs
-  - Must be manufactured in ITAR-registered facility (NC facility for DMLS)
-  - End-use certificate may be required
-- Reference: https://www.protolabs.com/itar/
+**Aerospace (AS9100):**
+- Available for DMLS, SLS, MJF at NC facility
+- NADCAP heat treatment available for flight-critical parts
+- Documentation: FAI, CoC, material certificates
 
-**EAR (Export Administration Regulations)**
-- Applies to: Dual-use items, commercial items with potential military application
-- Classification: Most 3D printed parts fall under EAR99 (no license required)
-- Restrictions: Certain countries and end-users may require licenses
+**Medical (ISO 13485):**
+- Available for DMLS at NC facility only
+- Requires biocompatible materials (USP Class VI)
+- Sterilization validation required
 
-**CMMC (Cybersecurity Maturity Model Certification)**
-- Status: In preparation for certification
-- Applies to: Department of Defense contractors
-- Requirements: NIST SP 800-171 compliance for handling CUI (Controlled Unclassified Information)
-
-### Data Protection & Privacy
-
-**NIST SP 800-171**
-- Implemented for protection of Controlled Unclassified Information (CUI)
-- Measures: Encryption, MFA, WAF, access controls, penetration testing
-- Compliance: Required for defense and government contracts
-
-**GDPR (EU General Data Protection Regulation)**
-- Applies to: EU customers and data processing
-- Requirements: Data minimization, right to deletion, breach notification
-- Facility: Germany (Putzbrunn) compliant
-
-### Industry-Specific Standards
-
-**Aerospace (AS9100 D)**
-- Available for: DMLS, SLS, MJF at NC facility
-- Additional capabilities: NADCAP heat treatment available
-- Documentation: First Article Inspection (FAI), Certificate of Conformance (CoC)
-
-**Medical (ISO 13485:2016)**
-- Available for: DMLS at NC facility
-- Requirements: Biocompatible materials, sterilization validation
-- Documentation: Material certificates, Certificate of Analysis
-
-**Environmental Compliance**
-- RoHS: Restricts hazardous substances in electrical/electronic equipment
-- REACH: EU chemicals regulation for material safety
-- Conflict Minerals: Reporting required for certain metals
-
-### Quality Documentation Available
-
-| Document | Description | When Required |
-|----------|-------------|---------------|
-| CMM Inspection Report | Coordinate measuring machine dimensional verification | Tight tolerances |
-| Dimensional Inspection Report (DIR) | Detailed dimensional analysis | Production parts |
-| Material Certificate + CoA | Material composition and properties certification | Aerospace, medical |
-| REACH Certificate | EU chemical compliance | EU shipments |
-| RoHS Certificate | Hazardous substance compliance | Electronics |
-| Certificate of Conformance (CoC) | General compliance attestation | Standard production |
-| First Article Inspection (FAI) | Full dimensional report on first part | Aerospace, automotive |
-| PPAP (Production Part Approval Process) | Automotive industry standard | Automotive OEM |
-
-### Material Certification Requirements
-
-**For Aerospace Applications:**
-- Material must have AS9100 traceability
-- Heat treatment: NADCAP certified required for flight-critical parts
-- Chemical composition certificates required
-
-**For Medical Applications:**
-- Biocompatibility: ISO 10993 or USP Class VI testing
-- Sterilization compatibility: Gamma, EtO, autoclave validation
-- FDA material master files (if applicable)
-
-**For Electronics/Consumer:**
-- UL ratings for flame resistance (UL94 V-0, etc.)
-- RoHS compliance for restricted substances
-- REACH compliance for chemical safety
-
-### AI Governance Considerations (EU AI Act)
-
-While not currently regulated for manufacturing processes, emerging AI governance frameworks recommend:
-- **Transparency**: Document AI-assisted design decisions
-- **Human Oversight**: Maintain engineer review of AI-generated designs
-- **Data Quality**: Ensure training data for ML models is accurate and representative
-- **Risk Management**: Assess AI impact on critical safety parts
-
-**Note**: ProtoLabs currently uses AI for design analysis and quoting, not for autonomous manufacturing decisions.
+**Defense (ITAR):**
+- DMLS at NC facility only
+- US persons only for ITAR-controlled designs
+- End-use certificate may be required
 
 ---
 

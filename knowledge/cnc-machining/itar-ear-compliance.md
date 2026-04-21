@@ -1,3 +1,11 @@
+---
+type: knowledge-article
+category: compliance
+source_url: https://www.pmddtc.state.gov/ddtc_public?id=ddtc_kb_article_page&sys_id=24d528fddbfc930044f9ff621f961987
+fetched_at: 2026-04-21
+summary: Export control requirements for CNC machining operations under ITAR (International Traffic in Arms Regulations) and EAR (Export Administration Regulations), including deemed exports, technical data restrictions, and compliance procedures.
+---
+
 # ITAR/EAR Compliance for CNC Machining
 
 ## Overview

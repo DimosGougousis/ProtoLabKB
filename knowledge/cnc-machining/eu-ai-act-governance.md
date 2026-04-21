@@ -1,3 +1,11 @@
+---
+type: knowledge-article
+category: compliance
+source_url: https://artificialintelligenceact.eu/
+fetched_at: 2026-04-21
+summary: EU AI Act governance requirements for manufacturing AI systems including risk classification, transparency requirements, data governance, technical documentation, and post-market monitoring obligations.
+---
+
 # EU AI Act Governance for Manufacturing AI Systems
 
 ## Risk Classification (Article 6)

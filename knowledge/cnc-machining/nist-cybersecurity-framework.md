@@ -1,3 +1,11 @@
+---
+type: knowledge-article
+category: compliance
+source_url: https://csrc.nist.gov/pubs/sp/800/171/r2/upd1/final
+fetched_at: 2026-04-21
+summary: NIST Cybersecurity Framework 2.0 and AI Risk Management Framework for manufacturing systems, including OT-IT security, supply chain protection, and CMMC compliance for defense contractors.
+---
+
 # NIST Cybersecurity Framework for Manufacturing Systems
 
 ## NIST Cybersecurity Framework 2.0 (CSF 2.0)
