@@ -34,6 +34,17 @@
 - **Medical**: medical, healthcare, biocompatible, iso 13485, fda, surgical, implant, device
 - **Automotive/EV**: automotive, car, vehicle, ev, electric vehicle, powertrain, battery, motor, lightweight
 
+### Compliance & Export Control Keywords (Sets regulated=true)
+- **ITAR**: itar, defense, military, munitions, usml, export control, deemed export, technical data
+- **EAR**: ear, export administration, eccn, dual-use, commerce control list, restricted party
+- **Aerospace Certifications**: as9100, as9102, faa, far 25, nadcap, flight critical, aircraft certification
+- **Medical Certifications**: iso 13485, fda, 510k, pma, biocompatible, usp class vi, iso 10993, mdr, udi
+- **Automotive Certifications**: iatf 16949, ppap, apqp, fmea, spc, msa, control plan, ts 16949
+- **Cybersecurity**: nist, cmmc, 800-171, cybersecurity, cyber, security framework, cui, fci
+- **Environmental**: rohs, reach, conflict minerals, 3tg, hazardous substance, environmental compliance
+- **AI Governance**: eu ai act, ai act, ai governance, algorithmic, high-risk ai, ai conformity, ce marking ai
+- **Data Protection**: gdpr, data protection, privacy, personal data, data subject rights, breach notification
+
 ## Progressive Loading Rule
 
 When a user prompt is received:

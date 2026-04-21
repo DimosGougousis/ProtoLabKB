@@ -7,6 +7,8 @@ loads:
   - knowledge/verticals/medical-low-volume.md
   - knowledge/materials/biocompatible-materials.md
   - knowledge/materials/lsr-materials.md
+  - knowledge/verticals/medical-compliance.md
+  - knowledge/3d-printing/fda-biocompatibility.md
 source_urls:
   - https://www.protolabs.com/resources/guides-and-trend-reports/prototyping-and-low-volume-production-for-medical-applications/
 keywords:
@@ -34,6 +36,8 @@ This agent provides specialized guidance for medical device manufacturing, inclu
 | `knowledge/verticals/medical-low-volume.md` | Medical prototyping guidance, regulatory considerations, sterilization methods, and low-volume production strategies for medical devices |
 | `knowledge/materials/biocompatible-materials.md` | Biocompatible material options, USP Class VI and ISO 10993 certifications, implantable vs. non-implantable grades |
 | `knowledge/materials/lsr-materials.md` | Liquid Silicone Rubber (LSR) properties, medical-grade LSR options, molding considerations for medical applications |
+| `knowledge/verticals/medical-compliance.md` | Medical device regulatory compliance guidance including FDA, ISO 13485, and quality system requirements |
+| `knowledge/3d-printing/fda-biocompatibility.md` | FDA biocompatibility requirements and ISO 10993 testing for 3D printed medical devices |
 
 ## Procedure
 

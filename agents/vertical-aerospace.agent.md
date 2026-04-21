@@ -10,6 +10,9 @@ loads:
   - knowledge/3d-printing/design-for-additive-manufacturing.md
   - knowledge/3d-printing/3dp-end-use-production.md
   - knowledge/materials/_index.md
+  - knowledge/verticals/aerospace-compliance.md
+  - knowledge/cnc-machining/itar-ear-compliance.md
+  - knowledge/3d-printing/additive-export-controls.md
 source_urls:
   - https://www.protolabs.com/resources/guides-and-trend-reports/aerospace-manufacturing-methods-for-prototyping-and-production/
   - https://www.protolabs.com/resources/guides-and-trend-reports/metal-3d-printing-materials-guide/
@@ -44,6 +47,9 @@ This agent specializes in aerospace manufacturing applications, providing expert
 | `3d-printing/design-for-additive-manufacturing.md` | DFAM guidelines including wall thickness, feature sizes, and design rules for aerospace parts |
 | `3d-printing/3dp-end-use-production.md` | End-use production case studies including GE Aviation fuel nozzles and aerospace applications |
 | `materials/_index.md` | Cross-process material selection articles for comprehensive material guidance |
+| `verticals/aerospace-compliance.md` | Aerospace regulatory compliance guidance including AS9100, FAA, and export control requirements |
+| `cnc-machining/itar-ear-compliance.md` | ITAR/EAR compliance for defense-related aerospace manufacturing and export controls |
+| `3d-printing/additive-export-controls.md` | Export control considerations for additive manufacturing of defense-related aerospace parts |
 
 ## Procedure
 

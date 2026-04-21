@@ -4,7 +4,7 @@
 > Design rationale and authoritative references: [`PLAN.md`](./PLAN.md).
 > Status cheat: **◯ not started** · **◐ in progress** · **● done** · **✕ blocked**
 
-Status: **◯ not started** (team review in progress, 2026-04-21).
+Status: **● done** Phases 0-6 completed. Phase 7 (compliance guardrails refactor) in progress.
 
 ---
 
@@ -76,6 +76,21 @@ Contract: each file follows PLAN §7.2 frontmatter. Batch 4 parallel `WebFetch` 
 - [ ] 6.4 PLAN §9.6 — publish verification passes
 - [ ] 6.5 `gh repo edit DimosGougousis/ProtoLabKB --description "ProtoLabs Product Office — routing agents + cached DFM knowledge base"`
 - [ ] 6.6 Open summary issue on ProtoLabKB listing agent inventory + KB coverage
+
+## Phase 7 — Per-Agent Compliance Guardrails (Post-v1 Refactor)
+
+- [x] 7.1 Add frontmatter to 4 CNC compliance files (source_url, fetched_at, type)
+- [x] 7.2 Retire orphan: knowledge/compliance/regulatory-framework.md (content moved to per-process files)
+- [x] 7.3 Extract 3DP inline compliance to 3 new KB files (fda-biocompatibility, additive-export-controls, additive-quality-standards)
+- [x] 7.4 Slim 3D Printing agent - replace inline with loads: references
+- [x] 7.5 Create 3 vertical compliance KB files (aerospace-compliance, medical-compliance, automotive-ev-compliance)
+- [x] 7.6 Update vertical agents with compliance loads: (wire up the new KB files)
+- [x] 7.7 Wrap template compliance sections in {{#regulated}} conditionals
+- [ ] 7.8 Update CLAUDE.md with compliance routing keywords (sets regulated=true)
+- [ ] 7.9 Update PLAN.md §5 to reflect per-agent guardrails decision
+- [ ] 7.10 Update README.md status and add compliance coverage rows
+- [ ] 7.11 Update TODO.md mark Phases 0-6 ☑ and add Phase 7
+- [ ] 7.12 Commit and push all changes
 
 ## Post-v1 backlog (PLAN §11)
 

@@ -8,6 +8,7 @@ loads:
   - knowledge/verticals/ev-future.md
   - knowledge/verticals/automotive-manufacturing.md
   - knowledge/materials/lightweight-materials.md
+  - knowledge/verticals/automotive-ev-compliance.md
 source_urls:
   - https://www.protolabs.com/resources/guides-and-trend-reports/reducing-component-weight-for-automotive-applications/
   - https://www.protolabs.com/resources/guides-and-trend-reports/charging-toward-an-electric-vehicle-future/
@@ -51,6 +52,7 @@ This agent provides specialized guidance for automotive and electric vehicle com
 | `knowledge/verticals/ev-future.md` | EV-specific manufacturing considerations, battery component design, thermal management, electrification trends |
 | `knowledge/verticals/automotive-manufacturing.md` | General automotive manufacturing methods, quality requirements, production volumes, supply chain considerations |
 | `knowledge/materials/lightweight-materials.md` | Lightweight material options (aluminum, magnesium, composites), properties, applications, and trade-offs |
+| `knowledge/verticals/automotive-ev-compliance.md` | Automotive and EV regulatory compliance guidance including IATF 16949, PPAP, and automotive quality standards |
 
 ## Procedure
 
