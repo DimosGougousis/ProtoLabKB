@@ -121,3 +121,78 @@ Fully itemized in `C:\Users\dimos\ProtoLab\TODO.md` (60+ tasks, grouped by phase
 - Live ProtoLabs quoting / pricing integration.
 - Scheduled KB refresh (manual `/pl-refresh-kb` only).
 - CI workflow on the ProtoLabKB repo (add in v2).
+
+## §5 — Per-Agent Compliance Guardrails (Phase 7)
+
+### Design Rationale
+
+Post-v1, we refactored compliance from a centralized `knowledge/compliance/regulatory-framework.md` into **per-process, per-vertical compliance files** loaded only when needed. This follows the progressive-loading principle and ensures agents only receive relevant regulatory context.
+
+### Compliance Architecture
+
+```
+User prompt with compliance keywords
+         │
+         ▼
+┌─────────────────────┐
+│  CLAUDE.md router   │─── Sets regulated=true from keywords
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│  Specialist Agent   │─── Loads process KB + compliance files
+│  (cnc/3dp/vertical) │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│ Template with       │─── {{#regulated}} conditionals
+│ {{#regulated}}      │    render compliance sections
+└─────────────────────┘
+```
+
+### Compliance File Organization
+
+| Category | Files | Loaded By |
+|----------|-------|-----------|
+| **Export Controls** | `itar-ear-compliance.md` | CNC, 3DP, Materials, Verticals |
+| **Quality Standards** | `iso-quality-standards.md` | CNC, 3DP, Verticals |
+| **Cybersecurity** | `nist-cybersecurity-framework.md` | CNC, 3DP, Trends |
+| **AI Governance** | `eu-ai-act-governance.md` | CNC, 3DP, Trends |
+| **Biocompatibility** | `fda-biocompatibility.md` | 3DP, Medical |
+| **Additive Export** | `additive-export-controls.md` | 3DP |
+| **Additive Quality** | `additive-quality-standards.md` | 3DP |
+| **Vertical** | `aerospace-compliance.md` | Aerospace |
+| **Vertical** | `medical-compliance.md` | Medical |
+| **Vertical** | `automotive-ev-compliance.md` | Automotive/EV |
+
+### Template Conditionals
+
+Both `dfm-eval-report.md` and `qa-response.md` wrap compliance sections in `{{#regulated}}` blocks:
+
+```mustache
+{{#regulated}}
+## Regulatory Compliance Assessment
+### Industry Context
+- **Target Industry**: {{industry}}
+- **Regulatory Frameworks**: {{regulatory_frameworks}}
+...
+{{/regulated}}
+```
+
+The router sets `regulated=true` when keywords like `ITAR`, `EAR`, `AS9100`, `FDA`, `ISO 13485`, `NIST`, `CMMC`, `GDPR`, or `EU AI Act` are detected in the user prompt.
+
+### Keyword Detection (in CLAUDE.md)
+
+```yaml
+Compliance & Export Control Keywords (Sets regulated=true):
+  ITAR: itar, defense, military, munitions, usml, export control...
+  EAR: ear, export administration, eccn, dual-use...
+  Aerospace: as9100, as9102, faa, far 25, nadcap...
+  Medical: iso 13485, fda, 510k, pma, biocompatible...
+  Automotive: iatf 16949, ppap, apqp, fmea...
+  Cybersecurity: nist, cmmc, 800-171, cybersecurity...
+  Environmental: rohs, reach, conflict minerals...
+  AI Governance: eu ai act, ai act, ai governance...
+  Data Protection: gdpr, data protection, privacy...
+```
