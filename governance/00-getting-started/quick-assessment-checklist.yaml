@@ -1,28 +1,36 @@
 # =============================================================================
-# AI Governance Quick Assessment Checklist
+# ProtoLabs AI Governance Quick Assessment Checklist
 # =============================================================================
-# Purpose:  20-item self-assessment to determine your organisation's starting
-#           point and recommended risk tier within the AI Governance Framework
-#           for Agentic Workflows in Regulated FinTech.
+# Purpose:  Self-assessment to determine your organisation's starting point
+#           and recommended risk tier within the ProtoLabs AI Governance
+#           Framework for Agentic DFM Workflows in Regulated Manufacturing.
+#
+# Scope:    This assessment covers the 10 DFM agents (CNC machining, injection
+#           molding, sheet metal, 3D printing, materials selection, plus
+#           aerospace, medical, automotive verticals, trends/strategy, and
+#           the dfm-router). It evaluates governance maturity across six
+#           categories: Governance, Risk Exposure, Regulatory Requirements,
+#           Technical Capability, Organisational Readiness, and Agentic AI.
 #
 # How to use:
 #   1. Answer each question honestly based on current state (not aspirational).
 #   2. Record the score for each answer.
 #   3. Sum total score and consult the scoring section at the bottom.
-#   4. Follow the recommended starting path.
+#   4. Provide objective evidence for at least one question per category.
+#   5. Follow the recommended starting path.
 #
 # Cross-references:
 #   - 05-cross-cutting/regulatory-reference-index.md (regulatory context)
-#   - 01-foundations/governance-charter.md (governance structure)
-#   - 02-pre-deployment/risk-management-plan.md (risk management)
+#   - 01-discovery-governance/templates/governance-charter.md (governance structure)
+#   - 01-discovery-governance/templates/risk-management-plan.md (risk management)
 # =============================================================================
 
 metadata:
-  title: "AI Governance Quick Assessment Checklist"
-  version: "1.0"
-  date: "2026-02-28"
-  framework: "AI Governance Framework for Agentic Workflows"
-  owner: "AI Governance Office"
+  title: "ProtoLabs AI Governance Quick Assessment Checklist"
+  version: "2.0"
+  date: "2026-04-23"
+  framework: "ProtoLabs AI Governance Framework for Agentic DFM Workflows"
+  owner: "ProtoLabs AI Governance Office"
   review_cycle: "Semi-annually"
   instructions: |
     For each question, select the answer option (a, b, or c) that best
@@ -30,6 +38,11 @@ metadata:
     is for internal planning, not external reporting. Record the numeric score
     next to your chosen answer. Sum all scores to determine your recommended
     starting path and risk tier.
+    
+    This assessment covers 27 questions across 6 categories (A-F). Categories
+    A-E are foundational governance; Category F is agentic-AI-specific and
+    applies to organisations deploying LLM-based agents with tool-use,
+    multi-agent orchestration, and knowledge-base grounding.
 
 # =============================================================================
 # Assessment Questions
@@ -91,8 +104,8 @@ questions:
         text: "Documented escalation policy covers technical incidents, ethical concerns, and regulatory events"
         score: 3
     recommendation:
-      if_a: "Establish escalation policy using 01-foundations/escalation-policy.md."
-      if_b: "Extend coverage to ethical and regulatory scenarios per DNB SAFEST Accountability pillar."
+      if_a: "Establish escalation policy using 04-operational-governance/templates/ai-incident-report.md."
+      if_b: "Extend coverage to ethical and regulatory scenarios per SAFEST Accountability pillar."
       if_c: "Test escalation paths through tabletop exercises quarterly."
 
   - id: Q04
@@ -221,7 +234,7 @@ questions:
         text: "We develop all models in-house from scratch"
         score: 0
     recommendation:
-      if_a: "Third-party risk assessment required; see 02-pre-deployment/third-party-model-assessment.md and DORA Art 28-44."
+      if_a: "Third-party risk assessment required; see 02-development-governance/templates/third-party-model-assessment.md and NIST CSF 2.0 GV.SC (supply chain risk management)."
       if_b: "Ensure supply-chain integrity; track model provenance."
       if_c: "Full model governance applies; document per EU AI Act Art 11."
 
@@ -231,56 +244,56 @@ questions:
 
   - id: Q11
     category: regulatory_requirements
-    question: "Is your organisation supervised by DNB, AFM, or another EU financial regulator?"
+    question: "Does your organisation operate in regulated manufacturing verticals?"
     options:
       a:
-        text: "Yes, we hold a banking, insurance, or investment firm licence"
+        text: "Yes, aerospace (AS9100D), medical (ISO 13485/FDA), or defense (ITAR/EAR)"
         score: 3
       b:
-        text: "We are a fintech with a limited licence (e.g., PSD2 PI/EMI)"
+        text: "Yes, general manufacturing with environmental compliance (RoHS, REACH, IATF 16949)"
         score: 2
       c:
-        text: "We are not a regulated financial entity"
+        text: "No regulated verticals; general prototyping and production"
         score: 0
     recommendation:
-      if_a: "Full DORA, Wft, and DNB SAFEST compliance required."
-      if_b: "PSD2 and proportionate DORA obligations apply."
-      if_c: "EU AI Act still applies; GDPR applies if processing EU personal data."
+      if_a: "Full ITAR/EAR, AS9100D, or FDA 21 CFR 820 compliance required. See 05-cross-cutting/regulatory-reference-index.md Band B."
+      if_b: "Environmental and automotive compliance obligations apply. See 05-cross-cutting/regulatory-reference-index.md Band B."
+      if_c: "EU AI Act Art 52 transparency obligations still apply; GDPR applies if processing EU personal data."
 
   - id: Q12
     category: regulatory_requirements
-    question: "Does your organisation provide crypto-asset services?"
+    question: "Do your AI agents process customer intellectual property (CAD files, proprietary designs)?"
     options:
       a:
-        text: "Yes, we are or will be a licensed CASP under MiCAR"
+        text: "Yes, agents process CAD files and proprietary designs with export-controlled or ITAR markings"
         score: 3
       b:
-        text: "We provide ancillary services related to crypto-assets"
-        score: 1
+        text: "Yes, agents process proprietary designs but no export-controlled content"
+        score: 2
       c:
-        text: "No crypto-asset activities"
+        text: "No proprietary designs processed; only generic part descriptions"
         score: 0
     recommendation:
-      if_a: "MiCAR obligations apply; see regulatory-reference-index.md section 9."
-      if_b: "Assess whether MiCAR scope captures your ancillary services."
-      if_c: "MiCAR not applicable; document exclusion rationale."
+      if_a: "Critical: implement customer-CAD-IP protection guardrail per protolabs/customer-cad-ip-protection-guardrail.md. ITAR/EAR compliance mandatory."
+      if_b: "Implement IP protection guardrails and data retention policies. See protolabs/customer-cad-ip-protection-guardrail.md."
+      if_c: "Document the basis for this determination; revisit if scope changes to include CAD uploads."
 
   - id: Q13
     category: regulatory_requirements
     question: "Will your AI system be classified as high-risk under the EU AI Act?"
     options:
       a:
-        text: "Yes, or very likely (creditworthiness, insurance, employment decisions)"
+        text: "Yes, or very likely (autonomous quoting, binding production decisions, safety-critical design approval)"
         score: 3
       b:
         text: "Uncertain; a formal classification has not been performed"
         score: 2
       c:
-        text: "No; system falls under limited or minimal risk category"
+        text: "No; system is advisory only (DFM review, design guidance, material recommendations)"
         score: 0
     recommendation:
       if_a: "Full EU AI Act compliance path; all Chapter III Section 2 obligations apply."
-      if_b: "Perform classification using 01-foundations/risk-classification-methodology.md immediately."
+      if_b: "Perform classification using 01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml immediately."
       if_c: "Transparency obligations (Art 52) may still apply; document classification."
 
   - id: Q14
@@ -297,7 +310,7 @@ questions:
         text: "Current DPIA exists and is reviewed at least annually"
         score: 3
     recommendation:
-      if_a: "Use 02-pre-deployment/templates/dpia-template.md; this is likely a legal requirement."
+      if_a: "Use 01-discovery-governance/templates/dpia-template.md; this is likely a legal requirement."
       if_b: "Update DPIA and establish annual review cycle."
       if_c: "Ensure DPIA covers agentic-specific risks (tool-use, multi-agent, NHI)."
 
@@ -338,7 +351,7 @@ questions:
         score: 3
     recommendation:
       if_a: "Urgent; implement NeMo Guardrails (03-runtime-governance/guides/integrating-nemo-guardrails.md) and/or Guardrails AI (03-runtime-governance/guides/integrating-guardrails-ai.md)."
-      if_b: "Add structured output validation and FinTech-specific custom validators."
+      if_b: "Add structured output validation and manufacturing-specific custom validators (DFM rule validation, material compliance checks)."
       if_c: "Ensure guardrail effectiveness is monitored; integrate with observability."
 
   - id: Q17
@@ -355,7 +368,7 @@ questions:
         text: "Automated and manual red-teaming (Noma AI, Straiker, Giskard, or equivalent) runs continuously"
         score: 3
     recommendation:
-      if_a: "Start with 04-operational-governance/guides/red-teaming-ai-systems.md; DORA requires resilience testing."
+      if_a: "Start with 04-operational-governance/guides/red-teaming-ai-systems.md; NIST CSF 2.0 PR.DS (data security) and PR.IR (improvement) require resilience testing."
       if_b: "Systematise with automated tools and a regular cadence."
       if_c: "Ensure red-team findings feed into remediation tracking and guardrail updates."
 
@@ -395,7 +408,7 @@ questions:
         text: "Role-based AI training for technical, business, and oversight roles"
         score: 3
     recommendation:
-      if_a: "Develop training plan per 05-cross-cutting/training-and-awareness-plan.md; DNB SAFEST Skills pillar requires it."
+      if_a: "Develop training plan per 07-enterprise-implementation/training-curriculum.md; ISO/IEC 42001 Clause 7 (support) requires competence and awareness."
       if_b: "Extend to non-technical roles; include AI governance awareness."
       if_c: "Ensure training covers agentic-specific topics (NHI, tool-use risks, guardrails)."
 
@@ -414,32 +427,162 @@ questions:
         score: 3
     recommendation:
       if_a: "Critical security gap; see 05-cross-cutting/machine-identity-nhi.md."
-      if_b: "Implement NHI lifecycle management (DORA Art 8 ICT asset identification)."
+      if_b: "Implement NHI lifecycle management (NIST CSF 2.0 ID.AM asset management)."
       if_c: "Ensure NHI inventory is integrated with CMDB and agent registry."
+
+  # ---------------------------------------------------------------------------
+  # Category F: Agentic AI Governance (Questions F1-F7)
+  # ---------------------------------------------------------------------------
+
+  - id: F01
+    category: agentic_governance
+    question: "Do your agents have documented skill manifests and capability boundaries?"
+    options:
+      a:
+        text: "No skill manifests; agent capabilities are implicit in code"
+        score: 0
+      b:
+        text: "Informal skill descriptions exist but no formal manifests or boundary definitions"
+        score: 1
+      c:
+        text: "Formal skill-manifest.yaml files define capabilities, forbidden actions, and delegation rules for each agent"
+        score: 3
+    recommendation:
+      if_a: "Create skill manifests per agent. See protolabs/agents/<agent-id>/skill-manifest.yaml templates."
+      if_b: "Formalise skill manifests and add capability boundary definitions (what the agent CANNOT do)."
+      if_c: "Review manifests quarterly; update when agent capabilities change."
+
+  - id: F02
+    category: agentic_governance
+    question: "Do you have a documented tool-use registry and access controls for agent tools?"
+    options:
+      a:
+        text: "No tool-use registry; agents can invoke any available tool without restriction"
+        score: 0
+      b:
+        text: "Some tools are documented but no formal registry or RBAC controls"
+        score: 1
+      c:
+        text: "Formal tool-use registry with RBAC, audit logging, and principle of least privilege for each agent"
+        score: 3
+    recommendation:
+      if_a: "Create tool-use registry documenting every tool each agent can invoke."
+      if_b: "Add RBAC controls and audit logging to tool invocations."
+      if_c: "Review tool permissions quarterly; revoke unused tool access."
+
+  - id: F03
+    category: agentic_governance
+    question: "Do you enforce knowledge-base grounding contracts with source citation requirements?"
+    options:
+      a:
+        text: "No grounding contract; agent outputs are not required to cite sources"
+        score: 0
+      b:
+        text: "Source citation is encouraged but not enforced or validated"
+        score: 1
+      c:
+        text: "Formal source-grounding-data-contract.yaml enforces KB citation with validation and accuracy metrics"
+        score: 3
+    recommendation:
+      if_a: "Implement source-grounding-data-contract.yaml requiring every claim to cite KB file and original URL."
+      if_b: "Add automated validation for source citation accuracy."
+      if_c: "Monitor citation accuracy in production; alert on degradation."
+
+  - id: F04
+    category: agentic_governance
+    question: "Do you have prompt security measures against prompt injection and jailbreaks?"
+    options:
+      a:
+        text: "No prompt security; user inputs are passed directly to the model"
+        score: 0
+      b:
+        text: "Basic input sanitisation exists but no structured prompt security framework"
+        score: 1
+      c:
+        text: "Comprehensive prompt security with input validation, output filtering, and adversarial testing"
+        score: 3
+    recommendation:
+      if_a: "Implement prompt security per 03-runtime-governance/prompt-security.md immediately."
+      if_b: "Add structured output validation and adversarial test cases."
+      if_c: "Continuous red-teaming with automated adversarial test suites."
+
+  - id: F05
+    category: agentic_governance
+    question: "Do you manage agent identity lifecycle (provisioning, rotation, deprovisioning)?"
+    options:
+      a:
+        text: "No agent identity management; agents reuse developer credentials"
+        score: 0
+      b:
+        text: "Agents have dedicated identities but no rotation or deprovisioning process"
+        score: 1
+      c:
+        text: "Full NHI lifecycle: provisioning, credential rotation, RBAC, and deprovisioning per agent"
+        score: 3
+    recommendation:
+      if_a: "Implement NHI management per 05-cross-cutting/machine-identity-nhi.md."
+      if_b: "Add automated credential rotation and deprovisioning workflows."
+      if_c: "Integrate NHI inventory with agent registry and CMDB."
+
+  - id: F06
+    category: agentic_governance
+    question: "Do you track and version agent prompts, skill manifests, and system instructions?"
+    options:
+      a:
+        text: "No versioning; prompts and manifests are edited in-place without history"
+        score: 0
+      b:
+        text: "Git versioning exists but no structured change management or approval process"
+        score: 1
+      c:
+        text: "All prompts, manifests, and system instructions are versioned in git with change approval and rollback capability"
+        score: 3
+    recommendation:
+      if_a: "Move all prompts and manifests to version control immediately."
+      if_b: "Add change approval workflow and automated rollback triggers."
+      if_c: "Integrate prompt versioning with deployment pipeline; require eval pass before promotion."
+
+  - id: F07
+    category: agentic_governance
+    question: "Do you have a knowledge-base freshness and provenance contract?"
+    options:
+      a:
+        text: "No KB freshness tracking; articles are cached indefinitely without validation"
+        score: 0
+      b:
+        text: "KB articles have timestamps but no formal freshness SLA or staleness remediation"
+        score: 1
+      c:
+        text: "Formal KB freshness contract with staleness SLA (e.g., 90 days), automated detection, and refresh workflow"
+        score: 3
+    recommendation:
+      if_a: "Implement kb-freshness-provenance-contract.md with maximum staleness thresholds."
+      if_b: "Add automated staleness detection and alerting."
+      if_c: "Integrate KB freshness metrics into operational dashboards and periodic reviews."
 
 # =============================================================================
 # Scoring System
 # =============================================================================
 
 scoring:
-  max_possible_score: 60  # 20 questions x max 3 points each
+  max_possible_score: 81  # 27 questions x max 3 points each
   tiers:
     minimal:
-      range: "0-15"
+      range: "0-20"
       label: "Getting Started"
       description: |
         Your organisation is in the early stages of AI governance. Start with
         foundational documents and focus on the highest-risk gaps identified
         by individual question recommendations.
       recommended_path:
-        - "01-foundations/governance-charter.md"
-        - "01-foundations/roles-and-responsibilities.md"
+        - "01-discovery-governance/templates/governance-charter.md"
+        - "05-cross-cutting/governance-roles-raci.md"
         - "05-cross-cutting/regulatory-reference-index.md"
-        - "02-pre-deployment/risk-management-plan.md"
+        - "01-discovery-governance/templates/risk-management-plan.md"
       estimated_effort: "3-6 months to reach Standard tier"
 
     standard:
-      range: "16-40"
+      range: "21-54"
       label: "Building Maturity"
       description: |
         Your organisation has foundational governance in place but gaps remain
@@ -454,7 +597,7 @@ scoring:
       estimated_effort: "2-4 months to reach Comprehensive tier"
 
     comprehensive:
-      range: "41-60"
+      range: "55-81"
       label: "Advanced Governance"
       description: |
         Your organisation has mature AI governance. Focus on continuous
@@ -485,6 +628,53 @@ scoring:
       - condition: "All Risk Exposure scores are 0"
         tier: "Low Risk"
         implication: "Minimal path with transparency and basic monitoring."
+    cumulative_risk_modifier:
+      description: |
+        If 3 or more Risk Exposure questions score ≥2, elevate the determined
+        risk tier by one level (e.g., Moderate → Elevated). This captures
+        cumulative risk from multiple moderate-risk factors.
+      trigger: "Count of Q06-Q10 with score ≥2 ≥ 3"
+      action: "Elevate tier by one level (capped at High Risk)"
+
+# =============================================================================
+# Next Steps After Assessment
+# =============================================================================
+
+# =============================================================================
+# Evidence Validation
+# =============================================================================
+
+evidence_validation:
+  description: |
+    This assessment is self-reported. To increase reliability, provide objective
+    evidence for at least one question per category. Evidence examples:
+  by_category:
+    governance_maturity:
+      - "Link to signed governance charter document"
+      - "Screenshot of RACI matrix in shared drive"
+      - "Meeting invite for scheduled management review"
+    risk_exposure:
+      - "Documented risk classification for each agent"
+      - "DPIA document with approval date"
+      - "Screenshot of agent-customer interaction logs"
+    regulatory_requirements:
+      - "Regulatory reference index with applicable regulations highlighted"
+      - "Compliance tracker export"
+      - "DPIA approval email or document"
+    technical_capability:
+      - "Screenshot of tracing dashboard (LangSmith, Langfuse, etc.)"
+      - "Guardrail configuration file"
+      - "Red-team test report with dates and findings"
+      - "Data lineage diagram or export"
+    organisational_readiness:
+      - "Training completion report"
+      - "NHI inventory export from IAM system"
+    agentic_governance:
+      - "Skill manifest file for at least one agent"
+      - "Tool-use registry document"
+      - "Source-grounding-data-contract.yaml"
+      - "Prompt version history from git log"
+      - "KB freshness dashboard screenshot"
 
 # =============================================================================
 # Next Steps After Assessment

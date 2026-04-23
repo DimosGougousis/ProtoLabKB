@@ -8,6 +8,105 @@ This document defines the specific problems that the AI Governance implementatio
 
 ## 🔴 P0 - Critical Problems (Must Resolve Immediately)
 
+### P0-CAD-1: Manual DFM Analysis Bottleneck
+
+**Problem Statement:**
+ProtoLabs currently relies on manual engineering review for Design for Manufacturability (DFM) analysis of CAD uploads, creating a bottleneck that limits quote velocity, increases labor costs, and introduces inconsistency in evaluation quality across reviewers.
+
+**Impact:**
+- **Delayed Quotes:** Manual DFM review adds hours to quote turnaround, reducing win rates
+- **Inconsistent Quality:** Different engineers apply DFM rules inconsistently
+- **Scalability Limitation:** Linear relationship between volume and staffing costs
+- **Knowledge Silos:** DFM expertise concentrated in senior engineers
+- **24/7 Coverage Gaps:** No DFM review outside business hours
+- **Customer Friction:** Slow feedback loop delays design iteration
+
+**Evidence:**
+- Average DFM review time: 2-4 hours per complex part
+- Quote turnaround target: 24 hours; actual: 48-72 hours for complex parts
+- Customer complaints about slow quotes: 15% of negative feedback
+- Engineer turnover leads to DFM knowledge loss
+- Peak upload times (evenings/weekends) have next-day delays
+- Inconsistent DFM feedback documented in customer surveys
+
+**Success Criteria:**
+- ✅ <60 seconds automated DFM analysis for typical parts
+- ✅ >95% accuracy vs. expert engineer review
+- ✅ 100% consistency in rule application
+- ✅ 24/7 availability with no coverage gaps
+- ✅ 40% reduction in design iterations
+- ✅ 50% reduction in quote turnaround time
+
+**Related Work Package:** WP-CAD - CAD AI Evaluation System
+
+---
+
+### P0-CAD-2: No Automated CAD Feature Extraction
+
+**Problem Statement:**
+ProtoLabs lacks automated capability to extract manufacturing-relevant features (holes, pockets, bosses, threads, thin walls) from uploaded CAD files, requiring manual measurement and interpretation that is slow, error-prone, and inconsistent.
+
+**Impact:**
+- **Manual Measurement Overhead:** Engineers manually measure CAD features
+- **Error-Prone Process:** Human measurement introduces errors
+- **Incomplete Analysis:** Time constraints limit feature inspection depth
+- **Inconsistent Documentation:** Feature lists vary by reviewer
+- **Delayed Issue Detection:** Features causing issues discovered late
+- **Missed Optimization:** Opportunities for design improvement overlooked
+
+**Evidence:**
+- Feature measurement takes 30-60 minutes per complex part
+- Feature measurement errors found in 8% of reviewed quotes
+- Incomplete feature lists in 25% of DFM reports
+- Customer complaints about missed manufacturability issues
+- Post-quote design changes due to late-discovered features
+- No standardized feature extraction methodology
+
+**Success Criteria:**
+- ✅ 100% of relevant features automatically extracted
+- ✅ >95% precision in feature detection
+n- ✅ <5 second feature extraction time
+- ✅ Standardized feature taxonomy across all processes
+- ✅ Complete feature documentation for every upload
+- ✅ Zero missed critical features
+
+**Related Work Package:** WP-CAD - CAD AI Evaluation System
+
+---
+
+### P0-CAD-3: No Visual AI Understanding of CAD Designs
+
+**Problem Statement:**
+ProtoLabs AI systems cannot visually interpret CAD designs to assess manufacturability, missing nuanced issues that require human-like visual reasoning and preventing automated explanation generation that customers can understand.
+
+**Impact:**
+- **Missed Edge Cases:** Rule-based systems miss visual anomalies
+- **Poor Explanation Quality:** Technical outputs not customer-friendly
+- **High Support Burden:** Customers need help interpreting DFM reports
+- **Slow Learning Curve:** New engineers need extensive training
+- **Inconsistent Communication:** Different engineers explain issues differently
+- **Accessibility Gap:** Non-experts cannot self-serve DFM understanding
+
+**Evidence:**
+- 30% of DFM issues caught by visual inspection, not rules
+- Customer support tickets: 40% request DFM explanation help
+- New engineer ramp-up time: 6 months to independent DFM review
+- Customer survey: 60% want better DFM explanation clarity
+- No automated explanation generation currently exists
+- Inconsistent DFM report formats across engineers
+
+**Success Criteria:**
+- ✅ VLM catches >25% of issues that rules miss
+- ✅ DFM explanations rated >4.0/5.0 for clarity
+- ✅ 50% reduction in DFM explanation support tickets
+- ✅ New engineer ramp-up reduced to 2 months
+- ✅ 100% consistent explanation format
+- ✅ Self-service DFM understanding for non-experts
+
+**Related Work Package:** WP-CAD - CAD AI Evaluation System
+
+---
+
 ### P0-1: Unprotected AI Input Processing
 
 **Problem Statement:**

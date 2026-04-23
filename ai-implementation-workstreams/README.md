@@ -16,6 +16,10 @@ This folder structure captures all work required for implementing the AI Governa
 
 | Job | When | I Want To | So I Can |
 |-----|------|-----------|----------|
+| **Evaluate CAD for Manufacturability** | Engineers upload 3D CAD files | Automatically analyze design for manufacturing issues | Receive instant DFM feedback and reduce design iterations |
+| **Extract Manufacturing Features** | CAD files are uploaded | Automatically identify holes, pockets, bosses, threads | Eliminate manual measurement and ensure complete analysis |
+| **Visually Assess CAD Designs** | Geometric rules are insufficient | Use AI vision to understand design complexity | Catch edge cases and explain issues in natural language |
+| **Compare Against Past Projects** | Evaluating a new design | Find similar historical projects and their outcomes | Learn from past successes and avoid repeating failures |
 | **Prevent Prompt Injection** | Users submit queries to AI systems | Detect and block malicious inputs | Prevent data exfiltration and system manipulation |
 | **Ensure Audit Compliance** | Regulators request compliance evidence | Provide complete audit trails | Demonstrate regulatory compliance and avoid fines |
 | **Detect Anomalies** | AI systems process manufacturing data | Identify unusual patterns | Catch insider threats and external attacks early |
@@ -33,6 +37,7 @@ ai-implementation-workstreams/
 │   └── agendas-and-outputs.md              # Meeting agendas & deliverables
 │
 ├── 01-agentic-ready-implementations/     # 🤖 Can start immediately
+│   ├── work-package-cad-ai-evaluation.md        (WP-CAD - P0 Strategic)
 │   ├── work-package-01-input-sanitization.md      (WP01 - P0 Critical)
 │   ├── work-package-02-adversarial-defense.md     (WP02 - P0 Critical)
 │   ├── work-package-03-runtime-monitoring.md   (WP03 - P0 Critical)

@@ -30,10 +30,51 @@ This project implements a comprehensive AI Governance framework for ProtoLabs ma
 | Phase | Budget | Status |
 |-------|--------|--------|
 | Phase 0: Foundation | $150K | 🔴 Not started (blocked) |
+| Phase 0.5: CAD AI System | $600K | 🟡 Planning (strategic initiative) |
 | Phase 1: P0 Deployment | $200K | ⏸️ On hold |
 | Phase 2: P1 Decisions | $50K | ⏸️ On hold |
 | Phase 3: P1 Implementation | $1.5M-$3.5M | ⏸️ On hold |
-| **TOTAL** | **$1.9M-$3.9M** | **🔴 Blocked** |
+| **TOTAL** | **$2.5M-$4.5M** | **🔴 Blocked on Phase 0** |
+
+### Strategic Initiative: CAD AI Evaluation System
+
+**New Work Package:** WP-CAD - CAD AI Evaluation System  
+**Priority:** P0 Strategic (parallel to security foundation)  
+**Timeline:** 12 weeks (can start Week 1 in parallel with security work)  
+**Budget:** $600K  
+**Status:** 🟡 Planning
+
+**Scope:**
+- Multi-format CAD parsing (STEP, STL, OBJ, 3MF, IGES)
+- Automated feature recognition (holes, pockets, bosses, threads, thin walls)
+- Vision-Language Model integration for visual DFM assessment
+- Rule-based DFM validation against ProtoLabs guidelines
+- Historical project comparison and learning
+- REST API and CAD plugin integration
+- Interactive web dashboard for DFM reports
+
+**Key Deliverables:**
+1. CAD Parser Service with 99%+ success rate
+2. Feature Recognition with >95% precision, >90% recall
+3. VLM Analysis with <5s inference time
+4. DFM Rule Engine with 100% ProtoLabs guideline coverage
+5. Historical Comparison with <100ms similarity search
+6. REST API with OpenAPI specification
+7. Web Dashboard with interactive 3D viewer
+8. CAD Plugins for SolidWorks and Fusion 360
+
+**Dependencies:**
+- WP01 (Input Sanitization): CAD file metadata sanitization
+- WP02 (Adversarial Defense): VLM prompt sanitization
+- WP03 (Runtime Monitoring): CAD evaluation metrics
+- WP04 (Audit & Compliance): CAD evaluation audit logging
+
+**Success Criteria:**
+- <60 seconds end-to-end analysis time
+- >95% feature detection precision
+- >4.0/5.0 DFM explanation satisfaction
+- 50% reduction in quote turnaround time
+- 40% reduction in design iterations
 
 ---
 
@@ -95,7 +136,28 @@ This project implements a comprehensive AI Governance framework for ProtoLabs ma
 
 ---
 
-### Objective 4: Implement Approved High-Priority Initiatives
+### Objective 4: Deploy CAD AI Evaluation System
+**Timeline:** Weeks 1-12 (Parallel to Phases 0-1)
+
+**Key Results:**
+- [ ] KR4.1: Deploy CAD parser with 99%+ success rate by Week 3
+- [ ] KR4.2: Deploy feature recognition with >95% precision by Week 6
+- [ ] KR4.3: Deploy VLM analysis service by Week 8
+- [ ] KR4.4: Deploy DFM rule engine with 100% guideline coverage by Week 8
+- [ ] KR4.5: Deploy historical comparison service by Week 10
+- [ ] KR4.6: Deploy REST API and web dashboard by Week 12
+
+**Success Criteria:**
+- <60 seconds end-to-end analysis time
+- >95% feature detection precision, >90% recall
+- >4.0/5.0 DFM explanation satisfaction
+- 50% reduction in quote turnaround time
+- 40% reduction in design iterations
+- 100% CAD file audit trail coverage
+
+---
+
+### Objective 5: Implement Approved High-Priority Initiatives
 **Timeline:** Weeks 8-30 (Phase 3)
 
 **Key Results:**

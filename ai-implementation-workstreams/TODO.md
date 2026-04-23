@@ -32,6 +32,195 @@
 **Owner:** VP Engineering  
 **Status:** 🔴 Not Started (Blocked - code incomplete)
 
+### New Work Package: WP-CAD - CAD AI Evaluation System
+
+**Objective:** Build AI-powered CAD evaluation system for automated DFM analysis  
+**Duration:** 12 weeks (Phases 1-3)  
+**Resources:** 6 engineers (2 ML, 2 CAD/Geometry, 2 Backend)  
+**Budget:** $600K  
+**Owner:** Director of AI Products  
+**Status:** 🟡 Planning
+
+#### Week 1-2: CAD Parser Foundation
+- [ ] **Task CAD-1.1:** Implement STEP file parser with OpenCASCADE
+  - Owner: CAD Engineer
+  - Due: Day 3
+  - Status: ⬜
+  - Acceptance: Parse STEP AP214/AP242, extract B-rep topology
+  - Blocker: None
+
+- [ ] **Task CAD-1.2:** Implement STL/OBJ mesh parser
+  - Owner: CAD Engineer
+  - Due: Day 5
+  - Status: ⬜
+  - Acceptance: Parse binary/ASCII STL, OBJ with materials, calculate mesh quality
+  - Blocker: None
+
+- [ ] **Task CAD-1.3:** Build geometry extraction pipeline
+  - Owner: CAD Engineer
+  - Due: Day 7
+  - Status: ⬜
+  - Acceptance: Extract bounding box, volume, surface area, center of mass
+  - Blocker: Task CAD-1.1, CAD-1.2
+
+- [ ] **Task CAD-1.4:** Implement 2D view generation
+  - Owner: Frontend Engineer
+  - Due: Day 10
+  - Status: ⬜
+  - Acceptance: Generate orthographic views (front, top, side) + isometric
+  - Blocker: Task CAD-1.3
+
+#### Week 3-4: Feature Recognition
+- [ ] **Task CAD-2.1:** Implement hole detection algorithm
+  - Owner: ML Engineer
+  - Due: Day 14
+  - Status: ⬜
+  - Acceptance: Detect cylindrical holes, measure diameter/depth/position, >95% precision
+  - Blocker: Task CAD-1.1
+
+- [ ] **Task CAD-2.2:** Implement pocket recognition
+  - Owner: ML Engineer
+  - Due: Day 17
+  - Status: ⬜
+  - Acceptance: Detect internal cavities, measure depth/corners/floor, >90% precision
+  - Blocker: Task CAD-1.1
+
+- [ ] **Task CAD-2.3:** Implement boss and protrusion detection
+  - Owner: ML Engineer
+  - Due: Day 20
+  - Status: ⬜
+  - Acceptance: Detect raised features, measure height/diameter, >90% precision
+  - Blocker: Task CAD-1.1
+
+- [ ] **Task CAD-2.4:** Implement thin wall and thickness analysis
+  - Owner: CAD Engineer
+  - Due: Day 24
+  - Status: ⬜
+  - Acceptance: Calculate minimum/maximum thickness, flag thin sections
+  - Blocker: Task CAD-1.3
+
+#### Week 5-6: VLM Integration
+- [ ] **Task CAD-3.1:** Set up VLM inference infrastructure
+  - Owner: ML Engineer
+  - Due: Day 28
+  - Status: ⬜
+  - Acceptance: API connections to GPT-4V, Claude 3.5, or Gemini; <5s inference
+  - Blocker: None
+
+- [ ] **Task CAD-3.2:** Develop VLM prompt templates for DFM
+  - Owner: ML Engineer
+  - Due: Day 32
+  - Status: ⬜
+  - Acceptance: Structured prompts for each manufacturing process; consistent output format
+  - Blocker: Task CAD-3.1
+
+- [ ] **Task CAD-3.3:** Implement visual comparison against historical projects
+  - Owner: ML Engineer
+  - Due: Day 36
+  - Status: ⬜
+  - Acceptance: VLM can compare current design to similar past projects; identify patterns
+  - Blocker: Task CAD-3.2, HST-001
+
+- [ ] **Task CAD-3.4:** Build natural language explanation generator
+  - Owner: Frontend Engineer
+  - Due: Day 40
+  - Status: ⬜
+  - Acceptance: Convert VLM outputs to customer-friendly explanations with visual annotations
+  - Blocker: Task CAD-3.2
+
+#### Week 7-8: DFM Rule Engine
+- [ ] **Task CAD-4.1:** Codify ProtoLabs DFM rules as machine-readable rules
+  - Owner: Manufacturing Engineer
+  - Due: Day 44
+  - Status: ⬜
+  - Acceptance: All ProtoLabs DFM guidelines in YAML/JSON; version controlled
+  - Blocker: None
+
+- [ ] **Task CAD-4.2:** Implement geometric constraint checking engine
+  - Owner: CAD Engineer
+  - Due: Day 48
+  - Status: ⬜
+  - Acceptance: Validate features against process constraints; flag violations
+  - Blocker: Task CAD-2.1 to CAD-2.4, CAD-4.1
+
+- [ ] **Task CAD-4.3:** Build manufacturability scoring algorithm
+  - Owner: ML Engineer
+  - Due: Day 52
+  - Status: ⬜
+  - Acceptance: Composite score (0-100) based on rules + VLM; calibrated to expert judgment
+  - Blocker: Task CAD-4.2, CAD-3.3
+
+- [ ] **Task CAD-4.4:** Implement fix recommendation engine
+  - Owner: Manufacturing Engineer
+  - Due: Day 56
+  - Status: ⬜
+  - Acceptance: Specific, actionable suggestions for each DFM issue
+  - Blocker: Task CAD-4.1
+
+#### Week 9-10: Historical Comparison
+- [ ] **Task CAD-5.1:** Set up vector database for design embeddings
+  - Owner: ML Engineer
+  - Due: Day 60
+  - Status: ⬜
+  - Acceptance: Pinecone/Weaviate deployed; <100ms query time
+  - Blocker: None
+
+- [ ] **Task CAD-5.2:** Implement geometry embedding pipeline
+  - Owner: ML Engineer
+  - Due: Day 64
+  - Status: ⬜
+  - Acceptance: Generate embeddings for all CAD uploads; batch + real-time
+  - Blocker: Task CAD-5.1
+
+- [ ] **Task CAD-5.3:** Build historical issue mapping system
+  - Owner: Data Engineer
+  - Due: Day 68
+  - Status: ⬜
+  - Acceptance: Link design patterns to historical DFM issues and outcomes
+  - Blocker: Task CAD-5.2
+
+- [ ] **Task CAD-5.4:** Implement similarity search API
+  - Owner: Backend Engineer
+  - Due: Day 72
+  - Status: ⬜
+  - Acceptance: Find similar past projects given a CAD file; ranked results
+  - Blocker: Task CAD-5.2
+
+#### Week 11-12: Integration & Scale
+- [ ] **Task CAD-6.1:** Build REST API for CAD evaluation
+  - Owner: Backend Engineer
+  - Due: Day 76
+  - Status: ⬜
+  - Acceptance: FastAPI endpoints for upload, evaluation, results; OpenAPI spec
+  - Blocker: Task CAD-4.3
+
+- [ ] **Task CAD-6.2:** Develop CAD plugins (SolidWorks, Fusion 360)
+  - Owner: Frontend Engineer
+  - Due: Day 80
+  - Status: ⬜
+  - Acceptance: Plugins that upload and show DFM results within CAD environment
+  - Blocker: Task CAD-6.1
+
+- [ ] **Task CAD-6.3:** Build web dashboard for DFM reports
+  - Owner: Frontend Engineer
+  - Due: Day 84
+  - Status: ⬜
+  - Acceptance: Interactive viewer with 3D model, issues, recommendations
+  - Blocker: Task CAD-3.4, CAD-6.1
+
+- [ ] **Task CAD-6.4:** Implement continuous learning pipeline
+  - Owner: ML Engineer
+  - Due: Day 88
+  - Status: ⬜
+  - Acceptance: Feedback from manufacturing outcomes improves models
+  - Blocker: Task CAD-5.3
+
+---
+
+## 🔴 P0 - Critical Problems (Must Resolve Immediately)
+
+### P0-1: Unprotected AI Input Processing
+
 ### Week 1: Code Completion Sprint
 
 #### Day 1-2: WP01 Input Sanitization

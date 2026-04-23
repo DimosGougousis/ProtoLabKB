@@ -1,8 +1,8 @@
-# Framework Navigation Guide
+# Framework Navigation Guide — ProtoLabs Agentic DFM
 
 ## Purpose
 
-This guide maps common scenarios to specific framework artifacts. Use it when you know what you need to accomplish but are not sure where to find the relevant guidance, checklist, or template.
+This guide maps common scenarios to specific framework artifacts for the ProtoLabs Product Office AI agent system. Use it when you know what you need to accomplish but are not sure where to find the relevant guidance, checklist, or template for governing DFM (Design for Manufacturing) agents in regulated manufacturing verticals.
 
 ## When to Use
 
@@ -14,7 +14,7 @@ All team members. This guide is a navigation aid, not a governance artifact itse
 
 ## Regulatory Basis
 
-Best practice -- efficient navigation reduces governance friction and increases adoption.
+Best practice -- efficient navigation reduces governance friction and increases adoption. This guide is tailored for the ProtoLabs manufacturing domain (CNC machining, injection molding, sheet metal, 3D printing, materials selection, and regulated verticals: aerospace, medical, automotive).
 
 ---
 
@@ -98,6 +98,22 @@ Best practice -- efficient navigation reduces governance friction and increases 
 | Select and configure governance tooling | `07-enterprise-implementation/tooling-guide.md` | Enterprise |
 | Train teams on governance practices | `07-enterprise-implementation/training-curriculum.md` | Enterprise |
 
+### ProtoLab-Specific Governance
+
+| I need to... | Go to... | Pillar |
+|-------------|----------|--------|
+| Understand the risk profile of our 10 DFM agents | `../protolabs/agent-risk-registry.yaml` | ProtoLab |
+| Check SAFEST compliance coverage for an agent | `../protolabs/safest-coverage-matrix.md` | ProtoLab |
+| Protect customer CAD files and IP | `../protolabs/customer-cad-ip-protection-guardrail.md` | ProtoLab |
+| Validate DFM accuracy against the golden fixture | `../protolabs/dfm-accuracy-eval-suite.yaml` | ProtoLab |
+| Enforce source citation for every agent claim | `../protolabs/source-grounding-data-contract.yaml` | ProtoLab |
+| Check when a compliance KB should be loaded | `../protolabs/manufacturing-compliance-routing.md` | ProtoLab |
+| Run adversarial tests on DFM agents | `../protolabs/red-team-playbook-dfm-agents.md` | ProtoLab |
+| Verify KB article freshness | `../protolabs/kb-freshness-provenance-contract.md` | ProtoLab |
+| Find the KILLSWITCH for a specific agent | `../protolabs/agents/<agent-id>/KILLSWITCH.md` | ProtoLab |
+| Review an agent's skill manifest | `../protolabs/agents/<agent-id>/skill-manifest.yaml` | ProtoLab |
+| Check board-level AI risk dashboard | `../dashboards/board.html` | Executive |
+
 ---
 
 ## Common Scenarios (End-to-End)
@@ -148,6 +164,72 @@ These scenarios span multiple pillars. Follow the sequence for a complete govern
 5. Update eval suite to cover the failure mode: `02-development-governance/eval-driven-development.md`
 6. Update guardrails if a runtime control was missing: `03-runtime-governance/guardrail-configuration.md`
 7. Update risk assessment if a new harm scenario was discovered: `01-discovery-governance/ethical-risk-assessment.yaml`
+
+### Scenario 5: "A customer wants a DFM review of a complex machined part"
+
+1. Determine process: Use `../CLAUDE.md` routing keywords → CNC Machining Agent
+2. Check regulatory mode: Does the part description include ITAR/EAR/aerospace/medical keywords?
+3. Fill out the ML Lifecycle Canvas for this specific review session
+4. Load the CNC Machining agent skill manifest from `../protolabs/agents/cnc-machining/`
+5. Verify KB freshness: Is the CNC machining KB within the 90-day SLA?
+6. Execute DFM review with source citation per `../protolabs/source-grounding-data-contract.yaml`
+7. If regulated mode activated, include compliance KB citations (ITAR, AS9100D, etc.)
+8. Log the review for audit trail
+
+### Scenario 6: "A customer uploaded a CAD file with ITAR-controlled features"
+
+1. The `{{#regulated}}` pattern detects ITAR keywords in the part description
+2. The CAD/IP protection guardrail activates: `../protolabs/customer-cad-ip-protection-guardrail.md`
+3. Compliance KBs load: `../knowledge/cnc-machining/itar-ear-compliance.md`
+4. Agent output is flagged for human review before any response to customer
+5. Incident logged per `04-operational-governance/templates/ai-incident-report.md`
+6. Post-incident review determines if the upload should have been blocked earlier in the intake flow
+7. Update intake guardrails if a control gap was identified
+
+### Scenario 7: "The materials-selection agent recommended a non-compliant material"
+
+1. Activate incident response: `04-operational-governance/incident-response-playbook.md`
+2. Check the agent's skill manifest: Was the compliance KB loaded? (`../protolabs/agents/materials-selection/skill-manifest.yaml`)
+3. Review the KB freshness contract: Was the material data stale? (`../protolabs/kb-freshness-provenance-contract.md`)
+4. Check the source-grounding contract: Did the agent cite the correct KB article?
+5. Update the materials-selection agent's capability boundaries to forbid recommendations without compliance validation
+6. Add a new eval case for material compliance checking (`../protolabs/dfm-accuracy-eval-suite.yaml`)
+7. Refresh the relevant KB articles and verify with golden fixture
+
+---
+
+## Agent Selection Guide
+
+Not sure which agent to use? Follow this decision tree:
+
+```
+Customer asks about...
+│
+├─→ "Can you make this part?" / "DFM review" / "manufacturability"
+│   └─→ What manufacturing process?
+│       ├─→ CNC machining → CNC Machining Agent (`agents/cnc-machining.agent.md`)
+│       ├─→ Injection molding → Injection Molding Agent (`agents/injection-molding.agent.md`)
+│       ├─→ Sheet metal → Sheet Metal Agent (`agents/sheet-metal.agent.md`)
+│       ├─→ 3D printing → 3D Printing Agent (`agents/3d-printing.agent.md`)
+│       └─→ Not sure → DFM Router Agent (`agents/dfm-router.agent.md`) classifies intent
+│
+├─→ "What material should I use?" / "material properties" / "alternative material"
+│   └─→ Materials Selection Agent (`agents/materials-selection.agent.md`)
+│
+├─→ "Aerospace requirements" / "AS9100" / "flight critical"
+│   └─→ Vertical Aerospace Agent (`agents/vertical-aerospace.agent.md`)
+│
+├─→ "Medical device" / "biocompatible" / "FDA" / "ISO 13485"
+│   └─→ Vertical Medical Agent (`agents/vertical-medical.agent.md`)
+│
+├─→ "Automotive" / "EV" / "lightweighting" / "powertrain"
+│   └─→ Vertical Automotive/EV Agent (`agents/vertical-automotive-ev.agent.md`)
+│
+└─→ "Industry trends" / "Industry 4.0" / "market forecast"
+    └─→ Trends & Strategy Agent (`agents/trends-strategy.agent.md`)
+```
+
+Each agent loads only the KB articles specified in its `loads:` frontmatter. The router agent ensures the right specialist is invoked and the right compliance KBs are loaded when regulated keywords are detected.
 
 ---
 

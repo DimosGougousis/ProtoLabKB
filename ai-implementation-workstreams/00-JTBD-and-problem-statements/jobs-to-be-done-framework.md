@@ -16,6 +16,79 @@ This document defines the Jobs to be Done framework for ProtoLabs AI Governance 
 
 ## Functional Jobs by Workstream
 
+### CAD AI Design Evaluation Jobs
+
+#### Job: CAD-CORE - Evaluate CAD Files for Manufacturability
+
+**Job Statement:**
+**When** engineers upload 3D CAD files (STEP, STL, OBJ, 3MF) to ProtoLabs for manufacturing quotes,
+**I want to** automatically parse geometry, extract features, and evaluate manufacturability using AI-powered analysis,
+**So I can** receive instant DFM feedback, catch issues early, reduce design iterations, and accelerate time-to-market.
+
+**Functional Requirements:**
+- Parse multi-format CAD files with high precision (CAD-001)
+- Extract geometric features: holes, pockets, bosses, fillets, threads (FTR-001 to FTR-008)
+- Generate 2D orthographic and isometric views for analysis (VLM-001)
+- Apply process-specific DFM rules (CNC, molding, 3D printing, sheet metal)
+- Generate manufacturability score with issue prioritization
+- Provide actionable fix recommendations with visual guidance
+
+**Desired Outcomes:**
+- <60 seconds end-to-end analysis time for typical parts
+- >95% precision in feature detection
+- 100% coverage of ProtoLabs DFM guidelines
+- 40% reduction in design iterations
+- >4.0/5.0 user satisfaction with explanations
+
+---
+
+#### Job: CAD-VLM - Visual Understanding of Manufacturing Complexity
+
+**Job Statement:**
+**When** geometric rules alone cannot determine manufacturability,
+**I want to** leverage Vision-Language Models to visually assess designs and provide intuitive explanations,
+**So I can** catch edge cases, understand nuanced issues, and receive guidance in natural language.
+
+**Functional Requirements:**
+- Analyze 2D/3D views for manufacturability issues (VLM-004)
+- Compare designs against historical projects visually (VLM-005)
+- Detect anomalous features that may indicate errors (VLM-006)
+- Generate natural language explanations with visual annotations (VLM-007)
+- Suggest design modifications with visual previews (VLM-008)
+
+**Desired Outcomes:**
+- >90% accuracy in visual DFM assessment
+- Explanations rated helpful by >80% of users
+- 30% of issues caught by VLM that rules missed
+- <5 second VLM inference time per view
+
+---
+
+#### Job: CAD-HIST - Learn from Previous Projects
+
+**Job Statement:**
+**When** evaluating a new design,
+**I want to** automatically compare it against previous similar projects and their outcomes,
+**So I can** leverage institutional knowledge, avoid repeating past mistakes, and benchmark against successful designs.
+
+**Functional Requirements:**
+- Store vector embeddings of all CAD designs (HST-001)
+- Generate geometry fingerprints for efficient comparison (HST-002)
+- Map historical DFM issues to design patterns (HST-003)
+- Retrieve similar projects for benchmarking (HST-004)
+- Learn success patterns from high-performing designs (HST-005)
+- Catalog failure modes with root causes (HST-006)
+- Aggregate cross-project analytics (HST-007)
+- Implement continuous learning from outcomes (HST-008)
+
+**Desired Outcomes:**
+- <100ms similarity search time
+- Top-5 similar project accuracy >90%
+- 20% improvement in DFM prediction accuracy with historical data
+- 100% of designs indexed for comparison
+
+---
+
 ### Workstream 1: Input Sanitization (WP01)
 
 **Job Statement:**
