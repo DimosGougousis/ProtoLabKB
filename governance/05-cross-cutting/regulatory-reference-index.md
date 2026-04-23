@@ -21,7 +21,7 @@ Single source of truth for every regulation that touches the ProtoLab agent syst
 Use this index when you need to answer: *"Where in our governance framework do we satisfy requirement X of regulation Y?"*
 
 **Scope note.** This index is organised in three bands:
-- **Band A — Core to all agents** (EU AI Act, GDPR, NIST CSF 2.0, ISO/IEC 42001, SOC 2).
+- **Band A — Core to all agents** (EU AI Act, GDPR, NIST AI RMF 1.0, NIST CSF 2.0, ISO/IEC 42001, SOC 2).
 - **Band B — Activated when manufacturing compliance keywords fire** (ITAR, EAR, FDA 21 CFR 820, AS9100D, ISO 13485, IATF 16949, NADCAP, RoHS, REACH, ISO 9001).
 - **Band C — US state and jurisdiction-specific** (HIPAA, Colorado AI Act, PCI DSS).
 - **Archived — Not applicable to Protolabs** (DORA, Wft, PSD2, MiCAR — see `_archive/`).
@@ -88,7 +88,57 @@ The `{{#regulated}}` template pattern in `../../templates/*.md` and `../protolab
 
 ---
 
-### A.4 ISO/IEC 42001 — AI Management System (AIMS)
+### A.4 NIST AI Risk Management Framework 1.0 (NIST AI RMF)
+
+**Overview.** Voluntary framework for managing AI risks, organized around four Functions (Govern, Map, Measure, Manage) and seven characteristics of trustworthy AI (Valid and Reliable, Safe, Secure and Resilient, Accountable and Transparent, Explainable and Interpretable, Privacy-Enhanced, Fair with Harmful Bias Managed).
+
+**Protolabs applicability.** The NIST AI RMF provides the foundational risk management structure for all ProtoLabs AI agents. It complements EU AI Act compliance with a systematic approach to AI risk management throughout the lifecycle. Required for all new AI projects via the ML Lifecycle Canvas (NIST Edition).
+
+| Function | Sub-Category | Core Requirement | Governance Section |
+|----------|--------------|------------------|--------------------|
+| **GOVERN** | GV-1 | Policies, accountability, legal requirements | `../01-discovery-governance/templates/governance-charter.md`, `../05-cross-cutting/governance-roles-raci.md` |
+| **GOVERN** | GV-2 | Risk management culture | `../07-enterprise-implementation/training-and-awareness-plan.md` |
+| **GOVERN** | GV-3 | Workforce diversity | `../05-cross-cutting/governance-roles-raci.md` |
+| **GOVERN** | GV-4 | Risk tolerance | `../06-executive/ai-risk-appetite-framework.md` |
+| **GOVERN** | GV-5 | Monitoring & review | `../04-operational-governance/continuous-monitoring-plan.md` |
+| **GOVERN** | GV-6 | Third-party risk | `../02-development-governance/templates/third-party-model-assessment.md` |
+| **GOVERN** | GV-7 | Documentation | `../02-development-governance/templates/model-card.md` |
+| **MAP** | MP-1 | Context of use | `../00-getting-started/ml-lifecycle-canvas-nist-edition.md` |
+| **MAP** | MP-2 | AI system categorization | `../01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml` |
+| **MAP** | MP-3 | Impacts identified | `../01-discovery-governance/templates/risk-management-plan.md` |
+| **MAP** | MP-4 | Likelihood & severity | `../01-discovery-governance/templates/risk-management-plan.md` |
+| **MAP** | MP-5 | Risk tracking | `../04-operational-governance/templates/drift-detection-runbook.md` |
+| **MEASURE** | MS-1 | Methods & metrics | `../02-development-governance/templates/test-plan-for-ai.md` |
+| **MEASURE** | MS-2 | Evaluation | `../protolabs/dfm-accuracy-eval-suite.yaml` |
+| **MEASURE** | MS-3 | Tracking over time | `../04-operational-governance/continuous-monitoring-plan.md` |
+| **MEASURE** | MS-4 | Feedback mechanisms | `../03-runtime-governance/transparency-controls.md` |
+| **MEASURE** | MS-5 | Assurance | `../04-operational-governance/templates/audit-record-schema.yaml` |
+| **MANAGE** | MG-1 | Risk response | `../01-discovery-governance/templates/risk-management-plan.md` |
+| **MANAGE** | MG-2 | Incident response | `../04-operational-governance/templates/ai-incident-report.md` |
+| **MANAGE** | MG-3 | Review & update | `../04-operational-governance/evaluations/periodic-revalidation-schedule.yaml` |
+| **MANAGE** | MG-4 | Communication | `../06-executive/quarterly-governance-report.md` |
+
+**Seven Characteristics Assessment:**
+| Characteristic | Assessment Location |
+|----------------|---------------------|
+| Valid and Reliable | `../protolabs/dfm-accuracy-eval-suite.yaml` |
+| Safe | `../04-operational-governance/guides/red-teaming-ai-systems.md` |
+| Secure and Resilient | `../04-operational-governance/templates/drift-detection-runbook.md` |
+| Accountable and Transparent | `../03-runtime-governance/transparency-controls.md` |
+| Explainable and Interpretable | `../02-development-governance/templates/model-card.md` |
+| Privacy-Enhanced | `../protolabs/customer-cad-ip-protection-guardrail.md` |
+| Fair with Harmful Bias Managed | `../02-development-governance/evaluations/bias-and-fairness-evals.md` |
+
+**Key Governance Artifacts:**
+- [NIST AI RMF Reference Guide](./nist-ai-rmf-reference-guide.md) — Complete framework guidance
+- [NIST AI RMF Assessment Checklist](../01-discovery-governance/checklists/nist-ai-rmf-assessment.yaml) — Machine-readable checklist
+- [ML Lifecycle Canvas (NIST Edition)](../00-getting-started/ml-lifecycle-canvas-nist-edition.md) — Project initiation template
+- [SAFEST to NIST AI RMF Mapping](../protolabs/nist-ai-rmf-safest-mapping.md) — Crosswalk with existing methodology
+- [NIST AI RMF Compliance Mapping](./nist-ai-rmf-compliance-mapping.md) — Multi-framework alignment
+
+---
+
+### A.5 ISO/IEC 42001 — AI Management System (AIMS)
 
 **Overview.** Requirements for establishing, maintaining, and improving an AI Management System. Uses the Annex SL high-level structure.
 

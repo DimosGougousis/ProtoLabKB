@@ -1,0 +1,1107 @@
+# NIST AI RMF Assessment Checklist
+#
+# Purpose: Machine-readable checklist for assessing AI systems against the NIST AI RMF
+#          Four Functions and Seven Characteristics of Trustworthy AI. This checklist
+#          must be completed for every new AI project before proceeding through
+#          governance gates.
+#
+# When to Use:
+#   - At project initiation (Discovery Gate)
+#   - Before development begins (Development Gate)
+#   - Before production deployment (Deployment Gate)
+#   - During quarterly governance reviews
+#   - When significant changes are made to the AI system
+#
+# Who Is Responsible:
+#   | Role                    | R/A/C/I     | Responsibility                              |
+#   |-------------------------|-------------|---------------------------------------------|
+#   | Product Owner           | Accountable | Overall assessment completion               |
+#   | ML/AI Engineer          | Responsible | Technical assessments (Measure, Secure)     |
+#   | Ethics/Risk Lead        | Responsible | Risk assessments (Map, Fair)                |
+#   | Governance Lead         | Responsible | Governance assessments (Govern, Accountable)|
+#   | Security Engineer       | Responsible | Security assessments (Secure, Resilient)  |
+#   | Legal Counsel           | Consulted   | Regulatory interpretation                   |
+#
+# Regulatory Basis:
+#   - NIST AI RMF 1.0 — Four Functions (Govern, Map, Measure, Manage)
+#   - NIST AI RMF — Seven Characteristics of Trustworthy AI
+#   - EO 14110 — Executive Order on Safe, Secure, and Trustworthy AI
+#   - EU AI Act Article 9 — Risk Management System
+#   - ISO/IEC 42001 — AI Management System
+#
+# Cross-References:
+#   - NIST AI RMF Reference Guide: ../../05-cross-cutting/nist-ai-rmf-reference-guide.md
+#   - ML Lifecycle Canvas (NIST Edition): ../../00-getting-started/ml-lifecycle-canvas-nist-edition.md
+#   - SAFEST to NIST Mapping: ../../../protolabs/nist-ai-rmf-safest-mapping.md
+#   - EU AI Act Risk Classification: ./eu-ai-act-risk-classification.yaml
+
+metadata:
+  checklist_id: "NIST-AI-RMF-001"
+  version: "1.0"
+  last_updated: "2026-04-23"
+  owner: "AI Governance Office"
+  review_cadence: "Quarterly"
+  framework: "NIST AI Risk Management Framework 1.0"
+  required_for_gates:
+    - "Discovery Gate"
+    - "Development Gate"
+    - "Deployment Gate"
+
+# =============================================================================
+# SECTION 1: PROJECT IDENTIFICATION
+# =============================================================================
+project_identification:
+  - id: PROJ-ID-001
+    item: "Project name documented"
+    priority: critical
+    status: not_started
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "NIST AI RMF Govern Function"
+
+  - id: PROJ-ID-002
+    item: "Agent ID from registry assigned"
+    priority: critical
+    status: not_started
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "NIST AI RMF Map Function"
+
+  - id: PROJ-ID-003
+    item: "Assessment date recorded"
+    priority: critical
+    status: not_started
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "NIST AI RMF Govern Function"
+
+  - id: PROJ-ID-004
+    item: "Assessment team identified with roles"
+    priority: critical
+    status: not_started
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "NIST AI RMF Govern Function"
+
+# =============================================================================
+# SECTION 2: NIST AI RMF GOVERN FUNCTION (GV)
+# =============================================================================
+govern_function:
+  category: "GOVERN — Establish organizational culture, structures, processes, and workforce competencies"
+
+  subcategories:
+    - id: GV-1
+      name: "Policies, Processes, Procedures, & Practices"
+      items:
+        - id: GV-1.1
+          item: "Legal and regulatory requirements applicable to AI system identified and documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-1.1"
+
+        - id: GV-1.2
+          item: "Accountability structures defined, with roles and responsibilities documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-1.2"
+
+        - id: GV-1.3
+          item: "AI risk management policies approved by appropriate authority"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-1.1"
+
+    - id: GV-2
+      name: "Risk Management Culture"
+      items:
+        - id: GV-2.1
+          item: "Risk-aware culture established within the AI development team"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-2.1"
+
+        - id: GV-2.2
+          item: "AI risk management training completed by relevant personnel"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-2.1"
+
+    - id: GV-3
+      name: "Workforce Diversity & Inclusion"
+      items:
+        - id: GV-3.1
+          item: "Diverse perspectives included in AI development and risk assessment"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-3.1"
+
+        - id: GV-3.2
+          item: "Bias awareness training completed by team members"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-3.1"
+
+    - id: GV-4
+      name: "Risk Tolerance & Appetite"
+      items:
+        - id: GV-4.1
+          item: "Risk tolerance statements defined for this AI system"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-4.1"
+
+        - id: GV-4.2
+          item: "Risk appetite approved by board or appropriate authority"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-4.1"
+
+    - id: GV-5
+      name: "Ongoing Monitoring & Review"
+      items:
+        - id: GV-5.1
+          item: "AI policies and procedures reviewed at defined cadence"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-5.1"
+
+        - id: GV-5.2
+          item: "Governance effectiveness evaluated periodically"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-5.1"
+
+    - id: GV-6
+      name: "Third-Party Risk Management"
+      items:
+        - id: GV-6.1
+          item: "Third-party AI components (models, APIs, data) identified"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-6.1"
+
+        - id: GV-6.2
+          item: "Third-party risk assessment completed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-6.1"
+
+    - id: GV-7
+      name: "Documentation & Reporting"
+      items:
+        - id: GV-7.1
+          item: "Model cards required and template provided"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-7.1"
+
+        - id: GV-7.2
+          item: "Audit trails configured for AI system decisions"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF GV-7.1"
+
+# =============================================================================
+# SECTION 3: NIST AI RMF MAP FUNCTION (MP)
+# =============================================================================
+map_function:
+  category: "MAP — Establish context to frame risks related to an AI system"
+
+  subcategories:
+    - id: MP-1
+      name: "Context of Use"
+      items:
+        - id: MP-1.1
+          item: "Use cases documented with expected benefits and limitations"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-1.1"
+
+        - id: MP-1.2
+          item: "User needs and expectations identified"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-1.1"
+
+        - id: MP-1.3
+          item: "Deployment context (environment, scale, criticality) documented"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-1.1"
+
+    - id: MP-2
+      name: "Categorization of AI System"
+      items:
+        - id: MP-2.1
+          item: "AI system type classified (foundation model, fine-tuned, custom, etc.)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-2.1"
+
+        - id: MP-2.2
+          item: "EU AI Act risk tier assigned (Unacceptable/High/Limited/Minimal)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "EU AI Act Art 6, NIST AI RMF MP-2.1"
+
+        - id: MP-2.3
+          item: "System capabilities and limitations documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-2.1"
+
+    - id: MP-3
+      name: "Impacts Analysis"
+      items:
+        - id: MP-3.1
+          item: "Individual-level impacts identified and assessed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-3.1"
+
+        - id: MP-3.2
+          item: "Group-level impacts identified and assessed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-3.1"
+
+        - id: MP-3.3
+          item: "Organizational impacts identified and assessed"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-3.1"
+
+        - id: MP-3.4
+          item: "Societal impacts identified and assessed"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-3.1"
+
+    - id: MP-4
+      name: "Likelihood & Severity Assessment"
+      items:
+        - id: MP-4.1
+          item: "Risk likelihood rated for each identified risk"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-4.1"
+
+        - id: MP-4.2
+          item: "Risk severity rated for each identified risk"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-4.1"
+
+        - id: MP-4.3
+          item: "Overall risk rating determined"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-4.1"
+
+    - id: MP-5
+      name: "Risk Tracking"
+      items:
+        - id: MP-5.1
+          item: "Risk register updated with AI-specific risks"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-5.1"
+
+        - id: MP-5.2
+          item: "Risk tracking mechanism defined and operational"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MP-5.1"
+
+# =============================================================================
+# SECTION 4: NIST AI RMF MEASURE FUNCTION (MS)
+# =============================================================================
+measure_function:
+  category: "MEASURE — Identify appropriate metrics and methods to assess, analyze, and track AI risk"
+
+  subcategories:
+    - id: MS-1
+      name: "Appropriate Methods & Metrics"
+      items:
+        - id: MS-1.1
+          item: "Evaluation methods selected for each risk category"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-1.1"
+
+        - id: MS-1.2
+          item: "Key metrics identified and defined"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-1.1"
+
+        - id: MS-1.3
+          item: "Metrics validated for appropriateness"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-1.2"
+
+    - id: MS-2
+      name: "Evaluation of AI System"
+      items:
+        - id: MS-2.1
+          item: "Pre-deployment evaluation suite defined and executed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-2.1"
+
+        - id: MS-2.2
+          item: "Evaluation covers validity, reliability, safety, and fairness"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-2.1"
+
+        - id: MS-2.3
+          item: "Uncertainty and confidence levels quantified where possible"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-2.2"
+
+    - id: MS-3
+      name: "Tracking Over Time"
+      items:
+        - id: MS-3.1
+          item: "Performance tracking mechanisms configured"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-3.1"
+
+        - id: MS-3.2
+          item: "Drift detection configured for model and data"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-3.1"
+
+        - id: MS-3.3
+          item: "Performance baselines established"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-3.1"
+
+    - id: MS-4
+      name: "Feedback Mechanisms"
+      items:
+        - id: MS-4.1
+          item: "User feedback collection mechanism implemented"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-4.1"
+
+        - id: MS-4.2
+          item: "Incident reporting process defined and communicated"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-4.1"
+
+    - id: MS-5
+      name: "Assurance of Processes"
+      items:
+        - id: MS-5.1
+          item: "Internal audit of AI processes completed"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-5.1"
+
+        - id: MS-5.2
+          item: "External validation conducted (if required by risk tier)"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MS-5.1"
+
+# =============================================================================
+# SECTION 5: NIST AI RMF MANAGE FUNCTION (MG)
+# =============================================================================
+manage_function:
+  category: "MANAGE — Respond to identified risks once evaluated"
+
+  subcategories:
+    - id: MG-1
+      name: "Risk Response Planning & Treatment"
+      items:
+        - id: MG-1.1
+          item: "Risk response strategies defined (mitigate, transfer, accept, avoid)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-1.1"
+
+        - id: MG-1.2
+          item: "Resources allocated for risk mitigation"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-1.1"
+
+        - id: MG-1.3
+          item: "Risk acceptance documented for residual risks"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-1.2"
+
+    - id: MG-2
+      name: "Incident Response & Recovery"
+      items:
+        - id: MG-2.1
+          item: "Incident response playbook defined"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-2.1"
+
+        - id: MG-2.2
+          item: "Incident response team trained and contact list current"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-2.1"
+
+        - id: MG-2.3
+          item: "Recovery procedures documented and tested"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-2.2"
+
+        - id: MG-2.4
+          item: "Kill switch configured and tested"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-2.1"
+
+    - id: MG-3
+      name: "Regular Review & Update"
+      items:
+        - id: MG-3.1
+          item: "Review cadence defined for risk management activities"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-3.1"
+
+        - id: MG-3.2
+          item: "Last review date recorded and next review scheduled"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-3.1"
+
+        - id: MG-3.3
+          item: "Risk management approach updated based on lessons learned"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-3.1"
+
+    - id: MG-4
+      name: "Risk Communication"
+      items:
+        - id: MG-4.1
+          item: "Stakeholder communication plan defined"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-4.1"
+
+        - id: MG-4.2
+          item: "Risk reporting cadence established"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-4.1"
+
+        - id: MG-4.3
+          item: "Board/executive reporting configured"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF MG-4.1"
+
+# =============================================================================
+# SECTION 6: SEVEN CHARACTERISTICS OF TRUSTWORTHY AI
+# =============================================================================
+seven_characteristics:
+  category: "Seven Characteristics — Comprehensive trustworthiness assessment"
+
+  characteristics:
+    - id: CHAR-1
+      name: "Valid and Reliable"
+      description: "Correctly achieves intended purpose; performs consistently over time"
+      items:
+        - id: CHAR-1.1
+          item: "Intended purpose clearly defined and documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Valid and Reliable"
+
+        - id: CHAR-1.2
+          item: "Real-world validation completed (not just controlled environments)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Valid and Reliable"
+
+        - id: CHAR-1.3
+          item: "Performance consistency validated across conditions"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Valid and Reliable"
+
+        - id: CHAR-1.4
+          item: "Failure modes identified and documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Valid and Reliable"
+
+        - id: CHAR-1.5
+          item: "Accuracy metrics meet defined acceptance criteria"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Valid and Reliable"
+
+    - id: CHAR-2
+      name: "Safe"
+      description: "Does not put people, property, or environment in danger"
+      items:
+        - id: CHAR-2.1
+          item: "Top 3 harm scenarios identified and documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+        - id: CHAR-2.2
+          item: "Safety testing completed (red team, adversarial)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+        - id: CHAR-2.3
+          item: "Pre-deployment safety validation passed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+        - id: CHAR-2.4
+          item: "Safety guidance for users documented and accessible"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+        - id: CHAR-2.5
+          item: "Risks thoroughly documented with mitigations"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+        - id: CHAR-2.6
+          item: "Kill switch configured and tested"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Safe"
+
+    - id: CHAR-3
+      name: "Secure and Resilient"
+      description: "Protected against threats; can recover from unexpected events"
+      items:
+        - id: CHAR-3.1
+          item: "Adversarial attack testing completed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+        - id: CHAR-3.2
+          item: "Jailbreak resistance validated"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+        - id: CHAR-3.3
+          item: "Prompt injection defenses tested"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+        - id: CHAR-3.4
+          item: "Data poisoning attack resistance validated"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+        - id: CHAR-3.5
+          item: "Graceful degradation configured"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+        - id: CHAR-3.6
+          item: "Resilience testing (chaos engineering) completed"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Secure and Resilient"
+
+    - id: CHAR-4
+      name: "Accountable and Transparent"
+      description: "Clear responsibility for outcomes; users understand AI use"
+      items:
+        - id: CHAR-4.1
+          item: "Accountability chain defined with named individuals"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent"
+
+        - id: CHAR-4.2
+          item: "RACI matrix completed and approved"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent"
+
+        - id: CHAR-4.3
+          item: "AI disclosure to users implemented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent, EU AI Act Art 52"
+
+        - id: CHAR-4.4
+          item: "Complete audit trail configured"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent"
+
+        - id: CHAR-4.5
+          item: "Source citation enforced (KB + source_url)"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent"
+
+        - id: CHAR-4.6
+          item: "Users can challenge and appeal decisions"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Accountable and Transparent"
+
+    - id: CHAR-5
+      name: "Explainable and Interpretable"
+      description: "Can communicate how and why decisions are made"
+      items:
+        - id: CHAR-5.1
+          item: "Model documentation complete (model card)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+        - id: CHAR-5.2
+          item: "Explanation methods defined and implemented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+        - id: CHAR-5.3
+          item: "Interpretability tools available to operators"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+        - id: CHAR-5.4
+          item: "Explanation quality validated with users"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+        - id: CHAR-5.5
+          item: "Decision tracing implemented (full delegation chain)"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+        - id: CHAR-5.6
+          item: "RAG context displayed to users where applicable"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Explainable and Interpretable"
+
+    - id: CHAR-6
+      name: "Privacy-Enhanced"
+      description: "Safeguards autonomy, dignity, and control over personal information"
+      items:
+        - id: CHAR-6.1
+          item: "Data Protection Impact Assessment (DPIA) completed"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced, GDPR Art 35"
+
+        - id: CHAR-6.2
+          item: "Data minimization practiced (only necessary data collected)"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced, GDPR Art 5"
+
+        - id: CHAR-6.3
+          item: "Privacy-enhancing technologies (PETs) implemented"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced"
+
+        - id: CHAR-6.4
+          item: "Customer CAD/IP protection configured"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced"
+
+        - id: CHAR-6.5
+          item: "Data retention policy defined and enforced"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced, GDPR Art 5"
+
+        - id: CHAR-6.6
+          item: "Anonymization/pseudonymization applied where appropriate"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Privacy-Enhanced"
+
+    - id: CHAR-7
+      name: "Fair with Harmful Bias Managed"
+      description: "Treats individuals and groups equitably; actively manages bias"
+      items:
+        - id: CHAR-7.1
+          item: "Fairness criteria defined for this AI system"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.2
+          item: "Protected groups identified and documented"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.3
+          item: "Bias testing completed across protected groups"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.4
+          item: "Demographic parity analysis performed"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.5
+          item: "Fairness metrics meet defined thresholds"
+          priority: critical
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.6
+          item: "Fairness monitoring active in production"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.7
+          item: "Bias reporting process defined and communicated"
+          priority: medium
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+        - id: CHAR-7.8
+          item: "Training data bias audit completed"
+          priority: high
+          status: not_started
+          evidence_ref: ""
+          notes: ""
+          regulatory_ref: "NIST AI RMF — Fair with Harmful Bias Managed"
+
+# =============================================================================
+# SECTION 7: SCORING SUMMARY
+# =============================================================================
+scoring_summary:
+  function_scores:
+    govern:
+      total_items: 14
+      critical_items: 6
+      score: "not_started"  # meets_exceeds, meets, partially_meets, does_not_meet
+      blockers: ""
+    map:
+      total_items: 15
+      critical_items: 9
+      score: "not_started"
+      blockers: ""
+    measure:
+      total_items: 13
+      critical_items: 7
+      score: "not_started"
+      blockers: ""
+    manage:
+      total_items: 13
+      critical_items: 7
+      score: "not_started"
+      blockers: ""
+
+  characteristic_scores:
+    valid_and_reliable:
+      total_items: 5
+      critical_items: 5
+      score: "not_started"
+      blockers: ""
+    safe:
+      total_items: 6
+      critical_items: 6
+      score: "not_started"
+      blockers: ""
+    secure_and_resilient:
+      total_items: 6
+      critical_items: 3
+      score: "not_started"
+      blockers: ""
+    accountable_and_transparent:
+      total_items: 6
+      critical_items: 4
+      score: "not_started"
+      blockers: ""
+    explainable_and_interpretable:
+      total_items: 6
+      critical_items: 2
+      score: "not_started"
+      blockers: ""
+    privacy_enhanced:
+      total_items: 6
+      critical_items: 3
+      score: "not_started"
+      blockers: ""
+    fair_with_bias_managed:
+      total_items: 8
+      critical_items: 4
+      score: "not_started"
+      blockers: ""
+
+  overall_assessment:
+    nist_ai_rmf_score: "not_started"  # meets_exceeds, meets, partially_meets, does_not_meet
+    eu_ai_act_alignment: "not_started"
+    iso_42001_alignment: "not_started"
+    approval_status: "not_started"  # approved, approved_with_conditions, rejected
+    conditions: ""
+    next_review_date: ""
+
+# =============================================================================
+# SECTION 8: APPROVAL
+# =============================================================================
+approval:
+  product_owner:
+    name: ""
+    date: ""
+    signature: ""
+  ml_ai_engineer:
+    name: ""
+    date: ""
+    signature: ""
+  ethics_risk_lead:
+    name: ""
+    date: ""
+    signature: ""
+  governance_lead:
+    name: ""
+    date: ""
+    signature: ""
+  security_engineer:
+    name: ""
+    date: ""
+    signature: ""
+
+# =============================================================================
+# CROSS-REFERENCES
+# =============================================================================
+# - NIST AI RMF Reference Guide: ../../05-cross-cutting/nist-ai-rmf-reference-guide.md
+# - ML Lifecycle Canvas (NIST Edition): ../../00-getting-started/ml-lifecycle-canvas-nist-edition.md
+# - SAFEST to NIST Mapping: ../../../protolabs/nist-ai-rmf-safest-mapping.md
+# - EU AI Act Risk Classification: ./eu-ai-act-risk-classification.yaml
+# - Governance Roles RACI: ../../05-cross-cutting/governance-roles-raci.md
