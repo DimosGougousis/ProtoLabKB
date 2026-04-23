@@ -33,6 +33,7 @@ Analyze the user prompt and classify into:
 - `sheet-metal` — Keywords: sheet metal, fabrication, bend, flange, punch, laser cut, brake press, formed metal, gauge
 
 **Mode Dimension** (pick one):
+- `cad-review` — User provides a CAD file; keywords: .step, .stp, .stl, .obj, .3mf, cad file, 3d model, parse cad, cad review
 - `dfm-review` — User has a CAD model or design to evaluate; keywords: review my design, check this part, DFM analysis, can you make this, manufacturability
 - `qa` — User asks a specific question; keywords: what is, how do I, can I, should I, tolerance for, minimum wall thickness
 
@@ -44,10 +45,18 @@ Analyze the user prompt and classify into:
 ### Step 2: Routing Decision
 Based on classification, route to the appropriate specialist agent:
 
+| Mode | Agent File | Agent ID | Description |
+|------|------------|----------|-------------|
+| cad-review | `cad-parser.agent.md` | `cad-parser` | Parse CAD file, generate visualizations |
+| dfm-review | (process agent) | (process) | DFM evaluation with CAD context |
+| qa | (process agent) | (process) | General manufacturing Q&A |
+
 | Process | Agent File | Agent ID |
 |---------|------------|----------|
 | cnc-machining | `cnc-machining.agent.md` | `cnc-machining` |
 | injection-molding | `injection-molding.agent.md` | `injection-molding` |
+| 3d-printing | `3d-printing.agent.md` | `3d-printing` |
+| sheet-metal | `sheet-metal.agent.md` | `sheet-metal` |
 | sheet-metal | `sheet-metal.agent.md` | `sheet-metal` |
 
 ### Step 3: Context Passing
@@ -71,10 +80,59 @@ If the prompt could apply to multiple processes, ask clarifying questions:
 - "Are you looking for CNC machining, injection molding, or sheet metal fabrication guidance?"
 - "Do you have a specific design to review, or is this a general question?"
 
+### Step 3: CAD File Handling (Special Case)
+When the input is a CAD file (`.step`, `.stl`, `.obj`, `.3mf`):
+
+1. **Immediate Routing to CAD Parser**
+   - Bypass normal classification
+   - Route directly to `cad-parser` agent
+   - Pass file path and any user requirements
+
+2. **Post-Parse Routing**
+   - After CAD parser extracts geometry and features
+   - Use extracted features for process classification
+   - Route to appropriate specialist agent with CAD context
+
+3. **Context Enrichment**
+   - Add CAD metadata to routing context:
+     ```json
+     {
+       "cad_context": {
+         "file_format": "STEP",
+         "bounding_box": [120, 80, 25],
+         "volume": 145.6,
+         "feature_count": 12,
+         "dominant_process": "cnc-machining"
+       }
+     }
+     ```
+
+## Output Format
+
+### For Standard Routing
+```
+Routing to: [Agent Name]
+Process: [cnc-machining | injection-molding | sheet-metal | 3d-printing]
+Mode: [cad-review | dfm-review | qa]
+Vertical: [aerospace | medical | automotive | none]
+CAD Context: [if applicable]
+```
+
+### For CAD File Routing
+```
+Routing to: CAD Parser Agent
+File: [filename]
+Format: [STEP | STL | OBJ | 3MF]
+Size: [file size]
+Next: Parse → Visualize → Route to specialist
+```
+
 ## Source Citation Format
 When providing routing information, cite sources as:
 - ProtoLabs Knowledge Base — cached in `knowledge/[folder]/[article].md`
+- CAD Processing — `knowledge/cad/formats.md`
 
 ---
 
 *Router Agent for ProtoLabs Product Office DFM System*
+*Updated for CAD Integration v2.0*

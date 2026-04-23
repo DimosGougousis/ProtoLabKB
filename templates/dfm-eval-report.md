@@ -1,7 +1,7 @@
 ---
 type: template
 purpose: DFM evaluation report output format
-version: 1.0
+version: 2.0
 ---
 
 # DFM Evaluation Report
@@ -14,6 +14,76 @@ version: 1.0
 | **Process** | {{process}} |
 | **Material** | {{material}} |
 | **Vertical** | {{vertical}} |
+| **CAD Source** | {{cad_file}} |
+| **Analysis Date** | {{analysis_date}} |
+
+{{#cad_available}}
+## CAD Visualization
+
+### 2D Views
+
+| View | Image | Key Dimensions |
+|------|-------|----------------|
+| Front | ![Front]({{front_view_image}}) | {{front_dimensions}} |
+| Top | ![Top]({{top_view_image}}) | {{top_dimensions}} |
+| Side | ![Side]({{side_view_image}}) | {{side_dimensions}} |
+| Isometric | ![Isometric]({{iso_view_image}}) | {{overall_dimensions}} |
+
+{{#section_views}}
+### Section Views
+
+| Section | Plane | Image | Notes |
+|---------|-------|-------|-------|
+{{#section_views}}
+| {{name}} | {{plane}} | ![Section]({{image}}) | {{notes}} |
+{{/section_views}}
+{{/section_views}}
+
+{{#detail_views}}
+### Detail Views
+
+| Detail | Location | Image | Scale |
+|--------|----------|-------|-------|
+{{#detail_views}}
+| {{name}} | {{location}} | ![Detail]({{image}}) | {{scale}}:1 |
+{{/detail_views}}
+{{/detail_views}}
+
+### 3D Model
+
+{{#interactive_3d}}
+**Interactive 3D Viewer**: [Open Viewer]({{three_js_viewer_url}})
+
+*Controls: Left-click drag to rotate, right-click drag to pan, scroll to zoom*
+{{/interactive_3d}}
+
+{{^interactive_3d}}
+**3D Render**: ![3D Render]({{static_3d_render}})
+{{/interactive_3d}}
+
+### Extracted Specifications
+
+| Property | Value | Unit | Notes |
+|----------|-------|------|-------|
+| Overall Dimensions | {{bounding_box}} | mm | L × W × H |
+| Volume | {{volume}} | cm³ | Solid material |
+| Surface Area | {{surface_area}} | mm² | Total surface |
+| Bounding Box Center | {{center_of_mass}} | mm | Centroid location |
+| Number of Features | {{feature_count}} | - | Total detected |
+| Critical Features | {{critical_features}} | - | High-risk features |
+
+### Feature Summary
+
+| Feature Type | Count | Min Size | Max Size | Notes |
+|--------------|-------|----------|----------|-------|
+| Holes | {{hole_count}} | {{min_hole_dia}}mm | {{max_hole_dia}}mm | {{hole_notes}} |
+| Pockets | {{pocket_count}} | {{min_pocket_depth}}mm | {{max_pocket_depth}}mm | {{pocket_notes}} |
+| Bosses | {{boss_count}} | {{min_boss_height}}mm | {{max_boss_height}}mm | {{boss_notes}} |
+| Fillets | {{fillet_count}} | {{min_fillet_r}}mm | {{max_fillet_r}}mm | {{fillet_notes}} |
+| Chamfers | {{chamfer_count}} | {{min_chamfer_w}}mm | {{max_chamfer_w}}mm | {{chamfer_notes}} |
+| Threads | {{thread_count}} | M{{min_thread}} | M{{max_thread}} | {{thread_notes}} |
+
+{{/cad_available}}
 
 ## Design Analysis
 

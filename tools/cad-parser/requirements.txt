@@ -1,0 +1,33 @@
+# CAD Parser Service Dependencies
+# Python 3.9+ required
+
+# Core CAD libraries
+cadquery==2.4.0          # Python CAD library based on OpenCASCADE
+OCP==7.7.2               # OpenCASCADE Python bindings
+
+# Mesh processing
+numpy-stl==3.1.1         # STL file reading/writing
+trimesh==4.0.8           # Mesh processing and analysis
+pymeshfix==0.17.1        # Mesh repair
+
+# 3D visualization (for headless rendering)
+pyrender==0.1.45         # Python rendering library
+Pillow==10.0.0           # Image processing
+
+# Data handling
+numpy==1.24.3            # Numerical computing
+pandas==2.0.3            # Data manipulation
+
+# API server
+fastapi==0.103.0         # Web framework
+uvicorn==0.23.2          # ASGI server
+python-multipart==0.0.6  # File upload support
+
+# Utilities
+pydantic==2.3.0          # Data validation
+python-magic==0.4.27     # File type detection
+pathlib==1.0.1           # Path manipulation
+
+# Optional: Cloud storage
+boto3==1.28.0            # AWS S3 (optional)
+azure-storage-blob==12.17.0  # Azure Blob (optional)
