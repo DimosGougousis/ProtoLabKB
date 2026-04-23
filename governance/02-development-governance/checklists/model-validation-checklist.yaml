@@ -1,0 +1,283 @@
+# ==============================================================================
+# Model Validation Checklist — AI Governance Framework
+# ==============================================================================
+# Purpose:    Independent validation requirements for AI/ML models deployed
+#             in regulated FinTech environments. Ensures models are fit for
+#             purpose, robust, and compliant before production release.
+# Aligned to: SAFEST S-19 to S-22, EU AI Act (Art 9, 15, 17),
+#             DNB Good Practices for AI, SR 11-7 (Fed Reserve, as reference)
+# Version:    1.0.0
+# Owner:      Model Risk Management / AI Governance Team
+# Review:     Per model release and annually thereafter
+# Cross-refs: ./bias-testing-checklist.yaml, ./data-quality-checklist.yaml,
+#             ../quality-gates/release-criteria.yaml,
+#             ../quality-gates/definition-of-done-ai.md
+# ==============================================================================
+
+metadata:
+  checklist_id: MODEL-VAL-CL
+  title: "Model Validation Checklist"
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  applicable_risk_tiers: [high, medium, low]
+  validation_types:
+    - initial_validation
+    - periodic_revalidation
+    - material_change_validation
+
+items:
+  # ---------------------------------------------------------------------------
+  # Section 1: Validation Governance & Independence
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-01
+    section: "Validation Governance"
+    description: >
+      Confirm that an independent validation team has been assigned. The
+      validation team must be organizationally independent from the model
+      development team (no reporting-line overlap).
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to validation team assignment document]"
+    notes: "For small organizations, external validators may satisfy the independence requirement"
+    regulatory_ref: "SAFEST S-19 — independent validation; DNB Good Practice 5.1"
+    risk_tier_required: [high, medium]
+    risk_tier_notes:
+      low: "Self-validation with peer review is acceptable for low-risk models"
+
+  - id: DEV-VAL-02
+    section: "Validation Governance"
+    description: >
+      Produce and obtain approval for a validation plan. The plan must specify:
+      scope, methodology, data requirements, timelines, resource allocation,
+      acceptance criteria, and escalation path for findings.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to approved validation plan]"
+    notes: ""
+    regulatory_ref: "SAFEST S-19; SR 11-7 Section VI"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-VAL-03
+    section: "Validation Governance"
+    description: >
+      Verify that all model documentation is available to the validation team:
+      model card, data sheet, training methodology, feature engineering
+      rationale, hyperparameter tuning records, and test results.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to model documentation package]"
+    notes: "Documentation gaps are a validation finding and must be remediated"
+    regulatory_ref: "SAFEST S-20 — documentation for validation; EU AI Act Art 11"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 2: Conceptual Soundness Review
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-04
+    section: "Conceptual Soundness"
+    description: >
+      Review the model's theoretical foundation: is the chosen approach
+      (algorithm, architecture, feature set) appropriate for the business
+      problem? Document the rationale and any limitations.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to conceptual soundness review]"
+    notes: "For LLM-based agents, evaluate prompt design, retrieval strategy, and tool selection"
+    regulatory_ref: "SAFEST S-20; DNB Good Practice 5.2"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-VAL-05
+    section: "Conceptual Soundness"
+    description: >
+      Assess whether model assumptions are valid for the deployment context.
+      Document key assumptions (stationarity, feature independence, label
+      reliability) and their validity evidence.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to assumptions assessment]"
+    notes: ""
+    regulatory_ref: "SAFEST S-20"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 3: Performance Validation
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-06
+    section: "Performance Validation"
+    description: >
+      Reproduce the model's reported performance metrics using the validation
+      team's independent execution on held-out test data. Confirm metrics match
+      the development team's reported values within a tolerance margin.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to independent performance reproduction report]"
+    notes: "Tolerance margin: ± 2% of reported metric values"
+    regulatory_ref: "SAFEST S-21 — outcome analysis; EU AI Act Art 15(1)"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-VAL-07
+    section: "Performance Validation"
+    description: >
+      Conduct out-of-sample testing on data the model has never seen, ideally
+      from a different time period (temporal holdout) or population segment.
+      Report performance degradation relative to in-sample results.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to out-of-sample test results]"
+    notes: "Acceptable degradation: < 10% relative drop in primary metric"
+    regulatory_ref: "SAFEST S-21; DNB Good Practice 5.3"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-VAL-08
+    section: "Performance Validation"
+    description: >
+      Perform out-of-time testing: evaluate the model on data from a time period
+      not represented in training. This tests for temporal stability and concept
+      drift susceptibility.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to out-of-time validation results]"
+    notes: "Minimum out-of-time window: 3 months for high-risk models"
+    regulatory_ref: "SAFEST S-21"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 4: Stress Testing & Sensitivity Analysis
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-09
+    section: "Stress Testing"
+    description: >
+      Apply stress scenarios relevant to the business domain (e.g., economic
+      downturn for credit models, transaction volume spikes for fraud models).
+      Document model behavior under each scenario.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to stress test results]"
+    notes: "Stress scenarios must be approved by Risk Management"
+    regulatory_ref: "SAFEST S-22 — stress testing; DNB Good Practice 5.4"
+    risk_tier_required: [high]
+    risk_tier_notes:
+      medium: "At least two stress scenarios required"
+      low: "Stress testing recommended but not mandatory"
+
+  - id: DEV-VAL-10
+    section: "Stress Testing"
+    description: >
+      Conduct sensitivity analysis: perturb individual input features by defined
+      magnitudes and measure the impact on model output. Identify features with
+      disproportionate influence and validate their business relevance.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to sensitivity analysis report]"
+    notes: "For LLM agents: test sensitivity to prompt variations and rephrasing"
+    regulatory_ref: "SAFEST S-22; EU AI Act Art 15(3)"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-VAL-11
+    section: "Stress Testing"
+    description: >
+      For agentic AI systems, test adversarial inputs: prompt injection attempts,
+      jailbreak scenarios, and boundary-testing inputs that attempt to bypass
+      guardrails or escalation triggers.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to adversarial testing report]"
+    notes: "Use OWASP LLM Top 10 as a testing framework"
+    regulatory_ref: "EU AI Act Art 15(4) — robustness and cybersecurity"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 5: Challenger Model Comparison
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-12
+    section: "Challenger Comparison"
+    description: >
+      Compare the candidate model against at least one challenger model
+      (simpler baseline, alternative algorithm, or incumbent model). Document
+      the performance comparison and justify the selection of the candidate.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to challenger comparison report]"
+    notes: "A simple logistic regression often serves as an effective baseline challenger"
+    regulatory_ref: "SAFEST S-21; DNB Good Practice 5.2"
+    risk_tier_required: [high]
+    risk_tier_notes:
+      medium: "Challenger comparison recommended"
+      low: "Not required"
+
+  - id: DEV-VAL-13
+    section: "Challenger Comparison"
+    description: >
+      Evaluate model interpretability: can the model's decisions be explained
+      to stakeholders and regulators? Apply SHAP, LIME, or equivalent
+      explainability methods. For high-risk, verify explanations are consistent
+      and faithful to the model's actual decision process.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to explainability report]"
+    notes: "EU AI Act requires meaningful explanations for high-risk AI decisions"
+    regulatory_ref: "EU AI Act Art 13 — transparency; SAFEST S-21"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 6: Validation Report & Findings
+  # ---------------------------------------------------------------------------
+  - id: DEV-VAL-14
+    section: "Validation Report"
+    description: >
+      Produce a formal validation report covering: executive summary, scope,
+      methodology, findings, risk rating, conditions for approval (if any),
+      and recommended monitoring requirements.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to validation report]"
+    notes: ""
+    regulatory_ref: "SAFEST S-19 — validation report; SR 11-7 Section VII"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-VAL-15
+    section: "Validation Report"
+    description: >
+      Classify all validation findings by severity (critical, major, minor) and
+      assign remediation owners with deadlines. Critical findings must be
+      resolved before production deployment.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to findings register]"
+    notes: "Critical findings block release; major findings require documented risk acceptance by CRO"
+    regulatory_ref: "SAFEST S-19; DNB Good Practice 5.5"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-VAL-16
+    section: "Validation Report"
+    description: >
+      Obtain formal validation sign-off from the Model Risk Management function.
+      For high-risk models, escalate to the Model Governance Committee for
+      final approval.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to validation sign-off]"
+    notes: "Sign-off is a prerequisite for the production-approved gate in release-criteria.yaml"
+    regulatory_ref: "SAFEST S-19; EU AI Act Art 17"
+    risk_tier_required: [high, medium, low]
+
+# ==============================================================================
+# Sign-off
+# ==============================================================================
+sign_off:
+  - role: "Lead Validator"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Model Risk Manager"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Chief Risk Officer (high-risk only)"
+    name: ""
+    date: ""
+    status: pending
+  - role: "AI Governance Committee Chair (high-risk only)"
+    name: ""
+    date: ""
+    status: pending

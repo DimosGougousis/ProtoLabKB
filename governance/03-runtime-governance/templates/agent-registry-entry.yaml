@@ -1,0 +1,348 @@
+# ===========================================================================
+# Agent Registry Entry Template
+# ===========================================================================
+#
+# Purpose:
+#   Standard YAML template for registering an AI agent in the fleet registry.
+#   Every agent operating in production MUST have a completed registry entry
+#   before deployment. The registry is the single source of truth for agent
+#   identity, capabilities, ownership, and governance configuration.
+#
+# When to Use:
+#   - When onboarding a new agent into the fleet
+#   - When promoting an agent from staging to production
+#   - When updating an existing agent's configuration after a version change
+#   - When conducting quarterly registry reviews
+#   - When auditing fleet-wide governance compliance
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Model Owner                   | Accountable | Approves and signs off on registry entry completeness|
+#   | AI/ML Engineer                | Responsible | Fills in technical fields (model, functions, KPIs)   |
+#   | MLOps / Platform Engineer     | Responsible | Fills in deployment and health check fields          |
+#   | Compliance Officer (2nd Line) | Reviewer    | Validates compliance_frameworks and risk_tier        |
+#   | Fleet Operations Lead         | Informed    | Monitors fleet-wide registry consistency             |
+#   | Product Manager               | Consulted   | Defines business KPIs and SLA targets                |
+#
+# Regulatory Basis:
+#   - EU AI Act Article 12 -- Record-keeping for high-risk AI systems
+#   - EU AI Act Article 72 -- Post-market monitoring requires system inventory
+#   - DORA Article 9 -- ICT risk management framework including asset inventory
+#   - SAFEST T-15 -- AI system inventory and performance dashboards
+#   - DNB Good Practice -- Comprehensive model inventory for all AI/ML systems
+#
+# Cross-References:
+#   - Agent Fleet Operations: ../agentic-workflows/agent-fleet-operations.md (Sec. 1)
+#   - Multi-Agent Governance Framework: ../agentic-workflows/multi-agent-governance-framework.md
+#   - Agent Permission Boundaries: ../agentic-workflows/agent-permission-boundaries.md
+#   - Human-in-the-Loop Patterns: ../agentic-workflows/human-in-the-loop-patterns.md
+#   - Risk Tiering Model: ../../07-enterprise-implementation/risk-based-adoption/risk-tiering-model.md
+#   - Risk Mitigation Plan Template: risk-mitigation-plan.md
+#   - Fallback Procedure Template: fallback-procedure.md
+#   - Safety Policy Definition: safety-policy-definition.md
+#
+# Last updated: 2026-03-01 / Version: 1.0 / Classification: Internal / Regulatory Preparation
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# TEMPLATE: Replace all placeholder values (in angle brackets) with actuals
+# ---------------------------------------------------------------------------
+
+# --- Identity ---
+agent_id: "<agent:[name]-[env]-[instance]>"          # Globally unique identifier
+agent_name: "<Human-readable Agent Name>"            # Display name for dashboards
+agent_type: "<autonomous_actor | advisory | decision_making | orchestrator>"
+  # autonomous_actor  -- Takes actions with direct customer/system impact
+  # advisory          -- Provides recommendations; human or system acts
+  # decision_making   -- Makes decisions within defined parameters
+  # orchestrator      -- Coordinates sub-agents and workflows
+
+# --- Model ---
+version: "<semver, e.g., 1.0.0>"                    # Agent application version
+model_id: "<model identifier, e.g., gpt-4o-2026-02>"
+model_version: "<specific checkpoint or date stamp>"
+
+# --- Deployment ---
+deployment_environment: "<dev | staging | prod>"
+health_state: "<healthy | degraded | critical | decommissioned>"
+health_check_endpoint: "<https://agents.internal/[agent]/health>"
+health_check_interval_seconds: 30                    # Minimum 30s for high-risk; 300s for limited
+
+# --- Risk and Oversight ---
+risk_tier: "<high | limited | minimal>"
+  # high     -- Autonomous financial decisions, customer-facing with impact
+  # limited  -- Advisory, informational, human confirms actions
+  # minimal  -- Internal tools, no customer impact, no financial decisions
+oversight_model: "<HITL | HOTL | HOTA>"
+  # HITL -- Human-in-the-Loop: human approves every consequential action
+  # HOTL -- Human-on-the-Loop: agent acts autonomously; human monitors and can intervene
+  # HOTA -- Human-out-of-the-Loop: fully autonomous; human reviews periodically
+
+# --- Machine Identity (NHI) ---
+nhi_identity: "<nhi:[agent-name]-[env]-[instance]>"
+  # Non-Human Identity in IAM. Maps to service principal / managed identity.
+  # See: ../agentic-workflows/agent-permission-boundaries.md
+permission_boundary_ref: "<PB-[AGENT]-v[version]>"
+  # Reference to the permission boundary definition document or policy
+
+# --- Capabilities ---
+functions:
+  - "<action_1>"                                     # e.g., "initiate_payment"
+  - "<action_2>"                                     # e.g., "verify_account"
+  - "<action_3>"                                     # e.g., "check_balance"
+  # List ALL actions this agent is authorized to perform
+
+out_of_scope:
+  - "<denied_action_1>"                              # e.g., "close_account"
+  - "<denied_action_2>"                              # e.g., "modify_credit_limit"
+  # List actions explicitly DENIED to this agent (principle of least privilege)
+
+# --- Skills ---
+skills:                                              # NEW: Per-skill governance
+  - skill_id: "<skill:[agent]:[name]:v[version]>"
+    manifest_ref: "<path/to/skill-manifest.yaml>"
+    permission_boundary_ref: "<PB-[SKILL]-v[version]>"
+    enabled: <true | false>
+  
+  - skill_id: "<skill:[agent]:[name2]:v[version]>"
+    manifest_ref: "<path/to/skill-manifest.yaml>"
+    permission_boundary_ref: "<PB-[SKILL2]-v[version]>"
+    enabled: <true | false>
+
+# --- Budget Configuration ---
+budget_config_ref: "<path/to/budget-config.yaml>"    # NEW: Hierarchical budget reference
+  # Links to budget cap configuration for this agent
+  # Inherits from: Tenant -> User -> Agent -> Skill -> Run
+
+# --- Circuit Breaker ---
+circuit_breaker_ref: "<path/to/circuit-breaker.yaml>" # NEW: Circuit breaker config reference
+  # Links to circuit breaker thresholds and recovery settings
+  # Maps to MI9 containment levels: Throttle(L1), Pause(L2), Stop(L3/L4)
+
+# --- Kill Switch ---
+kill_switch_ref: "<path/to/kill-switch-spec.md>"     # NEW: Kill switch specification
+  # Links to KILLSWITCH.md standard document
+  # Defines Throttle/Pause/Full Stop procedures and triggers
+
+# --- KPIs and SLAs ---
+kpis:
+  - name: "<KPI Name>"
+    metric_id: "<snake_case_metric_id>"
+    definition: "<How the metric is calculated>"
+    target: "<e.g., >= 92%>"
+    warning_threshold: "<e.g., < 90%>"
+    critical_threshold: "<e.g., < 85%>"
+    measurement_window: "<e.g., rolling 1 hour>"
+    data_source: "<e.g., interaction outcome logs>"
+    raci:
+      responsible: "<Role that does the work>"
+      accountable: "<Role that owns the decision>"
+      consulted: "<Role that provides input>"
+      informed: "<Role that is kept updated>"
+
+# --- Ownership ---
+owner: "<Full Name, Role>"                           # Individual accountable
+team: "<Team Name>"                                  # Team responsible for operations
+
+# --- Compliance ---
+compliance_frameworks:
+  - "<EU AI Act>"
+  - "<GDPR>"
+  - "<DORA>"
+  # Add all applicable regulatory frameworks
+
+# --- Dates ---
+created_date: "<YYYY-MM-DDTHH:MM:SSZ>"              # When first registered
+last_deployment_date: "<YYYY-MM-DDTHH:MM:SSZ>"      # When current version deployed
+
+# --- Linked Governance Artifacts ---
+safety_policy_ref: "<SP-[AGENT]-v[version]>"         # Reference to safety-policy-definition.md
+fallback_procedure_ref: "<FB-[AGENT]-v[version]>"    # Reference to fallback-procedure.md
+guardrail_spec_ref: "<GR-[AGENT]-v[version]>"        # Reference to guardrail-specification.yaml
+eval_suite_ref: "<ES-[AGENT]-v[version]>"            # Reference to agent's eval suite
+
+# --- Active Risk Mitigations ---
+active_mitigations:
+  - plan_id: "<MP-[AGENT]-YYYY-NNN>"
+    risk_summary: "<Brief risk description>"
+    severity: "<critical | high | medium | low>"
+    progress: "<e.g., 2/5 steps complete>"
+    status: "<active | closed>"
+
+
+# ===========================================================================
+# COMPLETE EXAMPLE: Payments Agent
+# ===========================================================================
+
+# --- Identity ---
+# agent_id: "agent:payments-agent-prod-01"
+# agent_name: "Payments Agent"
+# agent_type: "autonomous_actor"
+#
+# # --- Model ---
+# version: "2.3.1"
+# model_id: "gpt-4o-2026-02"
+# model_version: "gpt-4o-2026-02-15"
+#
+# # --- Deployment ---
+# deployment_environment: "prod"
+# health_state: "healthy"
+# health_check_endpoint: "https://agents.internal/payments/health"
+# health_check_interval_seconds: 30
+#
+# # --- Risk and Oversight ---
+# risk_tier: "high"
+# oversight_model: "HOTL"
+#
+# # --- Machine Identity (NHI) ---
+# nhi_identity: "nhi:payments-agent-prod-01"
+# permission_boundary_ref: "PB-PAYMENTS-v2.3"
+#
+# # --- Capabilities ---
+# functions:
+#   - "initiate_payment"
+#   - "verify_account"
+#   - "check_balance"
+#   - "check_transaction_history"
+#   - "verify_beneficiary"
+#   - "send_payment_confirmation"
+#
+# out_of_scope:
+#   - "close_account"
+#   - "modify_credit_limit"
+#   - "access_other_customer_data"
+#   - "modify_standing_orders"
+#   - "reverse_completed_payment"
+#   - "approve_loan_application"
+#   - "change_interest_rate"
+#
+# # --- KPIs and SLAs ---
+# kpis:
+#   - name: "Task Completion Rate"
+#     metric_id: "task_completion_rate"
+#     definition: "Percentage of user requests fully resolved without escalation to human"
+#     target: ">= 92%"
+#     warning_threshold: "< 90%"
+#     critical_threshold: "< 85%"
+#     measurement_window: "rolling 1 hour"
+#     data_source: "interaction outcome logs"
+#     raci:
+#       responsible: "AI/ML Engineer"
+#       accountable: "Model Owner"
+#       consulted: "Product Manager"
+#       informed: "Fleet Operations Lead"
+#
+#   - name: "Payment Accuracy"
+#     metric_id: "payment_accuracy"
+#     definition: "Percentage of initiated payments with correct amount, currency, and beneficiary"
+#     target: ">= 99.5%"
+#     warning_threshold: "< 99%"
+#     critical_threshold: "< 98%"
+#     measurement_window: "rolling 1 hour"
+#     data_source: "payment reconciliation system"
+#     raci:
+#       responsible: "AI/ML Engineer"
+#       accountable: "Model Owner"
+#       consulted: "Compliance Officer"
+#       informed: "Fleet Operations Lead"
+#
+#   - name: "Average Response Time"
+#     metric_id: "avg_response_time"
+#     definition: "Mean time from user message to agent response delivery (P95)"
+#     target: "< 3 seconds"
+#     warning_threshold: "> 5 seconds"
+#     critical_threshold: "> 10 seconds"
+#     measurement_window: "rolling 15 minutes"
+#     data_source: "agent tracing pipeline (LangSmith)"
+#     raci:
+#       responsible: "MLOps Engineer"
+#       accountable: "Model Owner"
+#       consulted: "AI/ML Engineer"
+#       informed: "Product Manager"
+#
+#   - name: "Escalation Rate"
+#     metric_id: "escalation_rate"
+#     definition: "Percentage of interactions escalated to human agent"
+#     target: "< 15%"
+#     warning_threshold: "> 20%"
+#     critical_threshold: "> 30%"
+#     measurement_window: "rolling 1 hour"
+#     data_source: "escalation event logs"
+#     raci:
+#       responsible: "AI/ML Engineer"
+#       accountable: "Product Manager"
+#       consulted: "Customer Operations Lead"
+#       informed: "Fleet Operations Lead"
+#
+#   - name: "Boundary Violation Rate"
+#     metric_id: "boundary_violation_rate"
+#     definition: "Percentage of interactions where agent attempted an out-of-scope action"
+#     target: "0%"
+#     warning_threshold: "> 0%"
+#     critical_threshold: "> 0%"
+#     measurement_window: "rolling 1 hour"
+#     data_source: "permission boundary enforcement logs"
+#     raci:
+#       responsible: "AI/ML Engineer"
+#       accountable: "Compliance Officer"
+#       consulted: "Security Engineer"
+#       informed: "AI Governance Committee"
+#
+#   - name: "CSAT Score"
+#     metric_id: "csat_score"
+#     definition: "Average customer satisfaction score from post-interaction survey (1-5)"
+#     target: ">= 4.2"
+#     warning_threshold: "< 4.0"
+#     critical_threshold: "< 3.5"
+#     measurement_window: "rolling 7 days"
+#     data_source: "user feedback pipeline (see user-feedback-as-evaluation.md)"
+#     raci:
+#       responsible: "Product Manager"
+#       accountable: "Model Owner"
+#       consulted: "Customer Operations Lead"
+#       informed: "Fleet Operations Lead"
+#
+#   - name: "Fraud Detection Precision"
+#     metric_id: "fraud_detection_precision"
+#     definition: "Precision of fraud flag predictions on payment transactions"
+#     target: ">= 95%"
+#     warning_threshold: "< 93%"
+#     critical_threshold: "< 90%"
+#     measurement_window: "rolling 24 hours"
+#     data_source: "fraud investigation outcome labels"
+#     raci:
+#       responsible: "AI/ML Engineer"
+#       accountable: "Model Owner"
+#       consulted: "Fraud Operations Lead"
+#       informed: "Compliance Officer"
+#
+# # --- Ownership ---
+# owner: "Maria Chen, Model Owner"
+# team: "Payments AI Team"
+#
+# # --- Compliance ---
+# compliance_frameworks:
+#   - "EU AI Act"
+#   - "PSD2"
+#   - "GDPR"
+#   - "DORA"
+#   - "AML Directive (AMLD6)"
+#
+# # --- Dates ---
+# created_date: "2026-01-15T09:00:00Z"
+# last_deployment_date: "2026-02-20T14:30:00Z"
+#
+# # --- Linked Governance Artifacts ---
+# safety_policy_ref: "SP-PAYMENTS-v2.3"
+# fallback_procedure_ref: "FB-PAYMENTS-v2.3"
+# guardrail_spec_ref: "GR-PAYMENTS-v2.3"
+# eval_suite_ref: "ES-PAYMENTS-v2.3"
+#
+# # --- Active Risk Mitigations ---
+# active_mitigations:
+#   - plan_id: "MP-PAY-2026-003"
+#     risk_summary: "Cross-border payment routing occasionally selects non-optimal corridor"
+#     severity: "medium"
+#     progress: "2/5 steps complete"
+#     status: "active"

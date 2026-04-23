@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Agent Registry — Complete searchable inventory of all AI agents with EU AI Act risk tiers, contract compliance, and version tracking.">
+<title>Agent Registry | AI Governance Platform</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  :root {
+    --dash-bg: linear-gradient(135deg, #1a1a2e, #16213e);
+    --dash-card: rgba(255,255,255,0.06);
+    --dash-border: rgba(255,255,255,0.08);
+    --dash-text: #e0e0e0;
+    --dash-muted: #8899aa;
+  }
+
+  /* ── Hero ──────────────────────────────── */
+  .hero {
+    padding: 120px 0 60px;
+    text-align: center;
+    background: linear-gradient(180deg, #fff8f0 0%, var(--bg) 100%);
+  }
+  .hero .tier-label { 
+    display: inline-block; padding: 6px 16px; border-radius: 100px;
+    background: linear-gradient(135deg, var(--orange), #f59300);
+    color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .hero .headline-medium { margin-bottom: 12px; }
+  .hero .tagline { font-size: 1.25rem; color: var(--orange); font-weight: 500; margin-bottom: 20px; }
+  .hero .body-large { max-width: 640px; margin: 0 auto; }
+  .hero .stakeholder-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 24px; padding: 10px 20px;
+    background: var(--bg); border: 1px solid var(--border-light);
+    border-radius: 100px; font-size: 0.9rem;
+  }
+  .hero .stakeholder-badge::before {
+    content: '⚙'; font-size: 1.1rem;
+  }
+
+  /* ── Value Proposition ─────────────────── */
+  .value-prop { background: var(--bg-alt); }
+  .value-prop .body-large { max-width: 720px; margin: 0 auto 24px; text-align: center; }
+  .value-prop .body { max-width: 720px; margin: 0 auto 16px; text-align: center; }
+
+  /* ── Executive Summary ─────────────────── */
+  .exec-summary { background: linear-gradient(180deg, #fbfbfd 0%, #fff 100%); padding: 100px 0; }
+  .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; max-width: 1100px; margin: 0 auto; }
+  .exec-left { display: flex; flex-direction: column; gap: 24px; }
+  .exec-right { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .exec-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; }
+  .exec-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: var(--text); }
+  .exec-desc { font-size: 1.1rem; line-height: 1.7; color: var(--text-secondary); }
+  .exec-feature { display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border-light); box-shadow: var(--card-shadow); transition: transform 0.2s, box-shadow 0.2s; }
+  .exec-feature:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+  .exec-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+  .exec-icon.blue { background: linear-gradient(135deg, #0071e3, #5856d6); }
+  .exec-icon.green { background: linear-gradient(135deg, #30d158, #28c247); }
+  .exec-icon.orange { background: linear-gradient(135deg, #ff9f0a, #f59300); }
+  .exec-icon.purple { background: linear-gradient(135deg, #af52de, #9f4ad5); }
+  .exec-content h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .exec-content p { font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary); margin: 0; }
+  @media (max-width: 900px) { .exec-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ── Use Cases ─────────────────────────── */
+  .use-cases .sub-header { text-align: center; margin-bottom: 48px; }
+  .use-case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+  .use-case-card {
+    padding: 28px; border-radius: 16px;
+    border: 1px solid var(--border-light); background: var(--bg);
+    box-shadow: var(--card-shadow);
+  }
+  .use-case-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+  .use-case-card p { font-size: 0.95rem; line-height: 1.55; }
+
+  /* ── Dashboard Mockup ─────────────────── */
+  .dashboard-mock { background: var(--dash-bg); color: var(--dash-text); padding: 60px 0; }
+  .mock-header { text-align: center; margin-bottom: 40px; }
+  .mock-header h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+  .mock-header p { font-size: 0.9rem; color: var(--dash-muted); }
+
+  .mock-search {
+    display: flex; gap: 12px; margin-bottom: 24px;
+  }
+  .mock-search input {
+    flex: 1; padding: 12px 16px; border-radius: 8px;
+    border: 1px solid var(--dash-border); background: var(--dash-card);
+    color: var(--dash-text); font-size: 0.9rem;
+  }
+  .mock-search input::placeholder { color: var(--dash-muted); }
+  .mock-filter {
+    padding: 12px 20px; border-radius: 8px;
+    border: 1px solid var(--dash-border); background: var(--dash-card);
+    color: var(--dash-text); font-size: 0.85rem; cursor: pointer;
+  }
+
+  .mock-table {
+    width: 100%; border-collapse: collapse; font-size: 0.85rem;
+  }
+  .mock-table th {
+    text-align: left; padding: 12px 16px; color: var(--dash-muted);
+    font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--dash-border);
+  }
+  .mock-table td {
+    padding: 14px 16px; border-bottom: 1px solid var(--dash-border);
+  }
+  .mock-table tr:last-child td { border-bottom: none; }
+
+  .mock-risk {
+    display: inline-block; padding: 4px 12px; border-radius: 100px;
+    font-size: 0.7rem; font-weight: 600;
+  }
+  .mock-risk.minimal { background: rgba(48,209,88,0.2); color: var(--green); }
+  .mock-risk.limited { background: rgba(10,132,255,0.2); color: var(--blue); }
+  .mock-risk.high { background: rgba(255,159,10,0.2); color: var(--orange); }
+
+  .mock-contracts { font-family: var(--mono); font-size: 0.8rem; }
+  .mock-contracts.complete { color: var(--green); }
+  .mock-contracts.partial { color: var(--orange); }
+
+  .mock-panel {
+    background: var(--dash-card); border: 1px solid var(--dash-border);
+    border-radius: 12px; padding: 24px; margin-top: 24px;
+  }
+  .mock-panel h4 { font-size: 0.75rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
+
+  .dist-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .dist-item { text-align: center; }
+  .dist-value { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; }
+  .dist-label { font-size: 0.75rem; color: var(--dash-muted); }
+
+  /* ── Key Metrics ───────────────────────── */
+  .key-metrics { background: var(--bg); }
+  .key-metrics .sub-header { text-align: center; margin-bottom: 40px; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .metric-card {
+    padding: 24px; border-radius: 12px;
+    border: 1px solid var(--border-light); background: var(--bg-alt);
+    text-align: center;
+  }
+  .metric-card .metric-icon { font-size: 1.5rem; margin-bottom: 12px; }
+  .metric-card .metric-name { font-size: 0.8rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .metric-card .metric-desc { font-size: 0.9rem; color: var(--text-secondary); }
+
+  /* ── Stakeholder Connection ─────────────── */
+  .stakeholder-conn { background: var(--bg-alt); text-align: center; }
+  .stakeholder-conn .body-large { max-width: 600px; margin: 0 auto 24px; }
+  .cta-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent); font-size: 1.1rem; text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .cta-link:hover { gap: 10px; }
+
+  /* ── Related Dashboards ─────────────────── */
+  .related .sub-header { text-align: center; margin-bottom: 40px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .related-card {
+    padding: 24px; border-radius: 12px;
+    border: 1px solid var(--border-light); background: var(--bg);
+    text-decoration: none; color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .related-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow); }
+  .related-card .tier { font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .related-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .related-card p { font-size: 0.9rem; color: var(--text-secondary); }
+
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- Nav -->
+<nav aria-label="Main navigation">
+  <div class="container">
+    <a class="nav-brand" href="../index.html">AI Governance Platform</a>
+    <span class="breadcrumb">Platform → Agent Registry</span>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#showcase">Dashboards</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <span class="tier-label">Registry</span>
+    <h2 class="headline-medium">Agent Registry</h2>
+    <p class="tagline">Complete inventory of every AI agent in your organization.</p>
+    <p class="body-large">The single source of truth for regulatory inventory, risk classification, and compliance tracking across your entire AI agent fleet.</p>
+    <div class="stakeholder-badge">Primary: CAIO / AI Officers</div>
+  </div>
+</section>
+
+<!-- Value Proposition -->
+<section class="exec-summary fade-in">
+  <div class="container">
+    <div class="exec-grid">
+      <div class="exec-left">
+        <div class="exec-label">What This Delivers</div>
+        <h2 class="exec-title">Definitive answers to regulatory inventory questions</h2>
+        <p class="exec-desc">The first question regulators ask: "How many AI agents do you operate and what are their risk classifications?" This registry provides the definitive answer with searchable inventory, EU AI Act risk tiers, and compliance tracking.</p>
+      </div>
+      <div class="exec-right">
+        <div class="exec-feature">
+          <div class="exec-icon blue">📋</div>
+          <div class="exec-content">
+            <h4>EU AI Act Risk Classification</h4>
+            <p>Every agent categorized by Minimal, Limited, High, or Unacceptable risk tier for instant regulatory reporting.</p>
+          </div>
+        </div>
+        <div class="exec-feature">
+          <div class="exec-icon orange">✓</div>
+          <div class="exec-content">
+            <h4>Contract Compliance Matrix</h4>
+            <p>Track all 7 SAFEST contract statuses per agent—identify gaps and prioritize remediation at a glance.</p>
+          </div>
+        </div>
+        <div class="exec-feature">
+          <div class="exec-icon green">🔍</div>
+          <div class="exec-content">
+            <h4>Multi-Factor Search & Filter</h4>
+            <p>Find any agent instantly by risk tier, team, oversight model, or compliance status. No more manual spreadsheets.</p>
+          </div>
+        </div>
+        <div class="exec-feature">
+          <div class="exec-icon purple">🌐</div>
+          <div class="exec-content">
+            <h4>Dutch Algorithm Register Export</h4>
+            <p>One-click export formatted for DNB/AFM supervisor submission. IAMA compliance built-in.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Use Cases -->
+<section class="use-cases fade-in">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">When you need this</p>
+      <h3 class="headline-small">Use Cases</h3>
+    </div>
+    <div class="use-case-grid">
+      <div class="use-case-card">
+        <h4>📋 Regulatory Inventory Report</h4>
+        <p>Generate a complete agent inventory categorized by EU AI Act risk tier: Minimal, Limited, High, or Unacceptable. Ready for supervisor submission.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>🔍 Contract Compliance Audit</h4>
+        <p>Filter agents with incomplete contract compliance (&lt; 7/7) to prioritize remediation efforts. Focus on the gaps that matter most.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>🆕 New Agent Onboarding</h4>
+        <p>Register a new agent with identity (C1), assign risk tier, set oversight model, and track onboarding progress through the registry.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>🏷️ Version Tracking</h4>
+        <p>Trace which agent versions are in production, staged, or deprecated. Maintain version control across your entire fleet.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>🌐 Cross-Team Inventory</h4>
+        <p>Organization-wide view for the CAIO: which teams run which agents at what risk level? Answer in seconds, not days.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Mockup -->
+<section class="dashboard-mock fade-in">
+  <div class="container-wide">
+    <div class="mock-header">
+      <h3>Agent Registry Preview</h3>
+      <p>Searchable inventory with risk tiers and compliance status</p>
+    </div>
+    <div class="mock-search">
+      <input type="text" placeholder="Search agents by name, team, or type...">
+      <button class="mock-filter">Risk Tier ▼</button>
+      <button class="mock-filter">Team ▼</button>
+      <button class="mock-filter">Status ▼</button>
+    </div>
+    <table class="mock-table">
+      <thead>
+        <tr>
+          <th>Agent Name</th>
+          <th>Type</th>
+          <th>Risk Tier</th>
+          <th>Oversight Model</th>
+          <th>Contracts</th>
+          <th>Version</th>
+          <th>Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Support Agent Alpha</td>
+          <td>Conversational</td>
+          <td><span class="mock-risk limited">Limited</span></td>
+          <td>HOTL</td>
+          <td class="mock-contracts complete">7/7 ✓</td>
+          <td>v2.3.1</td>
+          <td>Customer Success</td>
+        </tr>
+        <tr>
+          <td>Fraud Detector Pro</td>
+          <td>Analytical</td>
+          <td><span class="mock-risk high">High</span></td>
+          <td>HITL</td>
+          <td class="mock-contracts complete">7/7 ✓</td>
+          <td>v1.8.4</td>
+          <td>Risk & Compliance</td>
+        </tr>
+        <tr>
+          <td>Loan Processor v3</td>
+          <td>Decisional</td>
+          <td><span class="mock-risk high">High</span></td>
+          <td>HITL</td>
+          <td class="mock-contracts partial">5/7 ⚠</td>
+          <td>v3.0.2</td>
+          <td>Lending</td>
+        </tr>
+        <tr>
+          <td>Report Generator</td>
+          <td>Generative</td>
+          <td><span class="mock-risk minimal">Minimal</span></td>
+          <td>HOTA</td>
+          <td class="mock-contracts complete">2/2 ✓</td>
+          <td>v1.2.0</td>
+          <td>Analytics</td>
+        </tr>
+        <tr>
+          <td>Document Classifier</td>
+          <td>Analytical</td>
+          <td><span class="mock-risk limited">Limited</span></td>
+          <td>HOTL</td>
+          <td class="mock-contracts complete">5/5 ✓</td>
+          <td>v2.1.0</td>
+          <td>Operations</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="mock-panel">
+      <h4>Risk Tier Distribution</h4>
+      <div class="dist-grid">
+        <div class="dist-item">
+          <div class="dist-value" style="color: var(--green);">2</div>
+          <div class="dist-label">Minimal</div>
+        </div>
+        <div class="dist-item">
+          <div class="dist-value" style="color: var(--blue);">4</div>
+          <div class="dist-label">Limited</div>
+        </div>
+        <div class="dist-item">
+          <div class="dist-value" style="color: var(--orange);">3</div>
+          <div class="dist-label">High</div>
+        </div>
+        <div class="dist-item">
+          <div class="dist-value" style="color: var(--red);">0</div>
+          <div class="dist-label">Unacceptable</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key Metrics -->
+<section class="key-metrics fade-in">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">What you will track</p>
+      <h3 class="headline-small">Key Metrics</h3>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon">📊</div>
+        <div class="metric-name">Total Agents</div>
+        <div class="metric-desc">Complete count of registered AI agents</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">⚖</div>
+        <div class="metric-name">Risk Tier Distribution</div>
+        <div class="metric-desc">Minimal/Limited/High/Unacceptable breakdown</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">✓</div>
+        <div class="metric-name">Contract Compliance Rate</div>
+        <div class="metric-desc">% of agents with 7/7 contracts</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">🔄</div>
+        <div class="metric-name">Active vs Deprecated</div>
+        <div class="metric-desc">Lifecycle status of each agent</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">👥</div>
+        <div class="metric-name">Agents per Team</div>
+        <div class="metric-desc">Team-level distribution view</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">📋</div>
+        <div class="metric-name">IAMA Coverage</div>
+        <div class="metric-desc">Impact Assessment completion status</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stakeholder Connection -->
+<section class="stakeholder-conn fade-in">
+  <div class="container">
+    <p class="label" style="margin-bottom:16px;">Who uses this</p>
+    <p class="body-large">This registry is designed for <strong>CAIOs</strong> and <strong>AI Officers</strong> who need organization-wide visibility into the AI agent inventory for regulatory compliance and risk management.</p>
+    <a href="../index.html#stakeholders" class="cta-link">See all stakeholders →</a>
+  </div>
+</section>
+
+<!-- Related Dashboards -->
+<section class="related fade-in">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Explore more</p>
+      <h3 class="headline-small">Related Dashboards</h3>
+    </div>
+    <div class="related-grid">
+      <a href="board.html" class="related-card">
+        <div class="tier">Tier 1</div>
+        <h4>Board Dashboard</h4>
+        <p>Executive oversight for the C-Suite</p>
+      </a>
+      <a href="team.html" class="related-card">
+        <div class="tier">Tier 3</div>
+        <h4>Team Dashboard</h4>
+        <p>Operational control for team leads</p>
+      </a>
+      <a href="detail.html" class="related-card">
+        <div class="tier">Detail</div>
+        <h4>Agent Detail</h4>
+        <p>Deep intelligence for engineers</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="../index.html">Home</a>
+      &ensp;&middot;&ensp;
+      <a href="https://github.com/DimosGougousis/ai-governance-platform" target="_blank" rel="noopener">Monitoring Platform</a>
+    </p>
+    <p><em>Built for teams who believe governing AI agents is a competitive advantage.</em></p>
+  </div>
+</footer>
+
+<!-- Animation -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

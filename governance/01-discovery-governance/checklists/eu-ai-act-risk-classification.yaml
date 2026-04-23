@@ -1,0 +1,347 @@
+# EU AI Act Risk Classification Checklist
+#
+# Purpose: Systematically determine the EU AI Act risk tier for an AI system.
+#          Walk through each section in order. The first matching category determines
+#          the risk tier and the corresponding governance obligations.
+#
+# When to Use: First step for every new AI initiative, before any development begins.
+#              Also used when an existing AI system's scope changes materially.
+#
+# Who Is Responsible:
+#   - Product Manager: completes the checklist with support from engineering
+#   - Compliance Officer (2nd Line): validates the classification
+#   - AI Governance Committee: approves classification for limited/high-risk systems
+#
+# Regulatory Basis: EU AI Act (Regulation (EU) 2024/1689) Articles 5, 6, 50, Annexes I-III;
+#                   SAFEST items S-01 (AI system inventory), E-03 (prohibited uses)
+#
+# Instructions:
+#   1. Complete the metadata section with system details
+#   2. Work through Section 1 (Prohibited Uses) first -- if any item is "complete" (confirmed),
+#      STOP. The system must not be deployed.
+#   3. If no prohibited uses apply, proceed to Section 2 (High Risk).
+#   4. If no high-risk criteria apply, proceed to Section 3 (Limited Risk).
+#   5. If no limited-risk criteria apply, the system is Section 4 (Minimal Risk).
+#   6. Complete the documentation requirements for the determined tier.
+#   7. Record the final classification in the summary section at the bottom.
+#
+# Cross-References:
+#   - Risk Tiering Model: ../../../07-enterprise-implementation/risk-based-adoption/risk-tiering-model.md
+#   - Defining Acceptance Criteria: ../evaluations/defining-acceptance-criteria.md
+#   - Evaluation Strategy Template: ../evaluations/evaluation-strategy-template.yaml
+#   - Pre-Deployment Gate: ../../02-development-governance/checklists/pre-deployment-gate.yaml
+
+metadata:
+  system_name: ""
+  system_description: ""
+  system_owner: ""
+  product_manager: ""
+  compliance_reviewer: ""
+  classification_date: ""
+  review_date: ""  # Next scheduled review
+  version: "1.0"
+
+# ============================================================================
+# SECTION 1: PROHIBITED USES (EU AI Act Article 5)
+# If ANY item below is confirmed as applicable, the system MUST NOT be deployed.
+# ============================================================================
+
+prohibited_use_checks:
+  - id: "DISC-RISK-001"
+    item: "Verify the system does NOT perform social scoring -- evaluating or classifying natural persons based on social behavior or personal characteristics, leading to detrimental treatment unrelated to the context in which the data was generated"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "EU AI Act Art. 5(1)(c)"
+
+  - id: "DISC-RISK-002"
+    item: "Verify the system does NOT use subliminal, manipulative, or deceptive techniques to materially distort behavior, causing significant harm"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI-driven UX that manipulates customers into unsuitable financial products (e.g., dark patterns in loan upselling)"
+    regulatory_ref: "EU AI Act Art. 5(1)(a)"
+
+  - id: "DISC-RISK-003"
+    item: "Verify the system does NOT exploit vulnerabilities of specific groups (age, disability, social or economic situation) to distort behavior causing significant harm"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: targeting financially vulnerable customers with high-risk products"
+    regulatory_ref: "EU AI Act Art. 5(1)(b)"
+
+  - id: "DISC-RISK-004"
+    item: "Verify the system does NOT perform real-time remote biometric identification in publicly accessible spaces for law enforcement (unless specific exemptions apply)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Typically not applicable to FinTech; confirm and document"
+    regulatory_ref: "EU AI Act Art. 5(1)(h)"
+
+  - id: "DISC-RISK-005"
+    item: "Verify the system does NOT perform emotion recognition in the workplace or educational institutions (except for medical or safety purposes)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Check: does the system analyze employee sentiment or emotional states for HR decisions?"
+    regulatory_ref: "EU AI Act Art. 5(1)(f)"
+
+  - id: "DISC-RISK-006"
+    item: "Verify the system does NOT create or expand facial recognition databases through untargeted scraping of facial images from the internet or CCTV"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: building biometric databases for KYC from scraped images is prohibited"
+    regulatory_ref: "EU AI Act Art. 5(1)(e)"
+
+# ============================================================================
+# SECTION 2: HIGH-RISK CLASSIFICATION (EU AI Act Article 6, Annex III)
+# If ANY item below is confirmed as applicable, the system is HIGH-RISK.
+# ============================================================================
+
+high_risk_checks:
+  - id: "DISC-RISK-007"
+    item: "Determine if the system evaluates creditworthiness of natural persons or establishes their credit score (Annex III, area 5(a))"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Covers AI credit scoring, lending decisions, credit limit adjustments, and any ML model influencing credit access"
+    regulatory_ref: "EU AI Act Annex III, 5(a)"
+
+  - id: "DISC-RISK-008"
+    item: "Determine if the system is used for risk assessment and pricing in life and health insurance (Annex III, area 5(b))"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Relevant if the FinTech offers insurance products or insurance-adjacent risk scoring"
+    regulatory_ref: "EU AI Act Annex III, 5(b)"
+
+  - id: "DISC-RISK-009"
+    item: "Determine if the system performs biometric identification or categorization of natural persons (Annex III, area 1)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI-powered KYC identity verification using facial recognition, liveness detection, or document verification with biometric matching"
+    regulatory_ref: "EU AI Act Annex III, 1(a)"
+
+  - id: "DISC-RISK-010"
+    item: "Determine if the system is a safety component of critical infrastructure management (Annex III, area 2)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI managing core payment processing, clearing systems, or financial market infrastructure"
+    regulatory_ref: "EU AI Act Annex III, 2(a)"
+
+  - id: "DISC-RISK-011"
+    item: "Determine if the system is used for recruitment, selection, or evaluation of candidates, or for making decisions affecting terms of work-related relationships (Annex III, area 4)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Applies to AI screening job applicants, AI performance evaluation tools, AI task allocation affecting compensation"
+    regulatory_ref: "EU AI Act Annex III, 4(a-b)"
+
+  - id: "DISC-RISK-012"
+    item: "Determine if the system evaluates eligibility for essential public or private services, including financial services (Annex III, area 5)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI determining account opening eligibility, AI blocking or restricting access to banking services"
+    regulatory_ref: "EU AI Act Annex III, 5"
+
+  - id: "DISC-RISK-013"
+    item: "Determine if the system is a safety component of a product already covered by EU harmonization legislation listed in Annex I (Article 6(1))"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Review Annex I product legislation; less common for pure FinTech but relevant for embedded financial devices"
+    regulatory_ref: "EU AI Act Art. 6(1)"
+
+  - id: "DISC-RISK-014"
+    item: "Determine if the system performs profiling of natural persons to make or materially influence decisions about access to financial services"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI fraud detection that blocks transactions, AI AML monitoring that freezes accounts, AI risk scoring for onboarding decisions. Even 'assistive' systems are high-risk if they can deny service."
+    regulatory_ref: "EU AI Act Recital 47; GDPR Art. 22"
+
+# ============================================================================
+# SECTION 3: LIMITED-RISK CLASSIFICATION (EU AI Act Article 50)
+# If ANY item below is confirmed, the system has TRANSPARENCY OBLIGATIONS.
+# ============================================================================
+
+limited_risk_checks:
+  - id: "DISC-RISK-015"
+    item: "Determine if the system interacts directly with natural persons (chatbot, voice assistant, conversational AI) and must disclose its AI nature"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: customer service chatbots, AI-powered phone agents, AI assistants in mobile banking apps"
+    regulatory_ref: "EU AI Act Art. 50(1)"
+
+  - id: "DISC-RISK-016"
+    item: "Determine if the system generates or manipulates content (text, images, audio, video) that could be mistaken for human-created content"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: AI-generated financial reports, AI-drafted customer communications, AI-generated market commentary"
+    regulatory_ref: "EU AI Act Art. 50(2)"
+
+  - id: "DISC-RISK-017"
+    item: "Determine if the system uses emotion recognition or biometric categorization (where not prohibited or high-risk)"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "FinTech context: sentiment analysis on customer interactions for quality monitoring (must disclose)"
+    regulatory_ref: "EU AI Act Art. 50(3)"
+
+# ============================================================================
+# SECTION 4: MINIMAL-RISK CLASSIFICATION (Residual Category)
+# If no items in Sections 1-3 apply, the system is minimal risk.
+# ============================================================================
+
+minimal_risk_checks:
+  - id: "DISC-RISK-018"
+    item: "Confirm that no prohibited use (Section 1), high-risk criterion (Section 2), or limited-risk criterion (Section 3) applies to this system"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Document the reasoning for minimal-risk classification. Common examples: internal log analysis, spam filtering, internal analytics, AI code assistants"
+    regulatory_ref: "EU AI Act (residual category)"
+
+  - id: "DISC-RISK-019"
+    item: "Check escalation criteria: even if classified as minimal, escalate if the system processes special category personal data (GDPR Art. 9), affects vulnerable consumers, or operates autonomously without human review"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See escalation criteria in risk-tiering-model.md Section 3.1"
+    regulatory_ref: "EU AI Act; GDPR Art. 9"
+
+# ============================================================================
+# SECTION 5: DOCUMENTATION REQUIREMENTS PER TIER
+# Complete the items that apply to the determined risk tier.
+# ============================================================================
+
+documentation_requirements:
+  - id: "DISC-RISK-020"
+    item: "Register the AI system in the organizational AI system inventory with its risk classification"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for ALL risk tiers. SAFEST item S-01."
+    regulatory_ref: "EU AI Act Art. 49; SAFEST S-01"
+
+  - id: "DISC-RISK-021"
+    item: "Document the algorithm selection rationale: why this AI approach, what alternatives were considered"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for all tiers; depth varies by tier (brief note for minimal, detailed analysis for high)"
+    regulatory_ref: "SAFEST S-02"
+
+  - id: "DISC-RISK-022"
+    item: "Define acceptance criteria with measurable thresholds using the evaluation strategy template"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See evaluations/defining-acceptance-criteria.md and evaluations/evaluation-strategy-template.yaml"
+    regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(2)(a)"
+
+  - id: "DISC-RISK-023"
+    item: "For HIGH-RISK: initiate Fundamental Rights Impact Assessment (FRIA) as required by EU AI Act Art. 27 (applicable from Aug 2026)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for deployers of high-risk AI systems. Must assess impact on fundamental rights of affected persons."
+    regulatory_ref: "EU AI Act Art. 27; SAFEST E-12"
+
+  - id: "DISC-RISK-024"
+    item: "For HIGH-RISK: initiate Data Protection Impact Assessment (DPIA) if the system processes personal data"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Coordinate with DPO. DPIA is a GDPR requirement that overlaps with AI Act obligations."
+    regulatory_ref: "GDPR Art. 35"
+
+  - id: "DISC-RISK-025"
+    item: "For HIGH-RISK: document that independent model validation (2nd line) will be performed before deployment"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Plan the validation scope and timeline during Discovery; execute during Development."
+    regulatory_ref: "SAFEST S-19; DNB Good Practice"
+
+# ============================================================================
+# CLASSIFICATION SUMMARY
+# Complete this section after working through all sections above.
+# ============================================================================
+
+classification_summary:
+  determined_risk_tier: ""  # prohibited | high | limited | minimal
+  rationale: ""             # Brief explanation of why this tier was determined
+  applicable_annex_iii_category: ""  # If high-risk, which Annex III area(s)
+  escalation_applied: false          # true if escalation criteria from DISC-RISK-019 applied
+  escalation_rationale: ""           # If escalated, explain why
+  governance_intensity: ""           # full | standard | lightweight
+  classified_by: ""
+  classification_date: ""
+  approved_by: ""
+  approval_date: ""
+  next_review_date: ""
+
+# ============================================================================
+# WEIGHTED RISK ASSESSMENT DIMENSIONS
+# Use these dimensions to calculate a composite risk score for prioritization
+# within a risk tier. Sum of weights = 1.0
+# ============================================================================
+
+weighted_risk_dimensions:
+  - id: "DIM-DATA-001"
+    name: "data_sensitivity"
+    description: "Sensitivity of data processed by the AI system, including personal data volume, special categories (GDPR Art. 9), and financial data classification"
+    weight: 0.25
+    scoring_scale: "1-5 (1=public data, 5=special category personal data + financial records)"
+    status: "not_started"
+    score: 0
+    evidence_ref: ""
+    notes: "Highest weight due to direct regulatory impact and breach consequences"
+
+  - id: "DIM-REV-001"
+    name: "reversibility"
+    description: "Ability to reverse or remediate decisions made by the AI system. Considers decision persistence, customer impact duration, and correction mechanisms"
+    weight: 0.25
+    scoring_scale: "1-5 (1=fully reversible in real-time, 5=permanent irreversible impact)"
+    status: "not_started"
+    score: 0
+    evidence_ref: ""
+    notes: "Highest weight due to direct impact on customer rights and harm potential"
+
+  - id: "DIM-FIN-001"
+    name: "financial_impact"
+    description: "Potential financial impact of system errors or failures on the organization and customers. Includes transaction values, exposure limits, and aggregate risk"
+    weight: 0.20
+    scoring_scale: "1-5 (1=<€1K per incident, 5=>€1M or systemic risk)"
+    status: "not_started"
+    score: 0
+    evidence_ref: ""
+    notes: "High weight due to direct business impact and regulatory capital requirements"
+
+  - id: "DIM-REG-001"
+    name: "regulatory_scope"
+    description: "Breadth of regulatory frameworks applicable to the system. Considers cross-border operations, multiple jurisdictions, and overlapping obligations"
+    weight: 0.15
+    scoring_scale: "1-5 (1=single regulation, 5=multi-jurisdictional with conflicting requirements)"
+    status: "not_started"
+    score: 0
+    evidence_ref: ""
+    notes: "Medium weight; affects compliance complexity but not immediate harm potential"
+
+  - id: "DIM-BLAST-001"
+    name: "blast_radius"
+    description: "Scope of impact if the system fails or is compromised. Considers downstream dependencies, customer count affected, and systemic propagation risk"
+    weight: 0.15
+    scoring_scale: "1-5 (1=single user impact, 5=enterprise-wide or market-wide impact)"
+    status: "not_started"
+    score: 0
+    evidence_ref: ""
+    notes: "Medium weight; important for incident response planning and business continuity"

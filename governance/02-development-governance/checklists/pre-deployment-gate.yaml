@@ -1,0 +1,442 @@
+# Pre-Deployment Gate Checklist
+#
+# Purpose: The mandatory gate before any AI system enters production. This checklist
+#          ensures that all Development Governance requirements are met and documented
+#          with evidence before the system serves real users.
+#
+#          This is the single most important quality gate in the AI lifecycle. If this
+#          gate is weak, unsafe or underperforming systems reach production.
+#
+# When to Use: Before EVERY deployment of an AI system, including:
+#   - First deployment to production
+#   - Model retraining with new data
+#   - Material changes to prompts, guardrails, or agent behavior
+#   - Third-party model upgrades or replacements
+#
+# Who Is Responsible:
+#   - Model Owner: completes the checklist and assembles the evidence package
+#   - AI/ML Engineer: provides technical evidence (eval results, test reports)
+#   - Compliance Officer (2nd Line): reviews and validates for limited/high-risk systems
+#   - AI Governance Committee: approves deployment for limited/high-risk systems
+#   - Board-level sponsor: approves deployment for high-risk systems
+#
+# Regulatory Basis:
+#   - EU AI Act Article 9 -- Risk management system including testing
+#   - EU AI Act Article 11 -- Technical documentation for high-risk systems
+#   - EU AI Act Article 15 -- Accuracy, robustness, and cybersecurity
+#   - EU AI Act Article 16 -- Obligations of providers of high-risk AI systems
+#   - SAFEST items: S-03, S-04, S-05, S-06, S-13, S-14, S-19, F-03, T-01, T-12, A-03, A-06, A-07, A-09, A-11
+#   - DNB Good Practice: model validation requirements
+#
+# Cross-References:
+#   - Risk Classification: ../../01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml
+#   - Eval-Driven Development: ../evaluations/eval-driven-development.md
+#   - Eval Gate Integration: ../evaluations/eval-gate-integration.md
+#   - Acceptance Criteria Automation: ../evaluations/acceptance-criteria-automation.yaml
+#   - Continuous Online Evaluation: ../../03-runtime-governance/evaluations/continuous-online-evaluation.md
+#   - Risk Tiering Model: ../../07-enterprise-implementation/risk-based-adoption/risk-tiering-model.md
+#   - Governance in Agile Sprints: ../../07-enterprise-implementation/process-integration/governance-in-agile-sprints.md
+#
+# Instructions:
+#   1. Complete the metadata section
+#   2. Work through each section in order
+#   3. For each item, provide evidence_ref (link to document, test result, or artifact)
+#   4. Items marked critical are HARD GATES -- deployment is blocked if not complete
+#   5. Items not applicable to your risk tier can be marked "not_applicable" with a note
+#   6. Submit the completed checklist as part of the deployment approval package
+
+metadata:
+  system_name: ""
+  system_version: ""
+  risk_tier: ""             # minimal | limited | high
+  deployment_target: ""     # e.g., "production", "staging", "canary"
+  deployment_date: ""
+  model_owner: ""
+  checklist_completed_by: ""
+  checklist_date: ""
+
+# ============================================================================
+# SECTION 1: MODEL DOCUMENTATION
+# All deployments require documentation proportional to risk tier.
+# ============================================================================
+
+model_documentation:
+  - id: "DEV-DOC-001"
+    item: "Model card is complete, current, and covers: intended use, training data summary, performance characteristics, known limitations, and ethical considerations"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Depth varies by tier: 1 page for minimal, 2-3 pages for limited, full template for high"
+    regulatory_ref: "SAFEST T-12; EU AI Act Art. 11"
+
+  - id: "DEV-DOC-002"
+    item: "Data sheet is complete, documenting training data provenance, composition, collection methodology, and preprocessing steps"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for limited and high-risk. Best practice for minimal."
+    regulatory_ref: "SAFEST T-12; EU AI Act Art. 10"
+
+  - id: "DEV-DOC-003"
+    item: "Algorithm selection rationale is documented: why this approach was chosen, what alternatives were considered, and why they were rejected"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "SAFEST S-02"
+
+  - id: "DEV-DOC-004"
+    item: "For HIGH-RISK: EU AI Act Annex IV technical documentation is complete and filed"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required from Aug 2026 for high-risk systems. Mark not_applicable for minimal/limited."
+    regulatory_ref: "EU AI Act Art. 11, Annex IV"
+
+  - id: "DEV-DOC-005"
+    item: "AI system is registered in the organizational AI system inventory with current metadata"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for ALL tiers."
+    regulatory_ref: "SAFEST S-01; EU AI Act Art. 49"
+
+# ============================================================================
+# SECTION 2: EVALUATION AND TESTING
+# The core of pre-deployment validation.
+# ============================================================================
+
+evaluation_and_testing:
+  - id: "DEV-EVAL-001"
+    item: "All acceptance criteria are defined with measurable metrics and thresholds, traceable to the evaluation strategy approved at the Discovery Gate"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Minimum 3 criteria for minimal, 5+ for limited, 10+ for high"
+    regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(2)(a)"
+
+  - id: "DEV-EVAL-002"
+    item: "Automated eval suite exists, is version-controlled, and all blocking criteria are PASSING"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Attach eval suite run results with timestamp, commit SHA, and metric values"
+    regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(7)"
+
+  - id: "DEV-EVAL-003"
+    item: "Eval suite is integrated into CI/CD as a blocking gate (hard gates prevent deployment on failure)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See eval-gate-integration.md for implementation guidance"
+    regulatory_ref: "SAFEST S-03"
+
+  - id: "DEV-EVAL-004"
+    item: "Edge case analysis completed: known edge cases documented, tested, and either handled correctly or documented as known limitations"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "SAFEST S-04"
+
+  - id: "DEV-EVAL-005"
+    item: "Stress testing completed: system tested under adverse conditions (high load, degraded inputs, unusual distributions)"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for limited and high-risk. Basic scenarios for limited, comprehensive for high."
+    regulatory_ref: "SAFEST S-05; EU AI Act Art. 15(4)"
+
+  - id: "DEV-EVAL-006"
+    item: "For HIGH-RISK: adversarial robustness testing completed (prompt injection for LLMs, adversarial examples for ML models)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Mark not_applicable for minimal/limited unless the system has a significant attack surface"
+    regulatory_ref: "SAFEST S-06; EU AI Act Art. 15(4)"
+
+  - id: "DEV-EVAL-007"
+    item: "For HIGH-RISK: independent model validation completed by 2nd line (risk/compliance)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "2nd line must independently verify model performance, not just review 1st line's results"
+    regulatory_ref: "SAFEST S-19; DNB Good Practice"
+
+  - id: "DEV-EVAL-008"
+    item: "For HIGH-RISK: backtesting completed on historical data to validate model behavior on past scenarios"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Particularly important for credit scoring and fraud detection models"
+    regulatory_ref: "SAFEST S-21"
+
+# ============================================================================
+# SECTION 3: BIAS AND FAIRNESS
+# Required for limited and high-risk systems. Best practice for minimal.
+# ============================================================================
+
+bias_and_fairness:
+  - id: "DEV-FAIR-001"
+    item: "Protected characteristics relevant to the use case have been identified and documented"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See SAFEST F-01. Common FinTech attributes: age, gender, nationality, geographic region"
+    regulatory_ref: "SAFEST F-01; EU AI Act Art. 10(2)(f)"
+
+  - id: "DEV-FAIR-002"
+    item: "Proxy variable analysis completed: features that may serve as proxies for protected characteristics have been identified and their impact assessed"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for high-risk. Examples: postcode as proxy for ethnicity, first name as proxy for gender"
+    regulatory_ref: "SAFEST F-02"
+
+  - id: "DEV-FAIR-003"
+    item: "Bias testing completed across all identified protected groups and results are within defined thresholds"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Basic check for limited, comprehensive testing across all groups for high-risk"
+    regulatory_ref: "SAFEST F-03; EU AI Act Art. 10(2)(f)"
+
+  - id: "DEV-FAIR-004"
+    item: "Fairness metric selection is documented and justified: which metrics were chosen, why, and why alternative metrics were not chosen"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Fairness metrics can conflict; document the trade-off decision"
+    regulatory_ref: "SAFEST F-04"
+
+  - id: "DEV-FAIR-005"
+    item: "For HIGH-RISK: Fundamental Rights Impact Assessment (FRIA) completed and findings addressed"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required from Aug 2026 for deployers of high-risk AI systems"
+    regulatory_ref: "EU AI Act Art. 27; SAFEST E-12"
+
+# ============================================================================
+# SECTION 4: SECURITY
+# Protecting the AI system from attacks and misuse.
+# ============================================================================
+
+security:
+  - id: "DEV-SEC-001"
+    item: "For LLM systems: prompt injection testing completed and system resists known injection techniques"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Test both direct and indirect prompt injection vectors"
+    regulatory_ref: "EU AI Act Art. 15(4); SAFEST S-06"
+
+  - id: "DEV-SEC-002"
+    item: "Data leakage testing completed: system does not expose training data, PII, or internal information in its outputs"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Test with extraction prompts for LLMs; verify output filtering for all systems"
+    regulatory_ref: "GDPR Art. 5(1)(f); SAFEST S-06"
+
+  - id: "DEV-SEC-003"
+    item: "Access controls are configured: the AI system and its data are protected by role-based access control"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "EU AI Act Art. 15(4); DORA Art. 8"
+
+  - id: "DEV-SEC-004"
+    item: "For agent systems: permission boundaries are defined and enforced (what the agent can read, write, decide, act on, escalate)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See multi-agent-governance-framework.md for detailed permission boundary guidance"
+    regulatory_ref: "EU AI Act Art. 14; SAFEST A-06"
+
+# ============================================================================
+# SECTION 5: OPERATIONAL READINESS
+# Ensuring the system can be monitored, maintained, and recovered.
+# ============================================================================
+
+operational_readiness:
+  - id: "DEV-OPS-001"
+    item: "Monitoring is configured: production metrics are collected, dashboards are set up, and alert thresholds are defined"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "See continuous-online-evaluation.md for monitoring requirements"
+    regulatory_ref: "SAFEST S-12; EU AI Act Art. 72"
+
+  - id: "DEV-OPS-002"
+    item: "Fallback procedure is documented: what happens when the AI system fails, who is notified, and what manual process takes over"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "SAFEST S-13"
+
+  - id: "DEV-OPS-003"
+    item: "Fallback procedure has been tested: the fallback was executed in a staging environment and confirmed to work"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "For high-risk: test in a production-like environment with measured recovery time"
+    regulatory_ref: "SAFEST S-14"
+
+  - id: "DEV-OPS-004"
+    item: "Rollback procedure is documented and tested: the system can be reverted to the previous version within the defined recovery time"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "SAFEST S-13; DORA Art. 8"
+
+  - id: "DEV-OPS-005"
+    item: "Kill switch (circuit breaker) is implemented and tested: the system can be shut down immediately if needed"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for limited and high-risk. For high-risk: test quarterly."
+    regulatory_ref: "SAFEST A-09; EU AI Act Art. 14(4)"
+
+  - id: "DEV-OPS-006"
+    item: "Audit trail logging is configured: all decisions, actions, and inputs are logged in a tamper-resistant, queryable format"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Basic logging for minimal; full decision reconstruction capability for high-risk"
+    regulatory_ref: "SAFEST A-11; EU AI Act Art. 12"
+
+  - id: "DEV-OPS-007"
+    item: "Data drift detection is configured (for limited and high-risk): input feature distributions are monitored against training baseline"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: ""
+    regulatory_ref: "SAFEST S-12"
+
+# ============================================================================
+# SECTION 6: HUMAN OVERSIGHT
+# Ensuring appropriate human control over AI decisions.
+# ============================================================================
+
+human_oversight:
+  - id: "DEV-HUM-001"
+    item: "Human oversight model is defined: HITL (human-in-the-loop), HOTL (human-on-the-loop), or HIC (human-in-command) with documented justification"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "High-risk typically requires HITL for consequential decisions"
+    regulatory_ref: "EU AI Act Art. 14; SAFEST A-06"
+
+  - id: "DEV-HUM-002"
+    item: "Override capability is implemented: a human can override any AI decision"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for limited and high-risk"
+    regulatory_ref: "SAFEST A-07; EU AI Act Art. 14(4)(d)"
+
+  - id: "DEV-HUM-003"
+    item: "Escalation paths are defined and implemented: the system knows when and how to escalate to a human"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Define explicit triggers for escalation (confidence threshold, topic sensitivity, customer request)"
+    regulatory_ref: "SAFEST A-06"
+
+  - id: "DEV-HUM-004"
+    item: "For HIGH-RISK: automation bias mitigation measures are in place (ensuring human overseers do not blindly follow AI recommendations)"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Examples: showing confidence levels, presenting alternative options, requiring active confirmation"
+    regulatory_ref: "SAFEST A-08; EU AI Act Art. 14(4)(b)"
+
+# ============================================================================
+# SECTION 7: TRANSPARENCY
+# Ensuring users and affected persons understand AI involvement.
+# ============================================================================
+
+transparency:
+  - id: "DEV-TRANS-001"
+    item: "For customer-facing systems: AI disclosure is implemented (users are informed they are interacting with AI)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for limited and high-risk by EU AI Act Art. 50"
+    regulatory_ref: "EU AI Act Art. 50(1); SAFEST T-06"
+
+  - id: "DEV-TRANS-002"
+    item: "For systems making decisions about individuals: explanation mechanism is implemented (affected persons can understand why a decision was made)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "High-risk: proactive explanation for adverse decisions. Limited: explanation on request."
+    regulatory_ref: "SAFEST T-07; EU AI Act Art. 86; GDPR Art. 22"
+
+  - id: "DEV-TRANS-003"
+    item: "Explainability method is documented: how model decisions are explained, what method is used (SHAP, LIME, attention, rule extraction), and what limitations exist"
+    priority: "important"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Required for high-risk; recommended for limited"
+    regulatory_ref: "SAFEST T-01"
+
+# ============================================================================
+# SECTION 8: DEPLOYMENT APPROVAL
+# Final sign-off before production.
+# ============================================================================
+
+deployment_approval:
+  - id: "DEV-APPR-001"
+    item: "All CRITICAL items in this checklist are complete with evidence"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Any incomplete critical item blocks deployment"
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "DEV-APPR-002"
+    item: "Deployment package assembled and submitted to the appropriate approval authority (team lead for minimal, Committee for limited/high, Board for high)"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Package includes: this checklist, eval results, model card, fairness results, and all evidence_refs"
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "DEV-APPR-003"
+    item: "Approval obtained from the designated authority"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "Record: approver name, date, any conditions"
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "DEV-APPR-004"
+    item: "For HIGH-RISK: deployment plan reviewed with 2nd line, including canary/shadow deployment strategy"
+    priority: "critical"
+    status: "not_started"
+    evidence_ref: ""
+    notes: "High-risk systems should not go to 100% traffic immediately"
+    regulatory_ref: "SAFEST S-19; DNB Good Practice"
+
+# ============================================================================
+# SUMMARY
+# ============================================================================
+
+summary:
+  total_items: 25
+  critical_items: 20
+  important_items: 5
+  completed: 0
+  in_progress: 0
+  not_applicable: 0
+  blocking_failures: 0
+  deployment_decision: ""  # approved | approved_with_conditions | blocked
+  decision_date: ""
+  decision_by: ""
+  conditions: ""
+  next_review_date: ""

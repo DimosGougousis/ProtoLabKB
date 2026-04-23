@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Development Governance Pillar — Evaluation suites, bias testing, quality gates, and test-driven development practices for building AI agents safely and responsibly.">
+<title>Pillar 02 — Development Governance | AI Governance Framework</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  :root {
+    --dash-bg: linear-gradient(135deg, #1a1a2e, #16213e);
+    --dash-card: rgba(255,255,255,0.06); --dash-border: rgba(255,255,255,0.08);
+    --dash-text: #e0e0e0; --dash-muted: #8899aa;
+  }
+
+  .hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(180deg, #e6f2ff 0%, var(--bg) 100%); }
+  .hero .pillar-num { color: var(--accent); margin-bottom: 8px; }
+  .hero .headline-medium { margin-bottom: 12px; }
+  .hero .question { font-size: 1.15rem; color: var(--accent); font-weight: 500; margin-bottom: 20px; }
+  .hero .body-large { max-width: 640px; margin: 0 auto; }
+  .hero-summary { display: inline-flex; gap: 32px; margin-top: 32px; background: var(--bg); border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 32px; box-shadow: var(--card-shadow); }
+  .hero-summary .hs-item { text-align: center; }
+  .hero-summary .hs-val { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+  .hero-summary .hs-label { font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .subsection { border-bottom: 1px solid var(--border-light); }
+  .subsection:last-of-type { border-bottom: none; }
+  .sub-header { text-align: center; margin-bottom: 40px; }
+  .sub-header .label { margin-bottom: 8px; }
+  .sub-header .headline-small { margin-bottom: 8px; }
+  .sub-header .body { max-width: 600px; margin: 0 auto; }
+
+  .info-strip { display: flex; gap: 24px; margin-bottom: 32px; }
+  .info-card { flex: 1; padding: 20px 24px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--bg-alt); }
+  .info-card h4 { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); margin-bottom: 6px; }
+  .info-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
+  @media (max-width: 768px) { .info-strip { flex-direction: column; } }
+
+  .dash { background: var(--dash-bg); border-radius: 16px; padding: 32px; color: var(--dash-text); margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .dash h4 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dash-muted); margin-bottom: 16px; }
+  .dash-grid { display: grid; gap: 16px; }
+  .dash-grid-2 { grid-template-columns: 1fr 1fr; }
+  .dash-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .dash-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  @media (max-width: 768px) { .dash-grid-2, .dash-grid-3, .dash-grid-4 { grid-template-columns: 1fr; } .dash { padding: 24px 16px; } }
+  .dash-card { background: var(--dash-card); border: 1px solid var(--dash-border); border-radius: 12px; padding: 20px; }
+  .dash-card .dc-label { font-size: 0.7rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .dash-card .dc-value { font-size: 1.6rem; font-weight: 700; color: #fff; }
+  .dash-card .dc-sub { font-size: 0.72rem; color: var(--dash-muted); margin-top: 2px; }
+
+  .dash-checklist { list-style: none; padding: 0; }
+  .dash-checklist li { font-size: 0.82rem; padding: 8px 0; border-bottom: 1px solid var(--dash-border); display: flex; align-items: center; gap: 10px; }
+  .dash-checklist li:last-child { border-bottom: none; }
+  .check-icon { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
+  .check-pass { background: #30d158; color: #fff; }
+  .check-fail { background: #ff453a; color: #fff; }
+  .check-warn { background: #ff9f0a; color: #fff; }
+
+  /* Pyramid */
+  .pyramid { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 0; }
+  .pyr-level { text-align: center; border-radius: 8px; padding: 10px; font-size: 0.75rem; font-weight: 600; }
+
+  /* Pipeline */
+  .pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .pipe-stage { flex: 1; min-width: 120px; text-align: center; padding: 12px 8px; position: relative; }
+  .pipe-stage .ps-label { font-size: 0.68rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .pipe-stage .ps-status { font-size: 0.82rem; font-weight: 600; }
+  .pipe-arrow { font-size: 1.2rem; color: var(--dash-muted); padding: 0 4px; }
+
+  .dc-badge { display: inline-block; font-size: 0.62rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .dc-c1 { background: rgba(175,82,222,0.2); color: #d4a0f5; }
+  .dc-c2 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .dc-c3 { background: rgba(10,132,255,0.2); color: #6cb4ff; }
+  .dc-c4 { background: rgba(255,159,10,0.2); color: #ffb84d; }
+  .dc-c5 { background: rgba(255,69,58,0.2); color: #ff8a80; }
+  .dc-c6 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .contracts-used { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dash-border); font-size: 0.7rem; color: var(--dash-muted); }
+
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
+  <div class="container">
+    <a class="nav-brand" href="../index.html">AI Governance Platform</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#pillars">All Pillars</a></li>
+      <li><a href="#evals">Evals</a></li>
+      <li><a href="#bias">Bias Testing</a></li>
+      <li><a href="#gates">Quality Gates</a></li>
+      <li><a href="#modelcard">Model Cards</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<section class="hero">
+  <div class="container">
+    <p class="label pillar-num">Pillar 02</p>
+    <h2 class="headline-medium">Development Governance</h2>
+    <p class="question">How do we build it safely and prove it works?</p>
+    <p class="body-large">The AI equivalent of TDD. Define acceptance criteria, write eval suites, verify they fail, build the feature, verify they pass. No exceptions.</p>
+    <div class="hero-summary">
+      <div class="hs-item"><div class="hs-val">21</div><div class="hs-label">Artifacts</div></div>
+      <div class="hs-item"><div class="hs-val">6</div><div class="hs-label">Eval Types</div></div>
+      <div class="hs-item"><div class="hs-val">1</div><div class="hs-label">Pre-Deploy Gate</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 1: Eval-Driven Development -->
+<section class="subsection fade-in" id="evals">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 1 of 4</p>
+      <h3 class="headline-small">Eval-Driven Development</h3>
+      <p class="body">Write the eval suite before the feature. If the eval passes before you build, your eval is wrong. The AI equivalent of TDD.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Without evals, teams ship AI features that "seem to work" but degrade silently. Eval-driven development creates a contractual handoff from Discovery: every acceptance criterion becomes an automated eval that gates deployment.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>Eval pyramid (unit &rarr; integration &rarr; system &rarr; acceptance) maps to C3 trace hierarchies. CI/CD pipeline pushes eval results via OTLP. RED/GREEN status derived from trace event outcomes.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Personal Loan Agent Eval Suite</h4>
+
+      <div class="dash-grid dash-grid-2">
+        <div class="dash-card">
+          <div class="dc-label">Eval Pyramid</div>
+          <div class="pyramid">
+            <div class="pyr-level" style="width:45%; background:rgba(175,82,222,0.25); color:#d4a0f5;">Acceptance &mdash; 4 evals <span style="color:#30d158">&#10003; 3</span> <span style="color:#ff453a">&#10007; 1</span></div>
+            <div class="pyr-level" style="width:55%; background:rgba(10,132,255,0.25); color:#6cb4ff;">System &mdash; 8 evals <span style="color:#30d158">&#10003; 7</span> <span style="color:#ff453a">&#10007; 1</span></div>
+            <div class="pyr-level" style="width:70%; background:rgba(48,209,88,0.25); color:#60e088;">Integration &mdash; 12 evals <span style="color:#30d158">&#10003; 12</span></div>
+            <div class="pyr-level" style="width:90%; background:rgba(255,159,10,0.25); color:#ffb84d;">Unit &mdash; 47 evals <span style="color:#30d158">&#10003; 47</span></div>
+          </div>
+          <div style="text-align:center; font-size:0.82rem; margin-top:8px;">
+            <span style="color:#30d158; font-weight:600;">69 passing</span>
+            <span style="color:var(--dash-muted);"> &middot; </span>
+            <span style="color:#ff453a; font-weight:600;">2 failing</span>
+            <span style="color:var(--dash-muted);"> &middot; </span>
+            <span style="color:var(--dash-text);">97.2% pass rate</span>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dc-label">TDD Cycle &mdash; Current Feature</div>
+          <div style="margin-top:12px;">
+            <div class="pipeline">
+              <div class="pipe-stage">
+                <div class="ps-label">Define Criteria</div>
+                <div class="ps-status" style="color:#30d158;">&#10003; Done</div>
+              </div>
+              <span class="pipe-arrow">&rarr;</span>
+              <div class="pipe-stage">
+                <div class="ps-label">Write Evals</div>
+                <div class="ps-status" style="color:#30d158;">&#10003; Done</div>
+              </div>
+              <span class="pipe-arrow">&rarr;</span>
+              <div class="pipe-stage">
+                <div class="ps-label">Verify Fails</div>
+                <div class="ps-status" style="color:#30d158;">&#10003; RED</div>
+              </div>
+              <span class="pipe-arrow">&rarr;</span>
+              <div class="pipe-stage">
+                <div class="ps-label">Build Feature</div>
+                <div class="ps-status" style="color:#0a84ff;">In Progress</div>
+              </div>
+              <span class="pipe-arrow">&rarr;</span>
+              <div class="pipe-stage">
+                <div class="ps-label">Verify Passes</div>
+                <div class="ps-status" style="color:var(--dash-muted);">Pending</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:20px; padding:12px; background:rgba(255,255,255,0.04); border-radius:8px; font-size:0.75rem;">
+            <div style="color:var(--dash-muted); margin-bottom:6px;">Current Feature: Postcode Proxy-Bias Debiasing</div>
+            <div style="color:var(--dash-text);">Eval: <span style="color:#ff453a;">FAILING</span> &mdash; Approval rate gap by postcode = 14% (target: &lt;5%)</div>
+            <div style="color:var(--dash-muted); margin-top:4px;">This is expected — eval must fail before implementation.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c5">C5 Quality</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 2: Bias & Fairness Testing -->
+<section class="subsection fade-in" id="bias" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 2 of 4</p>
+      <h3 class="headline-small">Bias &amp; Fairness Testing</h3>
+      <p class="body">Systematic testing across protected characteristics using multiple fairness metrics. Not a one-time check — continuous through the dev cycle.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>EU AI Act requires documented fairness testing for high-risk systems. SAFEST Framework items F-01 and F-02 mandate bias identification and fairness metrics. A single metric isn't enough — different metrics can contradict each other.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>5 fairness metrics (demographic parity, equalized odds, predictive parity, calibration, individual fairness) tested across all protected characteristics. C6 captures bias guardrail triggers, C5 tracks fairness drift. Results stored in safest_items table.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Fairness Test Results</h4>
+
+      <div class="dash-card" style="overflow-x:auto;">
+        <div class="dc-label">Fairness Metrics by Protected Characteristic</div>
+        <table style="width:100%; font-size:0.75rem; margin-top:12px; border-collapse:collapse; min-width:500px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <th style="text-align:left; padding:8px; color:var(--dash-muted);">Metric</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Gender</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Ethnicity</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Age</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Disability</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Target</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:var(--dash-text);">Demographic Parity</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.96</td>
+              <td style="padding:8px; text-align:center; color:#ff453a; font-weight:600;">0.82</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.94</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a; font-weight:600;">0.89</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-muted);">&ge; 0.90</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:var(--dash-text);">Equalized Odds</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.93</td>
+              <td style="padding:8px; text-align:center; color:#ff453a; font-weight:600;">0.78</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.91</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.92</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-muted);">&ge; 0.85</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:var(--dash-text);">Predictive Parity</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.97</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a; font-weight:600;">0.86</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.95</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.93</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-muted);">&ge; 0.85</td>
+            </tr>
+            <tr>
+              <td style="padding:8px; color:var(--dash-text);">Calibration</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.94</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.91</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.96</td>
+              <td style="padding:8px; text-align:center; color:#30d158; font-weight:600;">0.95</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-muted);">&ge; 0.85</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:12px; padding:10px; background:rgba(255,69,58,0.1); border:1px solid rgba(255,69,58,0.2); border-radius:8px; font-size:0.75rem;">
+          <span style="color:#ff453a; font-weight:600;">BLOCKING:</span>
+          <span style="color:var(--dash-text);"> Ethnicity — Demographic Parity (0.82) and Equalized Odds (0.78) below threshold. Postcode correlated with ethnicity (proxy bias). Agent cannot proceed to pre-deployment gate until remediated.</span>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c5">C5 Quality</span>
+        <span class="dc-badge dc-c6">C6 Guardrails</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 3: Quality Gates -->
+<section class="subsection fade-in" id="gates">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 3 of 4</p>
+      <h3 class="headline-small">Pre-Deployment Quality Gates</h3>
+      <p class="body">The must-pass checklist before any AI system goes to production. Every item has a verification method and evidence requirement.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Production incidents are 10-100x more expensive than catching issues in development. The pre-deployment gate is the last checkpoint before real users are affected. For high-risk systems, this gate requires Committee + Board sponsor sign-off.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>Structured YAML checklist with 14 gate items. Agent pushes full C2 + C3 + C5 payloads at gate time. Gate approval recorded in audit_log table. Approval stored as evidence package for EU AI Act Article 11 documentation.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Pre-Deployment Gate Status</h4>
+
+      <div class="dash-grid dash-grid-2">
+        <div class="dash-card">
+          <div class="dc-label">Gate Checklist</div>
+          <ul class="dash-checklist">
+            <li><span class="check-icon check-pass">&#10003;</span> All acceptance criteria evals passing</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Model card documented &amp; reviewed</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Data sheet completed</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Guardrail configuration tested</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Fallback procedure documented</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Rollback procedure tested</li>
+            <li><span class="check-icon check-fail">&#10007;</span> Bias/fairness tests all passing</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Security review completed</li>
+            <li><span class="check-icon check-pass">&#10003;</span> DPIA updated</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Permission boundaries configured</li>
+            <li><span class="check-icon check-warn">!</span> Load testing completed (partial)</li>
+            <li><span class="check-icon check-pass">&#10003;</span> Monitoring alerts configured</li>
+          </ul>
+        </div>
+
+        <div class="dash-card">
+          <div class="dc-label">Gate Verdict</div>
+          <div style="text-align:center; padding:24px 0;">
+            <div style="font-size:2.5rem; font-weight:700; color:#ff453a;">BLOCKED</div>
+            <div style="font-size:0.85rem; color:var(--dash-muted); margin-top:8px;">10 of 12 items passing</div>
+            <div style="font-size:0.75rem; color:var(--dash-muted); margin-top:4px;">2 items require remediation</div>
+          </div>
+          <div style="margin-top:16px; padding:12px; background:rgba(255,255,255,0.04); border-radius:8px;">
+            <div style="font-size:0.72rem; color:var(--dash-muted); margin-bottom:8px;">SIGN-OFF REQUIRED (HIGH RISK)</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <span style="font-size:0.72rem; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--dash-muted);">PM &#10003;</span>
+              <span style="font-size:0.72rem; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--dash-muted);">ML Lead &#10003;</span>
+              <span style="font-size:0.72rem; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--dash-muted);">Committee &mdash;</span>
+              <span style="font-size:0.72rem; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--dash-muted);">Board Sponsor &mdash;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c2">C2 Health</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c5">C5 Quality</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 4: Model Cards -->
+<section class="subsection fade-in" id="modelcard" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 4 of 4</p>
+      <h3 class="headline-small">Model Cards &amp; Documentation</h3>
+      <p class="body">Auto-generated documentation combining agent metadata, performance baselines, cost profile, and limitations. Satisfies EU AI Act Article 11 requirements.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>EU AI Act Article 11 mandates technical documentation for high-risk systems. Model cards provide a standardized format covering intended use, limitations, performance characteristics, and ethical considerations. Without automation, documentation drifts from reality.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>Auto-generated from C1 (identity/scope), C4 (cost profile), C5 (performance baselines). Stored in article_11_documentation table. Regenerated on each model version promotion (DEV &rarr; STAGING &rarr; PROD).</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Auto-Generated Model Card</h4>
+
+      <div class="dash-card">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:0.78rem;">
+          <div>
+            <div style="color:var(--dash-muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Agent Identity (C1)</div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Name:</span> <span style="color:#fff;">personal-loan-agent</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Model:</span> <span style="color:#fff;">gpt-4o-mini (v2024-07)</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Risk Tier:</span> <span style="color:#ff9f0a; font-weight:600;">HIGH</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Oversight:</span> <span style="color:#fff;">HOTL (Human-on-the-Loop)</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Owner:</span> <span style="color:#fff;">Consumer Lending Team</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">ARI Score:</span> <span style="color:#ff9f0a; font-weight:600;">0.62</span></div>
+          </div>
+          <div>
+            <div style="color:var(--dash-muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Performance Baselines (C5)</div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Default AUC:</span> <span style="color:#fff;">0.86 on golden set</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Latency P95:</span> <span style="color:#fff;">2.4s</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Error Rate:</span> <span style="color:#fff;">0.2%</span></div>
+            <div style="color:var(--dash-muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px; margin-top:12px;">Cost Profile (C4)</div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Per Decision:</span> <span style="color:#fff;">&euro;0.09</span></div>
+            <div style="margin-bottom:4px;"><span style="color:var(--dash-muted);">Monthly Total:</span> <span style="color:#fff;">&euro;3,150</span></div>
+          </div>
+        </div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--dash-border);">
+          <div style="color:var(--dash-muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Known Limitations</div>
+          <div style="font-size:0.75rem; color:var(--dash-text); line-height:1.5;">
+            Postcode proxy-bias not yet remediated (approval gap 14%, target &lt;5%). Limited to personal loans &euro;500&ndash;&euro;50,000. Requires structured income documentation &mdash; self-employed applicants may produce lower accuracy. Not suitable for mortgage or commercial lending without HITL override.
+          </div>
+        </div>
+        <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--dash-border);">
+          <div style="color:var(--dash-muted); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Article 11 Documentation Status</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:0.7rem; padding:4px 10px; border-radius:6px; background:rgba(48,209,88,0.15); color:#30d158;">System Description &#10003;</span>
+            <span style="font-size:0.7rem; padding:4px 10px; border-radius:6px; background:rgba(48,209,88,0.15); color:#30d158;">Dev Process &#10003;</span>
+            <span style="font-size:0.7rem; padding:4px 10px; border-radius:6px; background:rgba(255,159,10,0.15); color:#ff9f0a;">Monitoring Plan !</span>
+            <span style="font-size:0.7rem; padding:4px 10px; border-radius:6px; background:rgba(48,209,88,0.15); color:#30d158;">Standards &#10003;</span>
+            <span style="font-size:0.7rem; padding:4px 10px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--dash-muted);">Conformity &mdash;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span class="dc-badge dc-c4">C4 Cost</span>
+        <span class="dc-badge dc-c5">C5 Quality</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="../index.html">Home</a> &ensp;&middot;&ensp;
+      <a href="discovery.html">Pillar 01: Discovery</a> &ensp;&middot;&ensp;
+      <a href="runtime.html">Pillar 03: Runtime</a> &ensp;&middot;&ensp;
+      <a href="operational.html">Pillar 04: Operational</a>
+    </p>
+    <p><em>Product Governance for Agentic AI Workflows</em></p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+# ===========================================================================
+# Guardrail Specification Template
+# ===========================================================================
+#
+# Purpose:
+#   YAML template for defining guardrail rules applied to an AI agent's
+#   inputs and outputs. This specification is the machine-readable
+#   counterpart to the Safety Policy Definition (safety-policy-definition.md).
+#   It provides the configuration consumed by guardrail engines (NeMo
+#   Guardrails, Guardrails AI, or custom implementations) to enforce
+#   safety, compliance, and quality controls at runtime.
+#
+# When to Use:
+#   - When configuring guardrails for a new or updated agent
+#   - When translating a safety policy into enforceable runtime rules
+#   - When integrating NeMo Guardrails or Guardrails AI into an agent pipeline
+#   - When auditing guardrail coverage against regulatory requirements
+#   - When updating guardrails after a safety incident or red-team exercise
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | AI/ML Engineer                | Responsible | Drafts and implements guardrail specifications       |
+#   | Model Owner                   | Accountable | Approves guardrail configuration                     |
+#   | MLOps / Platform Engineer     | Responsible | Deploys and monitors guardrail enforcement            |
+#   | Compliance Officer (2nd Line) | Reviewer    | Validates regulatory compliance of guardrail rules    |
+#   | AI Governance Committee       | Approver    | Approves guardrail specs for high-risk agents         |
+#
+# Regulatory Basis:
+#   - EU AI Act Article 9 -- Risk management measures including input/output controls
+#   - EU AI Act Article 14 -- Human oversight enforcement via guardrails
+#   - EU AI Act Article 15 -- Accuracy, robustness, and cybersecurity measures
+#   - MiFID II Articles 24-25 -- Financial advice boundaries enforced via guardrails
+#   - GDPR Articles 5, 25 -- Data protection by design; PII detection in I/O
+#   - SAFEST S-13 -- Fallback procedures triggered by guardrail violations
+#   - SAFEST T-01 -- Transparency guardrails (AI disclosure, disclaimers)
+#
+# Compatibility:
+#   - NVIDIA NeMo Guardrails (Colang flows; see integrating-nemo-guardrails.md)
+#   - Guardrails AI (Guard/Validator pattern; see integrating-guardrails-ai.md)
+#   - Custom guardrail engines following the input-rail / output-rail pattern
+#
+# Cross-References:
+#   - Safety Policy Definition: safety-policy-definition.md
+#   - Agent Fleet Operations: ../agentic-workflows/agent-fleet-operations.md
+#   - Agent Permission Boundaries: ../agentic-workflows/agent-permission-boundaries.md
+#   - Integrating NeMo Guardrails: ../guides/integrating-nemo-guardrails.md
+#   - Integrating Guardrails AI: ../guides/integrating-guardrails-ai.md
+#   - Output Validation Patterns: ../guides/output-validation-patterns.md
+#
+# Last updated: 2026-03-01 / Version: 1.0 / Classification: Internal / Regulatory Preparation
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# SPECIFICATION METADATA
+# ---------------------------------------------------------------------------
+guardrail_spec:
+  spec_id: "<GR-[AGENT_PREFIX]-v[version]>"          # e.g., GR-PAYMENTS-v2.3
+  agent_id: "<agent_id>"                              # Must match agent registry
+  safety_policy_ref: "<SP-[AGENT_PREFIX]-v[version]>" # Safety policy this enforces
+  spec_version: "<semver>"
+  effective_date: "<YYYY-MM-DD>"
+  approved_by: "<Name, Role>"
+  engine_compatibility:
+    - "nemo_guardrails"
+    - "guardrails_ai"
+    - "custom"
+
+# ---------------------------------------------------------------------------
+# INPUT VALIDATION RULES
+# ---------------------------------------------------------------------------
+input_validation:
+
+  # --- Prompt Injection / Jailbreak Detection ---
+  injection_detection:
+    enabled: true
+    method: "<classifier | pattern_match | hybrid>"
+    # classifier: LLM-based or fine-tuned model; higher accuracy, higher latency
+    # pattern_match: regex-based; fast but lower recall
+    # hybrid: pattern match first, classifier on uncertain inputs
+    confidence_threshold: 0.85
+    action_on_detection: "block_and_log"
+    # block_and_log: Block input; log event; return safe refusal response
+    # log_only: Allow input but flag for monitoring
+    blocked_response: "I cannot process that request. How can I help you with your banking needs?"
+    patterns:
+      - "ignore (all |your )?(previous |prior )?instructions"
+      - "pretend you are"
+      - "you are now in .* mode"
+      - "from now on you will"
+      - "disregard (all |your )?safety"
+      - "act as (if you are |a )?(DAN|unrestricted|unfiltered)"
+
+  # --- Input Length Limits ---
+  max_input_length:
+    enabled: true
+    max_characters: 4000
+    max_tokens: 1000
+    action_on_violation: "truncate_and_warn"
+    warning_message: "Your message was quite long. I have processed the key parts. Could you rephrase your main question briefly?"
+
+  # --- PII Detection in Input ---
+  pii_detection_input:
+    enabled: true
+    scan_types:
+      - type: "credit_card"
+        pattern: "\\b(?:\\d{4}[-\\s]?){3}\\d{4}\\b"
+        action: "warn_and_redact"
+      - type: "iban"
+        pattern: "\\b[A-Z]{2}\\d{2}[A-Z0-9]{4}\\d{7}([A-Z0-9]?){0,16}\\b"
+        action: "warn_and_redact"
+      - type: "bsn"  # Dutch citizen service number
+        pattern: "\\b\\d{9}\\b"
+        action: "warn_and_redact"
+      - type: "email"
+        pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"
+        action: "allow_with_note"  # Email may be needed for account lookup
+      - type: "phone"
+        pattern: "\\b\\+?\\d{10,15}\\b"
+        action: "allow_with_note"
+    redaction_message: "For your security, please do not share sensitive information like card numbers or national ID numbers in this chat. I can look up your details securely using your account reference."
+
+  # --- Topic Boundaries (Input) ---
+  topic_boundaries_input:
+    enabled: true
+    allowed_topics:
+      - "account_inquiries"
+      - "transaction_history"
+      - "payment_requests"
+      - "product_information"
+      - "general_banking"
+      - "complaint"
+      - "technical_support"
+    blocked_topics:
+      - topic: "investment_advice"
+        examples:
+          - "Should I buy stocks?"
+          - "What crypto should I invest in?"
+          - "Is this a good time to buy gold?"
+        response: "I am not licensed to provide investment advice. I can connect you with a licensed financial advisor. Would you like me to arrange that?"
+      - topic: "tax_advice"
+        examples:
+          - "Can I deduct this from my taxes?"
+          - "How much tax will I pay on this?"
+        response: "I cannot provide tax advice. Please consult a qualified tax advisor for guidance specific to your situation."
+      - topic: "legal_advice"
+        examples:
+          - "Can I sue my bank?"
+          - "What are my legal rights here?"
+        response: "I cannot provide legal advice. For legal matters, please consult a qualified legal professional."
+      - topic: "competitor_products"
+        examples:
+          - "Is [Competitor] better than you?"
+          - "Should I switch to [Competitor]?"
+        response: "I can help you with questions about our products and services. What would you like to know?"
+      - topic: "politics_religion"
+        examples:
+          - "What do you think about the elections?"
+          - "Which religion is best?"
+        response: "I am here to help with banking-related questions. How can I assist you today?"
+    detection_method: "intent_classifier"             # or "keyword_match" or "hybrid"
+    classifier_confidence_threshold: 0.80
+
+  # --- Language Detection ---
+  language_validation:
+    enabled: true
+    supported_languages:
+      - "en"
+      - "nl"
+    unsupported_language_response: "I currently support English and Dutch. Could you please rephrase your question in one of these languages?"
+
+# ---------------------------------------------------------------------------
+# OUTPUT VALIDATION RULES
+# ---------------------------------------------------------------------------
+output_validation:
+
+  # --- Hallucination Detection ---
+  hallucination_detection:
+    enabled: true
+    method: "<grounding_check | self_consistency | knowledge_base_verification>"
+    # grounding_check: Verify claims against retrieved context
+    # self_consistency: Generate multiple responses; flag divergence
+    # knowledge_base_verification: Cross-reference against authoritative KB
+    confidence_threshold: 0.85
+    action_on_low_confidence: "add_hedging_language"
+    hedging_prefix: "Based on the information available to me, "
+    action_on_hallucination_detected: "block_and_substitute"
+    substitute_response: "I want to make sure I give you accurate information. Let me verify this and get back to you."
+
+  # --- Financial Advice Boundary ---
+  financial_advice_detection:
+    enabled: true
+    prohibited_patterns:
+      - pattern: "(I |we )?(recommend|suggest|advise) (you )?(buy|sell|invest)"
+        severity: "critical"
+      - pattern: "you should (open|close|switch|change) (your |a )?(account|product|plan)"
+        severity: "critical"
+      - pattern: "based on your (profile|situation|circumstances|risk)"
+        severity: "high"
+      - pattern: "guaranteed (return|profit|income|yield)"
+        severity: "critical"
+      - pattern: "(risk-free|no risk|completely safe|cannot lose)"
+        severity: "critical"
+      - pattern: "(act now|limited time|don't miss|hurry|urgent offer)"
+        severity: "high"
+    action_on_detection: "block_and_add_disclaimer"
+    disclaimer: "This is general information and does not constitute personal financial advice. For personalised advice, please speak with one of our licensed advisors."
+
+  # --- Content Safety Filter ---
+  content_safety:
+    enabled: true
+    categories:
+      - category: "harmful_content"
+        description: "Violence, self-harm, illegal activities, dangerous instructions"
+        action: "block"
+        substitute: "I am not able to respond to that. How can I help you with your banking needs?"
+      - category: "discriminatory_content"
+        description: "Differential treatment based on protected attributes"
+        action: "block_and_flag"
+      - category: "manipulative_content"
+        description: "Pressure tactics, dark patterns, emotional exploitation"
+        action: "block"
+      - category: "offensive_content"
+        description: "Profanity, insults, inappropriate language"
+        action: "block"
+    detection_method: "content_classifier"
+    classifier_model: "<model_id for content safety classification>"
+
+  # --- PII Detection in Output ---
+  pii_detection_output:
+    enabled: true
+    rules:
+      - type: "cross_customer_leakage"
+        description: "Output contains PII of a customer other than the authenticated user"
+        action: "block_immediately"
+        severity: "critical"
+      - type: "unnecessary_pii_exposure"
+        description: "Output reveals full PII when partial confirmation suffices"
+        action: "mask"
+        example: "Show last 4 digits of IBAN, not full IBAN"
+      - type: "system_prompt_leakage"
+        description: "Output reveals internal system prompts, instructions, or configuration"
+        action: "block_immediately"
+        severity: "critical"
+
+  # --- Response Format Validation ---
+  format_validation:
+    enabled: true
+    rules:
+      - rule: "max_response_length"
+        max_characters: 2000
+        action: "truncate_with_continuation"
+        continuation_message: "Would you like me to continue with more details?"
+      - rule: "structured_data_schema"
+        description: "When agent returns structured data (balances, transactions), validate against schema"
+        schema_ref: "<path to JSON schema>"
+        action_on_violation: "reject_and_retry"
+      - rule: "required_fields"
+        description: "Certain response types must include specific fields"
+        requirements:
+          - response_type: "transaction_confirmation"
+            required_fields: ["amount", "currency", "beneficiary", "reference", "status"]
+          - response_type: "balance_inquiry"
+            required_fields: ["account_type", "balance", "currency", "as_of_timestamp"]
+
+  # --- Disclaimer Injection ---
+  disclaimer_injection:
+    enabled: true
+    rules:
+      - trigger: "financial_product_mention"
+        disclaimer: "This is general information and does not constitute personal financial advice."
+        position: "append"
+      - trigger: "investment_topic"
+        disclaimer: "Investments carry risk. You may lose some or all of your invested capital."
+        position: "append"
+      - trigger: "conversation_start"
+        disclaimer: "I am an AI assistant for [Company Name]."
+        position: "prepend"
+
+  # --- Regulatory Compliance Check ---
+  regulatory_compliance:
+    enabled: true
+    rules:
+      - regulation: "MiFID II"
+        check: "no_unsuitable_product_recommendations"
+        action: "block_and_redirect_to_advisor"
+      - regulation: "Consumer Rights Directive"
+        check: "cooling_off_period_disclosure"
+        action: "append_disclosure_when_applicable"
+      - regulation: "GDPR"
+        check: "data_minimization_in_requests"
+        action: "block_excessive_data_requests"
+      - regulation: "EU AI Act Art 52"
+        check: "ai_disclosure_at_conversation_start"
+        action: "inject_disclosure_if_missing"
+
+# ---------------------------------------------------------------------------
+# ESCALATION CONDITIONS
+# ---------------------------------------------------------------------------
+escalation_conditions:
+
+  - condition: "customer_requests_human"
+    detection: "intent_classifier"
+    priority: "immediate"
+    target: "customer_service_queue"
+    max_delay_seconds: 0
+    message: "Let me connect you with a team member right away."
+
+  - condition: "confidence_below_threshold"
+    detection: "reasoning_trace_confidence"
+    threshold: 0.85  # Varies by action type; see safety policy Sec. 7
+    priority: "high"
+    target: "customer_service_queue"
+    max_delay_seconds: 60
+
+  - condition: "transaction_above_limit"
+    detection: "parameter_check"
+    limit_field: "amount"
+    limit_value: 10000    # EUR; per permission boundary
+    priority: "high"
+    target: "authorized_operations"
+
+  - condition: "complaint_detected"
+    detection: "sentiment_and_keyword"
+    priority: "high"
+    target: "complaints_team"
+
+  - condition: "user_distress_detected"
+    detection: "emotional_safety_classifier"
+    priority: "immediate"
+    target: "vulnerability_team"
+    message: "I understand this may be difficult. Let me connect you with someone who can provide the right support."
+
+  - condition: "repeated_failure"
+    detection: "turn_count_and_intent_repetition"
+    threshold_turns: 3
+    priority: "high"
+    target: "customer_service_queue"
+
+  - condition: "safety_guardrail_breach"
+    detection: "guardrail_engine"
+    priority: "high"
+    target: "review_queue"
+    log_level: "critical"
+
+# ---------------------------------------------------------------------------
+# MONITORING AND ALERTING
+# ---------------------------------------------------------------------------
+monitoring:
+  metrics:
+    - name: "input_block_rate"
+      description: "Percentage of inputs blocked by input guardrails"
+      alert_threshold: "spike > 2x rolling_7d_baseline"
+    - name: "output_block_rate"
+      description: "Percentage of outputs blocked by output guardrails"
+      alert_threshold: "spike > 2x rolling_7d_baseline"
+    - name: "false_positive_rate"
+      description: "Percentage of blocks determined incorrect upon review"
+      alert_threshold: "> 5% in monthly sample"
+    - name: "jailbreak_attempt_rate"
+      description: "Number of jailbreak attempts detected per day"
+      alert_threshold: "increasing_trend over 7 days"
+    - name: "hallucination_catch_rate"
+      description: "Percentage of outputs corrected by hallucination detection"
+      alert_threshold: "increasing_trend over 7 days"
+    - name: "guardrail_latency_p95"
+      description: "95th percentile total guardrail processing time"
+      alert_threshold: "> 500ms"
+    - name: "escalation_rate"
+      description: "Percentage of interactions escalated by guardrails"
+      alert_threshold: "> 20% over rolling 24h"
+  dashboard_ref: "guardrail-health-dashboard"
+  observability_platform: "<LangSmith | Arize Phoenix | Langfuse | Opik>"
+
+# ---------------------------------------------------------------------------
+# TESTING REQUIREMENTS
+# ---------------------------------------------------------------------------
+testing:
+  pre_deployment:
+    - test: "injection_resistance"
+      dataset_size: 200
+      pass_threshold: "100% blocked"
+      frequency: "before every deployment"
+    - test: "content_safety"
+      dataset_size: 500
+      pass_threshold: "> 99% blocked"
+      frequency: "before every deployment"
+    - test: "financial_advice_boundary"
+      dataset_size: 100
+      pass_threshold: "100% blocked"
+      frequency: "before every deployment"
+    - test: "pii_detection"
+      dataset_size: 150
+      pass_threshold: "> 99% detected"
+      frequency: "before every deployment"
+    - test: "disclaimer_injection"
+      dataset_size: 50
+      pass_threshold: "100% correct injection"
+      frequency: "before every deployment"
+  post_deployment:
+    - test: "production_sample_review"
+      sample_rate: "1% of production traffic"
+      review_frequency: "weekly"
+      reviewer: "AI/ML Engineer + Compliance rotation"
+    - test: "red_team_exercise"
+      frequency: "monthly for high-risk; quarterly for limited"
+      scope: "all guardrail categories"

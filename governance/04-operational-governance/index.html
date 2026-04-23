@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pillar 4: Operational Governance — Long-term safety, security, compliance.">
+<meta name="theme-color" content="#0071e3">
+<title>Pillar 4: Operational Governance — Product Governance for Agentic AI</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --bg: #fff;
+    --bg-alt: #fbfbfd;
+    --accent: #0071e3;
+    --accent-hover: #0077ed;
+    --border: #d2d2d7;
+    --border-light: #e8e8ed;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .headline-large { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+  .headline-medium { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
+  .body-large { font-size: clamp(1.05rem, 1.8vw, 1.2rem); line-height: 1.6; color: var(--text-secondary); }
+  .label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 60px 0; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border-light);
+    height: 48px; display: flex; align-items: center;
+  }
+  nav .container { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  nav a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; }
+  nav a:hover { color: var(--accent); }
+
+  .hero { padding-top: 120px; text-align: center; background: var(--bg-alt); }
+  .hero .label { margin-bottom: 16px; display: block; }
+  .hero h1 { margin-bottom: 20px; }
+  .hero .body-large { max-width: 800px; margin: 0 auto 40px; }
+
+  .content-section h2 { font-size: 1.5rem; font-weight: 600; margin: 40px 0 20px; }
+  .content-section h3 { font-size: 1.2rem; font-weight: 600; margin: 30px 0 15px; color: var(--text-secondary); }
+  .content-section p { margin-bottom: 16px; color: var(--text-secondary); line-height: 1.7; }
+  .content-section ul { margin: 16px 0; padding-left: 24px; color: var(--text-secondary); }
+  .content-section li { margin-bottom: 8px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 30px 0; }
+  .card {
+    padding: 24px; border-radius: 16px; border: 1px solid var(--border-light);
+    transition: box-shadow 0.25s, transform 0.25s; background: var(--bg);
+  }
+  .card:hover { box-shadow: var(--card-shadow); transform: translateY(-2px); }
+  .card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 0.9rem; margin-bottom: 12px; }
+  .card a { color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.85rem; }
+  .card a:hover { text-decoration: underline; }
+
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-light); }
+  th { font-weight: 600; color: var(--text); background: var(--bg-alt); }
+  td { color: var(--text-secondary); }
+  tr:hover td { background: var(--bg-alt); }
+
+  footer { padding: 40px 0; border-top: 1px solid var(--border-light); margin-top: 60px; }
+  footer p { text-align: center; color: var(--text-tertiary); font-size: 0.85rem; }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr; }
+    table { font-size: 0.8rem; }
+    th, td { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html">&#8592; Back to Platform</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <span class="label">Pillar 4</span>
+    <h1 class="headline-large">Operational Governance</h1>
+    <p class="body-large">Ensures AI systems remain safe, secure, performant, compliant, and accountable <strong>over their entire production lifetime</strong>. Covers long-term concerns from deployment through decommissioning.</p>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container">
+    <h2>When to Use</h2>
+    <p>Apply Operational Governance throughout the entire lifecycle of production AI systems:</p>
+    <ul>
+      <li>When managing security threats and vulnerabilities</li>
+      <li>When responding to incidents or anomalies</li>
+      <li>When detecting and addressing model drift</li>
+      <li>When preparing for audits or regulatory inspections</li>
+      <li>When planning system retirement or decommissioning</li>
+    </ul>
+    <p><strong>Trigger:</strong> All production AI systems require continuous operational governance from deployment to decommissioning.</p>
+
+    <h2>Who Is Responsible</h2>
+    <table>
+      <tr><th>Role</th><th>Responsibility</th></tr>
+      <tr><td><strong>Model Owner</strong></td><td><strong>Accountable</strong> — overall operational health, incident response, audit readiness</td></tr>
+      <tr><td>MLOps / Platform Engineer</td><td><strong>Responsible</strong> — security controls, monitoring, drift detection</td></tr>
+      <tr><td>On-Call Engineer</td><td><strong>Responsible</strong> — incident detection and initial response</td></tr>
+      <tr><td>Compliance Officer</td><td><strong>Consulted</strong> — periodic reviews, regulatory reporting, audit preparation</td></tr>
+      <tr><td>Internal Audit</td><td><strong>Assurance</strong> — third-line validation of operational controls</td></tr>
+      <tr><td>AI Governance Committee</td><td><strong>Approver</strong> — approves material changes and decommissioning</td></tr>
+    </table>
+
+    <h2>What This Pillar Contains</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h4>&#128274; Security</h4>
+        <p>Prompt injection defense, model theft protection, data poisoning detection, access control.</p>
+        <a href="security/">View security guides &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128680; Incident Management</h4>
+        <p>Detection, classification, response procedures, root cause analysis, regulatory reporting.</p>
+        <a href="incident-management/">View procedures &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128200; Drift Detection</h4>
+        <p>Data drift, concept drift, performance drift monitoring and revalidation triggers.</p>
+        <a href="drift-detection/">View methodology &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128203; Audit & Compliance</h4>
+        <p>Audit trail integrity, regulatory reporting, evidence management, audit preparation.</p>
+        <a href="audit-compliance/">View guides &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128176; Cost Governance</h4>
+        <p>Compute cost monitoring, cost-per-decision tracking, optimization, budget planning.</p>
+        <a href="cost-governance/">View guides &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128163; Decommissioning</h4>
+        <p>Retirement triggers, transition planning, post-decommission obligations.</p>
+        <a href="decommissioning/">View guides &#8594;</a>
+      </div>
+    </div>
+
+    <h2>Key Output</h2>
+    <p>Operational Governance ensures:</p>
+    <ol style="margin: 16px 0; padding-left: 24px; color: var(--text-secondary);">
+      <li><strong>Security posture</strong> — defenses against emerging threats and vulnerabilities</li>
+      <li><strong>Incident readiness</strong> — documented procedures and trained response teams</li>
+      <li><strong>Drift awareness</strong> — continuous monitoring with automated revalidation triggers</li>
+      <li><strong>Audit readiness</strong> — complete documentation and evidence for regulatory inspections</li>
+      <li><strong>Lifecycle management</strong> — planned retirement and transition strategies</li>
+    </ol>
+
+    <h2>Regulatory Basis</h2>
+    <ul>
+      <li><strong>EU AI Act Article 12</strong> — Record-keeping and logging requirements</li>
+      <li><strong>EU AI Act Article 13</strong> — Transparency and provision of information</li>
+      <li><strong>DORA Article 23-27</strong> — ICT-related incident management and reporting</li>
+      <li><strong>GDPR Articles 32-33</strong> — Security of processing and breach notification</li>
+      <li><strong>DNB Good Practice for AI</strong> — Ongoing monitoring and model risk management</li>
+      <li><strong>SAFEST items O-01 through O-15</strong> — Operational governance requirements</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Part of the <a href="../index.html">AI Governance Platform</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

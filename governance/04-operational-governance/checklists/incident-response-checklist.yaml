@@ -1,0 +1,318 @@
+# =============================================================================
+# AI Incident Response Checklist
+# Master AI Governance Framework — Regulated FinTech
+# =============================================================================
+# Scope: AI-specific incident response for agentic workflows in financial
+#         services. Covers model failures, agent misbehaviour, safety
+#         violations, and regulatory notification obligations.
+# Related: ../templates/vulnerability-assessment.md
+#          ../regulatory/eu-ai-act-compliance-mapping.md
+#          ../regulatory/dora-ai-requirements.md
+# =============================================================================
+
+metadata:
+  id: OPS-IR
+  title: AI Incident Response Checklist
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  owner: AI Risk & Compliance
+  review_cadence: quarterly
+  severity_levels:
+    - SEV1_CRITICAL   # Systemic failure, regulatory breach, financial loss > threshold
+    - SEV2_HIGH       # Significant degradation, safety violation, data leak
+    - SEV3_MEDIUM     # Contained failure, performance regression, isolated agent error
+    - SEV4_LOW        # Minor anomaly, cosmetic issue, single-user impact
+
+# ---------------------------------------------------------------------------
+# Phase 1 — Detection
+# ---------------------------------------------------------------------------
+phases:
+  - phase: detection
+    description: >
+      Identify that an AI-related incident has occurred or is in progress.
+      Detection may originate from automated monitoring, user reports, or
+      internal audit findings.
+    items:
+      - id: OPS-IR-01
+        description: Automated alert received from model monitoring pipeline (drift, accuracy drop, latency spike)
+        priority: all_severities
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-02
+        description: Guardrail or safety-filter trigger rate exceeds threshold (>2x baseline over 15-min window)
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+
+      - id: OPS-IR-03
+        description: Agent performed an unauthorised action — tool-use violation or permission boundary breach detected
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+        agent_specific: true
+
+      - id: OPS-IR-04
+        description: User-reported unexpected or harmful AI output received and logged in incident tracker
+        priority: SEV2_HIGH
+        status: pending
+        responsible: customer_support_lead
+
+      - id: OPS-IR-05
+        description: Anomalous prediction volume or confidence distribution identified by statistical monitor
+        priority: SEV3_MEDIUM
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-06
+        description: Internal audit or red-team exercise discovered exploitable vulnerability
+        priority: SEV2_HIGH
+        status: pending
+        responsible: ai_risk_officer
+
+  # ---------------------------------------------------------------------------
+  # Phase 2 — Triage
+  # ---------------------------------------------------------------------------
+  - phase: triage
+    description: >
+      Assess severity, scope, and blast radius. Assign an incident commander
+      and determine whether regulatory notification timelines are triggered.
+    items:
+      - id: OPS-IR-07
+        description: Assign severity level (SEV1–SEV4) using the severity matrix
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+      - id: OPS-IR-08
+        description: Identify affected systems, models, agents, and downstream consumers
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+      - id: OPS-IR-09
+        description: Determine if personal data is compromised — if yes, escalate to DPO within 1 hour
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: data_protection_officer
+        regulatory: GDPR_Art33
+
+      - id: OPS-IR-10
+        description: Assess whether ICT incident reporting under DORA is triggered (major ICT-related incident)
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: compliance_officer
+        regulatory: DORA_Art19
+
+      - id: OPS-IR-11
+        description: For agent incidents — identify which tools were invoked, what permissions were active, and what delegation chain was followed
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+        agent_specific: true
+
+      - id: OPS-IR-12
+        description: Notify incident response team via dedicated channel within SLA (SEV1 = 15 min, SEV2 = 1 hr)
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: incident_commander
+
+  # ---------------------------------------------------------------------------
+  # Phase 3 — Containment
+  # ---------------------------------------------------------------------------
+  - phase: containment
+    description: >
+      Limit the blast radius. Prevent further harm while preserving evidence
+      for investigation.
+    items:
+      - id: OPS-IR-13
+        description: Activate model circuit-breaker — route traffic to fallback model or static responses
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-14
+        description: Revoke agent tool-use permissions or downgrade autonomy level to human-in-the-loop
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+        agent_specific: true
+
+      - id: OPS-IR-15
+        description: Isolate affected data pipeline segments to prevent further data contamination
+        priority: SEV2_HIGH
+        status: pending
+        responsible: data_engineering_lead
+
+      - id: OPS-IR-16
+        description: Preserve all logs, model artefacts, and agent execution traces for forensic analysis
+        priority: all_severities
+        status: pending
+        responsible: platform_engineering
+
+      - id: OPS-IR-17
+        description: Disable or throttle affected API endpoints if external consumers are impacted
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: platform_engineering
+
+  # ---------------------------------------------------------------------------
+  # Phase 4 — Investigation
+  # ---------------------------------------------------------------------------
+  - phase: investigation
+    description: >
+      Determine root cause. Distinguish between model failure, data issue,
+      infrastructure problem, adversarial attack, or agent logic error.
+    items:
+      - id: OPS-IR-18
+        description: Collect and correlate telemetry — model inputs/outputs, feature values, infrastructure metrics
+        priority: all_severities
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-19
+        description: Replay agent execution trace to identify decision point where violation occurred
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+        agent_specific: true
+
+      - id: OPS-IR-20
+        description: Run root-cause analysis — categorise as model drift, data quality, adversarial input, config error, or code bug
+        priority: all_severities
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-21
+        description: Assess whether the incident reveals a systemic vulnerability requiring broader remediation
+        priority: SEV2_HIGH
+        status: pending
+        responsible: ai_risk_officer
+
+      - id: OPS-IR-22
+        description: Document findings in incident record with evidence references
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+  # ---------------------------------------------------------------------------
+  # Phase 5 — Remediation
+  # ---------------------------------------------------------------------------
+  - phase: remediation
+    description: >
+      Fix the root cause. Validate the fix. Restore normal operations.
+    items:
+      - id: OPS-IR-23
+        description: Implement fix — model rollback, data correction, config change, or agent policy update
+        priority: all_severities
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-24
+        description: Run regression test suite against golden dataset to confirm fix and absence of new regressions
+        priority: all_severities
+        status: pending
+        responsible: ml_test_engineer
+        cross_ref: ../evaluations/regression-testing-for-ai.md
+
+      - id: OPS-IR-25
+        description: Gradually restore traffic — canary deployment at 5%, 25%, 50%, 100% with monitoring
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: platform_engineering
+
+      - id: OPS-IR-26
+        description: Verify agent permissions and delegation chain restored to correct state
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: ai_safety_team
+        agent_specific: true
+
+  # ---------------------------------------------------------------------------
+  # Phase 6 — Communication
+  # ---------------------------------------------------------------------------
+  - phase: communication
+    description: >
+      Notify stakeholders, regulators, and affected users as required.
+    items:
+      - id: OPS-IR-27
+        description: Notify DNB (De Nederlandsche Bank) if incident meets major ICT incident criteria under DORA — initial report within 4 hours
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: compliance_officer
+        regulatory: DORA_Art19
+        deadline: 4_hours
+
+      - id: OPS-IR-28
+        description: Notify DPA (Autoriteit Persoonsgegevens) within 72 hours if personal data breach under GDPR Art 33
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: data_protection_officer
+        regulatory: GDPR_Art33
+        deadline: 72_hours
+
+      - id: OPS-IR-29
+        description: Submit intermediate ICT incident report to DNB within 72 hours with root-cause update
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: compliance_officer
+        regulatory: DORA_Art19
+        deadline: 72_hours
+
+      - id: OPS-IR-30
+        description: Communicate incident status and resolution to affected internal stakeholders
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+      - id: OPS-IR-31
+        description: Notify affected customers if required by contract or regulation
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: customer_comms_lead
+
+  # ---------------------------------------------------------------------------
+  # Phase 7 — Post-Mortem
+  # ---------------------------------------------------------------------------
+  - phase: post_mortem
+    description: >
+      Blameless post-mortem. Extract lessons. Update runbooks and controls.
+    items:
+      - id: OPS-IR-32
+        description: Schedule blameless post-mortem within 5 business days of incident closure
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+      - id: OPS-IR-33
+        description: Document timeline, root cause, impact, detection latency, and resolution steps
+        priority: all_severities
+        status: pending
+        responsible: incident_commander
+
+      - id: OPS-IR-34
+        description: Identify preventive actions — monitoring gaps, missing guardrails, policy updates
+        priority: all_severities
+        status: pending
+        responsible: ai_risk_officer
+
+      - id: OPS-IR-35
+        description: Update incident runbook, monitoring alerts, and escalation paths based on lessons learned
+        priority: all_severities
+        status: pending
+        responsible: on_call_ml_engineer
+
+      - id: OPS-IR-36
+        description: Submit final ICT incident report to DNB within one month if DORA reporting was triggered
+        priority: SEV1_CRITICAL
+        status: pending
+        responsible: compliance_officer
+        regulatory: DORA_Art19
+        deadline: 1_month
+
+      - id: OPS-IR-37
+        description: Archive incident record with full audit trail for regulatory retention period (minimum 5 years)
+        priority: all_severities
+        status: pending
+        responsible: compliance_officer
+        retention: 5_years

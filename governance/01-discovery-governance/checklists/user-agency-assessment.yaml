@@ -1,0 +1,471 @@
+# =============================================================================
+# User Agency Assessment Checklist
+# Master AI Governance Framework - Discovery Pillar
+# =============================================================================
+# Inspired by: Google PAIR (People + AI Research) Guidelines, EU AI Act
+#              transparency requirements, FCA Consumer Duty
+# Scope:       Assess how much meaningful control end users have over an AI
+#              system's decisions, data use, and behavior. Focused on FinTech
+#              agentic workflows (lending, trading, advisory, onboarding).
+# Usage:       Complete during product discovery alongside the ethical-product-
+#              discovery.yaml checklist. Items map to EU AI Act Articles 13,
+#              14, and 52. Results feed into the AI Ethics Impact Assessment.
+#
+# Cross-references:
+#   - ./ethical-product-discovery.yaml              (parent ethics checklist)
+#   - ../templates/ai-ethics-impact-assessment.md   (impact assessment)
+#   - ../guides/pair-guide-for-pms.md               (PAIR patterns for PMs)
+#   - ../governance-extensions/ux-governance-addon.md (UX governance)
+#   - ../../03-runtime-governance/                   (runtime transparency)
+# =============================================================================
+
+metadata:
+  framework: "Master AI Governance Framework"
+  pillar: "01-Discovery"
+  artifact: "User Agency Assessment Checklist"
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  owner: "AI Ethics & Governance Office"
+  review_cadence: "Per product initiative and quarterly review"
+  eu_ai_act_mapping:
+    article_13: "Transparency and provision of information to deployers"
+    article_14: "Human oversight"
+    article_52: "Transparency obligations for certain AI systems"
+  scoring:
+    method: "Each item scored 0-3 (0=not addressed, 1=partial, 2=adequate, 3=exemplary)"
+    minimum_passing: "All critical items >= 2; overall score >= 70%"
+    maximum_possible: 60  # 20 items x 3 points
+
+# =============================================================================
+# CATEGORY 1: TRANSPARENCY
+# EU AI Act Art. 13, Art. 52 -- Users must know AI is involved and understand
+# what it does, its capabilities, and its limitations.
+# =============================================================================
+categories:
+
+  - id: "transparency"
+    name: "Transparency -- Does the user know AI is involved?"
+    description: >
+      Users cannot exercise agency over a system they do not know exists.
+      This category assesses whether the AI system's presence, role, and
+      limitations are clearly communicated to every affected individual.
+    eu_ai_act_ref: "Art. 13 (transparency), Art. 52 (disclosure)"
+    items:
+
+      - id: "TRANS-UA-001"
+        item: "AI involvement is disclosed before the user engages with the system"
+        description: >
+          Users are informed that AI is part of the process BEFORE they
+          provide data or begin a workflow. In FinTech: before a loan
+          application is submitted, before a trade recommendation is shown,
+          before a KYC check begins. Disclosure must be prominent and in
+          plain language -- not buried in terms of service.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 52(1) - users informed of AI interaction"
+        fintech_example: >
+          Lending app displays: 'Your application will be assessed by an
+          automated system. A human reviewer will verify the decision before
+          any offer is made.'
+
+      - id: "TRANS-UA-002"
+        item: "The AI system's role and decision scope are clearly described"
+        description: >
+          Users understand WHAT the AI decides vs. what humans decide. Is
+          the AI recommending, screening, or making final decisions? Document
+          the boundary and communicate it clearly.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)(i) - intended purpose"
+        fintech_example: >
+          Trading platform states: 'Our AI generates trade suggestions based
+          on your risk profile. All trades require your explicit approval
+          before execution.'
+
+      - id: "TRANS-UA-003"
+        item: "Known limitations and error rates are communicated to users"
+        description: >
+          Users are told where the AI performs poorly and what types of
+          errors are most common. Avoid false confidence. In FinTech:
+          disclose model accuracy on edge cases, known demographic
+          performance gaps, and conditions under which the AI may fail.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)(ii) - known or foreseeable circumstances of misuse"
+        fintech_example: >
+          Credit scoring disclosure: 'This system has been tested for
+          fairness across demographic groups. It may be less accurate for
+          applicants with limited credit history (thin-file applicants).'
+
+      - id: "TRANS-UA-004"
+        item: "AI confidence levels or uncertainty indicators are visible to users"
+        description: >
+          Where appropriate, expose the AI's confidence in its output.
+          Users should be able to distinguish high-confidence outputs from
+          uncertain ones. This supports calibrated trust -- users should
+          trust AI more when it is confident and less when it is not.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)(iv) - levels of accuracy"
+        fintech_example: >
+          Fraud alert system shows: 'Confidence: High (92%) -- This
+          transaction matches known fraud patterns' vs. 'Confidence:
+          Medium (61%) -- Unusual but not clearly fraudulent.'
+
+  # ===========================================================================
+  # CATEGORY 2: CONTROL
+  # EU AI Act Art. 14 -- Users must be able to override, intervene, or halt.
+  # ===========================================================================
+  - id: "control"
+    name: "Control -- Can the user override AI decisions?"
+    description: >
+      Meaningful user agency requires the ability to intervene in, override,
+      or halt AI-driven processes. This is especially critical in FinTech
+      where AI decisions have financial consequences.
+    eu_ai_act_ref: "Art. 14 (human oversight)"
+    items:
+
+      - id: "CTRL-001"
+        item: "User can override or reject any AI recommendation before it takes effect"
+        description: >
+          For every consequential AI output, users have a clear mechanism
+          to reject the recommendation or decision before it is executed.
+          Override must be frictionless -- not hidden behind multiple
+          confirmation dialogs.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(4)(a) - ability to override output"
+        fintech_example: >
+          Portfolio rebalancing AI presents proposed trades with 'Approve',
+          'Modify', and 'Reject All' options. No trade executes without
+          explicit user action.
+
+      - id: "CTRL-002"
+        item: "User can adjust AI behavior parameters (sensitivity, risk appetite, scope)"
+        description: >
+          Users can configure the AI's behavior to match their preferences.
+          This goes beyond on/off -- users should be able to tune parameters
+          that matter to them.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "PAIR Guidelines - user control patterns"
+        fintech_example: >
+          Fraud detection allows users to set sensitivity: 'Block all
+          suspicious transactions' vs. 'Only block high-confidence fraud'
+          with clear trade-off explanations.
+
+      - id: "CTRL-003"
+        item: "User can disable AI features entirely and revert to non-AI workflow"
+        description: >
+          Users must have the option to opt out of AI-driven processes
+          entirely without losing access to the underlying service. The
+          non-AI alternative must be genuinely functional, not a degraded
+          experience designed to push users back to AI.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 22(1) - right not to be subject to automated decision-making"
+        fintech_example: >
+          Robo-advisory platform offers: 'Switch to human advisor' option
+          that connects to a qualified financial advisor without penalty or
+          significant delay.
+
+      - id: "CTRL-004"
+        item: "Emergency stop mechanism exists for AI-initiated actions"
+        description: >
+          For AI systems that initiate actions (agentic workflows),
+          users can halt all AI-initiated activity immediately. In FinTech:
+          a kill switch for automated trading, a freeze on AI-driven
+          credit decisions, a pause on automated communications.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(4)(e) - ability to interrupt operation"
+        fintech_example: >
+          Algorithmic trading platform has a prominent 'HALT ALL AI TRADES'
+          button that immediately stops all automated execution and
+          cancels pending orders.
+
+  # ===========================================================================
+  # CATEGORY 3: UNDERSTANDING
+  # Can the user understand WHY the AI made a specific decision?
+  # ===========================================================================
+  - id: "understanding"
+    name: "Understanding -- Can the user understand AI decisions?"
+    description: >
+      Users need to understand not just WHAT the AI decided, but WHY.
+      Explanations must be tailored to the user's expertise level and
+      must be actionable -- helping users decide whether to trust the
+      output.
+    eu_ai_act_ref: "Art. 13(1) - designed to be sufficiently transparent"
+    items:
+
+      - id: "UND-001"
+        item: "Plain-language explanations provided for every consequential AI decision"
+        description: >
+          Every decision that affects the user financially, legally, or
+          materially includes a human-readable explanation. Technical
+          jargon is avoided. Explanations answer: what factors mattered
+          most and what would change the outcome.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(1); ECOA adverse action notice"
+        fintech_example: >
+          Loan denial explanation: 'Your application was not approved
+          primarily because your debt-to-income ratio (45%) exceeds our
+          threshold (40%). Reducing your monthly debt payments by $200
+          would likely change this outcome.'
+
+      - id: "UND-002"
+        item: "Key factors driving the AI decision are surfaced to the user"
+        description: >
+          The top 3-5 factors influencing the AI's output are displayed
+          to the user. Factors are labeled in terms the user understands,
+          not as feature names from the model.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA / Reg B adverse action reasons; CFPB guidance"
+        fintech_example: >
+          Investment recommendation shows: 'This suggestion is based on:
+          (1) your stated risk tolerance, (2) current market conditions,
+          (3) your existing portfolio allocation, (4) your time horizon.'
+
+      - id: "UND-003"
+        item: "Contrastive explanations available (what would change the outcome?)"
+        description: >
+          Users can access counterfactual explanations: what input changes
+          would lead to a different outcome. This is especially valuable
+          in lending and insurance where applicants need actionable
+          guidance.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA adverse action; FCA Treating Customers Fairly"
+        fintech_example: >
+          Insurance quote shows: 'Your premium is higher because of X.
+          If X were Y, your premium would be approximately Z.'
+
+      - id: "UND-004"
+        item: "Explanation complexity is calibrated to user expertise"
+        description: >
+          Provide layered explanations: a simple summary for all users,
+          with the option to drill into more detail. Expert users (e.g.,
+          institutional traders) may want model-level detail; retail
+          customers need plain language.
+        priority: "recommended"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "FCA Consumer Duty - communications must be understandable"
+
+  # ===========================================================================
+  # CATEGORY 4: RECOURSE
+  # Can the user challenge, appeal, or seek remedy?
+  # ===========================================================================
+  - id: "recourse"
+    name: "Recourse -- Can the user appeal AI decisions?"
+    description: >
+      When AI decisions adversely affect a user, there must be a clear,
+      accessible, and timely process for challenging the decision and
+      obtaining human review.
+    eu_ai_act_ref: "Art. 14(4); GDPR Art. 22(3)"
+    items:
+
+      - id: "REC-001"
+        item: "Formal appeal process exists for adverse AI decisions"
+        description: >
+          A documented, accessible appeal process is available for any AI
+          decision that adversely affects a user. The process includes
+          timelines, steps, and what the user should expect.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 22(3) - right to contest; ECOA adverse action"
+        fintech_example: >
+          Credit denial notice includes: 'You have the right to request
+          human review of this decision within 30 days. To appeal, contact
+          us at [channel]. We will respond within 15 business days.'
+
+      - id: "REC-002"
+        item: "Human review is guaranteed for appealed decisions"
+        description: >
+          Appeals are reviewed by a qualified human, not by the same or
+          another AI system. The human reviewer has access to the AI's
+          reasoning, the user's appeal, and authority to override.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 22(3) - right to obtain human intervention"
+        fintech_example: >
+          Loan appeal is reviewed by a senior credit analyst who can
+          override the AI model's recommendation. The analyst documents
+          their independent assessment.
+
+      - id: "REC-003"
+        item: "Appeal process is accessible (low friction, multiple channels, no retaliation)"
+        description: >
+          The appeal process does not create undue burden. It is available
+          through multiple channels (online, phone, in-person). Filing an
+          appeal does not negatively affect the user's standing.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "FCA Consumer Duty - no barriers to redress"
+
+      - id: "REC-004"
+        item: "Outcome of appeal is communicated with explanation"
+        description: >
+          The result of every appeal is communicated to the user with a
+          clear explanation of the decision and the rationale. If the
+          original decision is upheld, the explanation must address the
+          user's specific concerns.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA adverse action; FCA DISP rules"
+
+  # ===========================================================================
+  # CATEGORY 5: CONSENT
+  # Has the user meaningfully opted in?
+  # ===========================================================================
+  - id: "consent"
+    name: "Consent -- Has the user opted in to AI processing?"
+    description: >
+      Meaningful consent requires informed, specific, freely given agreement
+      to AI processing. Bundled consent (accept all or lose the service)
+      does not meet this standard for high-risk AI systems.
+    eu_ai_act_ref: "GDPR Art. 6-7; EU AI Act Recital 47"
+    items:
+
+      - id: "CON-001"
+        item: "Specific consent obtained for AI processing separate from general T&C"
+        description: >
+          AI-specific data processing consent is obtained through a
+          separate, specific consent flow -- not bundled into general
+          terms and conditions. The consent clearly states what AI
+          processing will occur and for what purpose.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 7 - conditions for consent; EU AI Act"
+        fintech_example: >
+          Lending app presents separate consent: 'We use automated
+          analysis to assess your creditworthiness. This includes
+          analysis of your income, spending patterns, and credit history.
+          [Accept AI Assessment] [Speak to a Human Instead]'
+
+      - id: "CON-002"
+        item: "Consent is revocable without penalty to the user"
+        description: >
+          Users can withdraw consent for AI processing at any time without
+          losing access to the underlying financial service. Withdrawal
+          may mean slower processing but must not result in service denial.
+        priority: "critical"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 7(3) - right to withdraw consent"
+
+      - id: "CON-003"
+        item: "Granular consent options available (not all-or-nothing)"
+        description: >
+          Users can consent to some AI features while declining others.
+          For example, a user might accept AI-powered fraud detection
+          but decline AI-powered marketing recommendations.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Recital 43 - freely given consent"
+
+      - id: "CON-004"
+        item: "Consent refresh mechanism for material changes to AI system"
+        description: >
+          When the AI system changes materially (new model, new data
+          sources, expanded scope), users are re-informed and fresh
+          consent is obtained. A version-tracking mechanism links
+          consent to the specific AI system version.
+        priority: "important"
+        status: "not_started"
+        score: 0
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 13(3) - notification of purpose changes"
+
+# =============================================================================
+# SCORING SUMMARY
+# =============================================================================
+scoring_summary:
+  total_items: 20
+  critical_items: 10
+  important_items: 8
+  recommended_items: 2
+  total_possible_score: 60
+  current_score: 0
+  current_percentage: 0
+  passing_threshold: 70
+  gate_status: "NOT ASSESSED"
+
+assessment_notes: >
+  This assessment should be completed collaboratively by the Product Manager,
+  UX Designer, and Compliance Officer. Scores should be evidence-based --
+  reference prototypes, user research findings, or regulatory mappings as
+  evidence. Reassess whenever the AI system's scope, capabilities, or data
+  sources change materially.
+
+sign_off:
+  assessor:
+    name: ""
+    role: ""
+    date: ""
+  reviewer:
+    name: ""
+    role: ""
+    date: ""
+  compliance_clearance:
+    name: ""
+    date: ""
+    conditions: ""

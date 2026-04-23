@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI Governance Framework — 114 governance artifacts across 4 pillars covering Discovery, Development, Runtime, and Operational governance for agentic AI.">
+<meta name="theme-color" content="#0071e3">
+<title>AI Governance Platform — From Framework to Production</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --bg: #fff;
+    --bg-alt: #fbfbfd;
+    --bg-dark: #000;
+    --accent: #0071e3;
+    --accent-hover: #0077ed;
+    --border: #d2d2d7;
+    --border-light: #e8e8ed;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    --section-gap: 120px;
+    --green: #30d158;
+    --orange: #ff9f0a;
+    --red: #ff453a;
+    --purple: #af52de;
+    --blue: #0a84ff;
+  }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .headline-large {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+  .headline-medium {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+  }
+  .headline-small {
+    font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .body-large {
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .body {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .container-wide {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  section {
+    padding: 100px 0;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border-light);
+    height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  nav .container-wide {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  nav .nav-brand {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  nav .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  nav .nav-links a {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav .nav-links a:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    nav .nav-links { display: none; }
+  }
+
+  .hero {
+    padding: 160px 0 100px;
+    text-align: center;
+  }
+  .hero .label { margin-bottom: 16px; }
+  .hero .headline-large { margin-bottom: 20px; }
+  .hero .body-large {
+    max-width: 700px;
+    margin: 0 auto 40px;
+  }
+  .hero-ctas {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    font-size: 1.15rem;
+    font-weight: 400;
+    text-decoration: none;
+    transition: gap 0.25s;
+  }
+  .hero-cta:hover { gap: 10px; }
+  .hero-cta .arrow {
+    font-size: 1.3rem;
+    transition: transform 0.25s;
+  }
+  .hero-cta-secondary {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .version-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--accent), #5856d6);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .stakeholders { background: var(--bg-alt); }
+  .stakeholders .body-large {
+    max-width: 700px;
+    margin: 16px auto 64px;
+    text-align: center;
+  }
+  .stakeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .stakeholder-card {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 36px 32px;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .stakeholder-card:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateY(-2px);
+  }
+  .stakeholder-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .stakeholder-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .stakeholder-role {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .stakeholder-problem {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .stakeholder-solution h4 {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .stakeholder-solution p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .stakeholder-outcome {
+    background: var(--bg-alt);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .stakeholder-outcome h4 {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+  .stakeholder-outcome p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .stakeholder-dashboard-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .stakeholder-dashboard-link:hover { gap: 8px; }
+
+  @media (max-width: 768px) {
+    .stakeholder-grid { grid-template-columns: 1fr; }
+  }
+
+  .metrics-strip {
+    background: var(--bg-dark);
+    padding: 48px 0;
+  }
+  .metrics-strip-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+  .metric-item .metric-value {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .metric-item .metric-label {
+    font-size: 0.78rem;
+    color: #86868b;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .metrics-strip-inner { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+  }
+  @media (max-width: 480px) {
+    .metrics-strip-inner { grid-template-columns: 1fr; }
+  }
+
+  .evolution { text-align: center; }
+  .evolution .body-large {
+    max-width: 620px;
+    margin: 16px auto 64px;
+  }
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 16.67%;
+    right: 16.67%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--purple), var(--blue), var(--green));
+    border-radius: 2px;
+  }
+  .timeline-phase {
+    position: relative;
+    text-align: center;
+    padding: 0 16px;
+  }
+  .phase-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin: 28px auto 24px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px var(--border);
+  }
+  .phase-1 .phase-dot { background: var(--purple); box-shadow: 0 0 0 3px var(--purple); }
+  .phase-2 .phase-dot { background: var(--blue); box-shadow: 0 0 0 3px var(--blue); }
+  .phase-3 .phase-dot { background: var(--green); box-shadow: 0 0 0 3px var(--green); }
+  .phase-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .phase-1 .phase-label { color: var(--purple); }
+  .phase-2 .phase-label { color: var(--blue); }
+  .phase-3 .phase-label { color: var(--green); }
+  .timeline-phase h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .timeline-phase p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .timeline { grid-template-columns: 1fr; gap: 40px; }
+    .timeline::before { display: none; }
+  }
+
+  .showcase { background: var(--bg-alt); }
+  .showcase .body-large {
+    max-width: 640px;
+    margin: 16px auto 64px;
+    text-align: center;
+  }
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  a.showcase-card {
+    display: block;
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  a.showcase-card:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateY(-2px);
+  }
+  .showcase-card .learn-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: gap 0.2s;
+  }
+  a.showcase-card:hover .learn-more {
+    gap: 8px;
+  }
+  .showcase-mockup {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 20px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .showcase-info {
+    padding: 24px;
+  }
+  .showcase-info h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .showcase-tier {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .showcase-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .mock-row { display: flex; gap: 8px; }
+  .mock-kpi {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .mock-kpi-label {
+    font-size: 0.6rem;
+    color: #6e7a8a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .mock-kpi-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e0e0e0;
+    margin-top: 2px;
+  }
+  .mock-kpi-value.green { color: var(--green); }
+  .mock-kpi-value.orange { color: var(--orange); }
+  .mock-kpi-value.red { color: var(--red); }
+  .mock-kpi-value.blue { color: var(--blue); }
+  .mock-table {
+    width: 100%;
+    font-size: 0.65rem;
+    color: #b0b8c4;
+    border-collapse: collapse;
+  }
+  .mock-table th {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #6e7a8a;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.55rem;
+  }
+  .mock-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .mock-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.55rem;
+    font-weight: 600;
+  }
+  .mock-badge.healthy { background: rgba(48,209,88,0.15); color: var(--green); }
+  .mock-badge.degraded { background: rgba(255,159,10,0.15); color: var(--orange); }
+  .mock-badge.critical { background: rgba(255,69,58,0.15); color: var(--red); }
+  .mock-gauge {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #e0e0e0;
+    margin: 0 auto;
+  }
+  .mock-gauge.low { border-color: var(--green); color: var(--green); }
+  .mock-gauge.medium { border-color: var(--orange); color: var(--orange); }
+  .mock-gauge.high { border-color: var(--red); color: var(--red); }
+  .mock-contract-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 0.65rem;
+    color: #b0b8c4;
+  }
+  .mock-check { color: var(--green); font-weight: 700; }
+  .mock-x { color: var(--red); font-weight: 700; }
+  .mock-bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 50px;
+    margin-top: 8px;
+  }
+  .mock-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    min-height: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .showcase-grid { grid-template-columns: 1fr; }
+  }
+
+  .capabilities { text-align: center; }
+  .capabilities .body-large {
+    max-width: 620px;
+    margin: 16px auto 64px;
+  }
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    text-align: left;
+  }
+  .cap-card {
+    padding: 32px 28px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    transition: box-shadow 0.25s, transform 0.25s;
+  }
+  .cap-card:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateY(-2px);
+  }
+  .cap-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .cap-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cap-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .cap-detail {
+    margin-top: 12px;
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    .cap-grid { grid-template-columns: 1fr; }
+  }
+
+  .deploy { background: var(--bg-dark); color: #f5f5f7; }
+  .deploy .label { color: #86868b; }
+  .deploy .headline-medium { color: #f5f5f7; }
+  .deploy .body-large { color: #86868b; max-width: 600px; margin: 16px auto 56px; }
+  .deploy-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .deploy-step {
+    text-align: center;
+  }
+  .deploy-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f5f5f7;
+    margin-bottom: 16px;
+  }
+  .deploy-step h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f5f5f7;
+    margin-bottom: 6px;
+  }
+  .deploy-step p {
+    font-size: 0.85rem;
+    color: #86868b;
+    line-height: 1.5;
+  }
+  .terminal-mockup {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #1a1a2e;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .terminal-dot.red { background: #ff5f57; }
+  .terminal-dot.yellow { background: #febc2e; }
+  .terminal-dot.green { background: #28c840; }
+  .terminal-body {
+    padding: 20px;
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: #b0b8c4;
+  }
+  .terminal-body .prompt { color: var(--green); }
+  .terminal-body .comment { color: #6e7a8a; }
+
+  @media (max-width: 768px) {
+    .deploy-steps { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  .architecture { text-align: center; }
+  .architecture .body-large {
+    max-width: 620px;
+    margin: 16px auto 56px;
+  }
+  .arch-diagram {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+  }
+  .arch-box {
+    border-radius: 16px;
+    padding: 28px 32px;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+  .arch-layer {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #e0e0e0;
+  }
+  .arch-box h4 {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .arch-box .arch-subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    font-size: 0.75rem;
+    color: #8899aa;
+    margin-bottom: 12px;
+  }
+  .arch-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .arch-tag {
+    font-size: 0.68rem;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    color: #b0b8c4;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .arch-arrow {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    padding: 4px 0;
+    letter-spacing: 0.04em;
+  }
+
+  .framework-compact { background: var(--bg-alt); text-align: center; }
+  .framework-compact .body-large {
+    max-width: 600px;
+    margin: 16px auto 56px;
+  }
+  .pillar-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .pillar-mini {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: left;
+    transition: box-shadow 0.25s, transform 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .pillar-mini:hover {
+    box-shadow: var(--card-shadow);
+    transform: translateY(-2px);
+  }
+  .pillar-mini .pillar-number {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .pillar-mini h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .pillar-mini p {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  .p-discovery .pillar-number { color: var(--purple); }
+  .p-development .pillar-number { color: var(--blue); }
+  .p-runtime .pillar-number { color: var(--green); }
+  .p-operational .pillar-number { color: var(--orange); }
+  .framework-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .framework-cta:hover {
+    border-color: var(--accent);
+    box-shadow: var(--card-shadow);
+  }
+
+  @media (max-width: 768px) {
+    .pillar-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .pillar-strip { grid-template-columns: 1fr; }
+  }
+
+  .regulations { text-align: center; }
+  .regulations .body-large {
+    max-width: 560px;
+    margin: 16px auto 56px;
+  }
+  .reg-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .reg-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    transition: box-shadow 0.2s;
+  }
+  .reg-pill:hover { box-shadow: var(--card-shadow); }
+  .reg-pill .reg-flag { font-size: 1.1rem; }
+
+  footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid var(--border-light);
+  }
+  footer p {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
+  <div class="container-wide">
+    <a class="nav-brand" href="#">AI Governance Platform</a>
+    <ul class="nav-links">
+      <li><a href="#stakeholders">Stakeholders</a></li>
+      <li><a href="#evolution">Evolution</a></li>
+      <li><a href="#showcase">Platform</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+      <li><a href="#deploy">Deploy</a></li>
+      <li><a href="../index.html">Home</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<section class="hero fade-in">
+  <div class="container">
+    <h1 class="headline-large">From Framework<br>to Platform.</h1>
+    <p class="body-large">114 governance artifacts. 7 data contracts. 4 dashboard tiers. One production-ready monitoring platform that enforces AI governance in real time &mdash; with a single command.</p>
+    <div class="hero-ctas">
+      <a href="#showcase" class="hero-cta">See the Platform <span class="arrow">&rsaquo;</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="stakeholders fade-in" id="stakeholders">
+  <div class="container-wide">
+    <p class="label">The problem we solve</p>
+    <h2 class="headline-medium" style="text-align:center;">Every stakeholder has a governance gap.</h2>
+    <p class="body-large">AI agents are proliferating across your organization. Without governance, every agent is a regulatory, financial, and reputational risk. Here is how the platform closes the gap for each role.</p>
+
+    <div class="stakeholder-grid">
+
+      <div class="stakeholder-card">
+        <span class="stakeholder-icon">&#9878;</span>
+        <h3>Board / C-Suite</h3>
+        <span class="stakeholder-role">Tier 1 Board Dashboard</span>
+        <p class="stakeholder-problem">No visibility into the AI agent fleet. Cannot answer &ldquo;how many agents do we have?&rdquo; or &ldquo;are they compliant?&rdquo; Audit preparation takes weeks of manual evidence gathering.</p>
+        <div class="stakeholder-solution">
+          <h4>Platform Solution</h4>
+          <p>60-second executive overview: fleet size, SAFEST compliance %, audit readiness score, ARI distribution, and containment status &mdash; all in a single dashboard.</p>
+        </div>
+        <div class="stakeholder-outcome">
+          <h4>Business Outcome</h4>
+          <p><strong>Audit cost reduction.</strong> Automated Article 11 documentation replaces manual evidence gathering. Regulatory transparency for supervisors (DNB, AFM). Board-level accountability without operational burden.</p>
+          <a href="../dashboards/board.html" class="stakeholder-dashboard-link">See dashboard →</a>
+        </div>
+      </div>
+
+      <div class="stakeholder-card">
+        <span class="stakeholder-icon">&#9881;</span>
+        <h3>CAIO / AI Officers</h3>
+        <span class="stakeholder-role">Tier 2 CAIO Dashboard</span>
+        <p class="stakeholder-problem">EU AI Act deadlines approaching. No way to track Article 11 compliance, risk classification, or IAMA assessments across the portfolio. Fines up to 7% of global turnover.</p>
+        <div class="stakeholder-solution">
+          <h4>Platform Solution</h4>
+          <p>SAFEST pillar scores across 6 dimensions, regulatory deadline tracking, risk tier classification per agent, and IAMA Impact Assessment wizard.</p>
+        </div>
+        <div class="stakeholder-outcome">
+          <h4>Business Outcome</h4>
+          <p><strong>Regulation readiness.</strong> Proactive compliance vs. reactive fines. DORA incident tracking (4h / 72h / 1mo deadlines). Dutch Algorithm Register integration readiness.</p>
+          <a href="../dashboards/registry.html" class="stakeholder-dashboard-link">See dashboard →</a>
+        </div>
+      </div>
+
+      <div class="stakeholder-card">
+        <span class="stakeholder-icon">&#9776;</span>
+        <h3>Team Leads / Product Managers</h3>
+        <span class="stakeholder-role">Tier 3 Team Dashboard</span>
+        <p class="stakeholder-problem">Cannot see which agents are healthy, drifting, or consuming excessive resources. No way to compare agent performance across teams. Monthly reporting is manual and stale.</p>
+        <div class="stakeholder-solution">
+          <h4>Platform Solution</h4>
+          <p>Live agent table with health badges, ARI scores, containment levels, and per-agent cost tracking. Team-scoped views prevent information overload.</p>
+        </div>
+        <div class="stakeholder-outcome">
+          <h4>Business Outcome</h4>
+          <p><strong>Cost control &amp; revenue protection.</strong> Per-agent cost visibility (C4 contract) prevents runaway spend. Drift detection (C5) catches degradation before customers do. Live KPIs replace monthly manual reports.</p>
+          <a href="../dashboards/team.html" class="stakeholder-dashboard-link">See dashboard →</a>
+        </div>
+      </div>
+
+      <div class="stakeholder-card">
+        <span class="stakeholder-icon">&#9874;</span>
+        <h3>ML Engineers / Ops</h3>
+        <span class="stakeholder-role">Tier 4 Runtime Dashboard</span>
+        <p class="stakeholder-problem">Every team uses different tools (LangSmith, Langfuse, MLflow). No unified view across the fleet. Guardrail events scattered across 3&ndash;5 monitoring systems.</p>
+        <div class="stakeholder-solution">
+          <h4>Platform Solution</h4>
+          <p>Real-time ingestion from any tool via OTLP, REST Webhooks, or Bulk JSON. Unified guardrail event stream. Automated MI9 containment with 5 escalation levels.</p>
+        </div>
+        <div class="stakeholder-outcome">
+          <h4>Business Outcome</h4>
+          <p><strong>Operational savings.</strong> Tool-agnostic ingestion eliminates vendor lock-in. Single pane of glass replaces 3&ndash;5 monitoring tools. Automated containment reduces incident response time.</p>
+          <a href="../dashboards/detail.html" class="stakeholder-dashboard-link">See dashboard →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="metrics-strip fade-in">
+  <div class="container-wide">
+    <div class="metrics-strip-inner">
+      <div class="metric-item">
+        <div class="metric-value">7%</div>
+        <div class="metric-label">Maximum EU AI Act fine<br>(of global turnover)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">4h</div>
+        <div class="metric-label">DORA major incident<br>reporting deadline</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">5</div>
+        <div class="metric-label">Containment levels<br>(automated risk response)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-value">3</div>
+        <div class="metric-label">Ingestion protocols<br>(any tool, zero lock-in)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="evolution fade-in" id="evolution">
+  <div class="container">
+    <p class="label">The journey</p>
+    <h2 class="headline-medium">Three phases. One platform.</h2>
+    <p class="body-large">From governance theory to production software, built incrementally and designed for enterprise scale.</p>
+
+    <div class="timeline">
+      <div class="timeline-phase phase-1">
+        <div class="phase-dot"></div>
+        <div class="phase-label">Phase 1</div>
+        <h3>Governance Framework</h3>
+        <p>114 artifacts across 4 pillars. Checklists, templates, evaluation guides, and regulatory mappings covering 7 regulations.</p>
+      </div>
+      <div class="timeline-phase phase-2">
+        <div class="phase-dot"></div>
+        <div class="phase-label">Phase 2</div>
+        <h3>Monitoring Platform</h3>
+        <p>7 data contracts with Zod validation. 4 dashboard tiers. ARI scoring engine. MI9 graduated containment. SAFEST tracking.</p>
+      </div>
+      <div class="timeline-phase phase-3">
+        <div class="phase-dot"></div>
+        <div class="phase-label">Phase 3</div>
+        <h3>Production Deployment</h3>
+        <p>Docker multi-stage builds. Nginx reverse proxy. PostgreSQL + Redis + NATS. Single-command self-hosted deployment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="showcase fade-in" id="showcase">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;">Platform preview</p>
+    <h2 class="headline-medium" style="text-align:center;">Dashboards that govern.</h2>
+    <p class="body-large">Four tiers of visibility &mdash; from board-level compliance to real-time operational telemetry. Every dashboard is live, data-driven, and role-scoped.</p>
+
+    <div class="showcase-grid">
+
+      <a href="../dashboards/board.html" class="showcase-card">
+        <div class="showcase-mockup">
+          <div class="mock-row">
+            <div class="mock-kpi"><div class="mock-kpi-label">Fleet Size</div><div class="mock-kpi-value">12</div></div>
+            <div class="mock-kpi"><div class="mock-kpi-label">Compliance</div><div class="mock-kpi-value green">87%</div></div>
+            <div class="mock-kpi"><div class="mock-kpi-label">Audit Ready</div><div class="mock-kpi-value green">94%</div></div>
+          </div>
+          <div class="mock-row">
+            <div class="mock-kpi"><div class="mock-kpi-label">Containment</div><div class="mock-kpi-value orange">2</div></div>
+            <div class="mock-kpi">
+              <div class="mock-kpi-label">ARI Distribution</div>
+              <div class="mock-bar-chart">
+                <div class="mock-bar" style="height:70%;background:var(--green);"></div>
+                <div class="mock-bar" style="height:45%;background:var(--blue);"></div>
+                <div class="mock-bar" style="height:25%;background:var(--orange);"></div>
+                <div class="mock-bar" style="height:10%;background:var(--red);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="showcase-info">
+          <span class="showcase-tier">Tier 1 &mdash; Board</span>
+          <h3>Executive Overview</h3>
+          <p>60-second fleet snapshot. Compliance score, audit readiness, ARI distribution, and containment status for the C-Suite.</p>
+          <span class="learn-more">Learn more →</span>
+        </div>
+      </a>
+
+      <a href="../dashboards/team.html" class="showcase-card">
+        <div class="showcase-mockup">
+          <table class="mock-table">
+            <tr><th>Agent</th><th>Health</th><th>ARI</th><th>Level</th></tr>
+            <tr><td>Customer Support</td><td><span class="mock-badge healthy">Healthy</span></td><td>0.42</td><td>L0</td></tr>
+            <tr><td>Fraud Detector</td><td><span class="mock-badge healthy">Healthy</span></td><td>0.68</td><td>L2</td></tr>
+            <tr><td>Loan Processor</td><td><span class="mock-badge degraded">Degraded</span></td><td>0.81</td><td>L3</td></tr>
+            <tr><td>Risk Assessor</td><td><span class="mock-badge healthy">Healthy</span></td><td>0.35</td><td>L1</td></tr>
+          </table>
+        </div>
+        <div class="showcase-info">
+          <span class="showcase-tier">Tier 3 &mdash; Team</span>
+          <h3>Agent Fleet Operations</h3>
+          <p>Live agent table with health, ARI scores, containment levels, and KPIs. Team-scoped views for operational leads.</p>
+          <span class="learn-more">Learn more →</span>
+        </div>
+      </a>
+
+      <a href="../dashboards/registry.html" class="showcase-card">
+        <div class="showcase-mockup">
+          <table class="mock-table">
+            <tr><th>Name</th><th>Type</th><th>Risk</th><th>Contracts</th></tr>
+            <tr><td>Support Agent</td><td>Conversational</td><td>Limited</td><td>5/5</td></tr>
+            <tr><td>Fraud Agent</td><td>Analytical</td><td>High</td><td>7/7</td></tr>
+            <tr><td>Loan Agent</td><td>Decisional</td><td>High</td><td>5/7</td></tr>
+            <tr><td>Report Agent</td><td>Generative</td><td>Minimal</td><td>2/2</td></tr>
+          </table>
+        </div>
+        <div class="showcase-info">
+          <span class="showcase-tier">Agent Registry</span>
+          <h3>Full Inventory</h3>
+          <p>Searchable agent registry with risk tier, oversight model, contract compliance status, and version tracking.</p>
+          <span class="learn-more">Learn more →</span>
+        </div>
+      </a>
+
+      <a href="../dashboards/detail.html" class="showcase-card">
+        <div class="showcase-mockup">
+          <div class="mock-row" style="align-items:center;">
+            <div style="flex:1;">
+              <div class="mock-kpi-label">ARI Score</div>
+              <div class="mock-gauge medium">0.68</div>
+            </div>
+            <div style="flex:2;">
+              <div class="mock-contract-row"><span class="mock-check">&#10003;</span> C1 Identity</div>
+              <div class="mock-contract-row"><span class="mock-check">&#10003;</span> C2 Health</div>
+              <div class="mock-contract-row"><span class="mock-check">&#10003;</span> C3 Traces</div>
+              <div class="mock-contract-row"><span class="mock-x">&#10007;</span> C5 Drift</div>
+              <div class="mock-contract-row"><span class="mock-check">&#10003;</span> C6 Guardrails</div>
+              <div class="mock-contract-row"><span class="mock-x">&#10007;</span> C7 Decisions</div>
+            </div>
+          </div>
+        </div>
+        <div class="showcase-info">
+          <span class="showcase-tier">Agent Detail</span>
+          <h3>Compliance &amp; Risk</h3>
+          <p>Per-agent contract compliance matrix, ARI gauge with dimension breakdown, and containment history.</p>
+          <span class="learn-more">Learn more →</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<section class="capabilities fade-in" id="capabilities">
+  <div class="container-wide">
+    <p class="label">Live capabilities</p>
+    <h2 class="headline-medium">Operational governance, not just policy.</h2>
+    <p class="body-large">Every feature is implemented, validated, and production-ready. Not wireframes &mdash; working software.</p>
+
+    <div class="cap-grid">
+      <div class="cap-card">
+        <span class="cap-icon">&#9881;</span>
+        <h3>Tool-Agnostic Ingestion</h3>
+        <p>Any tool that produces standard data can push it through three universal protocols. Switch from LangSmith to Langfuse with zero platform changes.</p>
+        <div class="cap-detail">OTLP &middot; REST Webhook &middot; Bulk JSON</div>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">&#9878;</span>
+        <h3>Real-Time ARI Scoring</h3>
+        <p>Composite 0.00&ndash;1.00 score computed across Autonomy, Adaptability, and Continuity. 12 criteria, automatic tier classification, live gauge visualization.</p>
+        <div class="cap-detail">12 criteria &middot; 3 dimensions &middot; 4 tiers</div>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">&#9888;</span>
+        <h3>MI9 Graduated Containment</h3>
+        <p>5 escalation levels from normal monitoring to full isolation. Automatic triggering by ARI thresholds. Manual override with audit logging.</p>
+        <div class="cap-detail">L0 Standard &rarr; L4 Isolation</div>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">&#10003;</span>
+        <h3>SAFEST Compliance</h3>
+        <p>112 compliance items across 6 pillars: Soundness, Accountability, Fairness, Explainability, Sustainability, Transparency. Per-pillar scoring and trend tracking.</p>
+        <div class="cap-detail">112 items &middot; 6 pillars &middot; live tracking</div>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">&#9782;</span>
+        <h3>EU AI Act Article 11</h3>
+        <p>Auto-generated documentation covering all 5 required elements. Risk tier classification. DORA incident tracking with 4h/72h/1mo regulatory deadlines.</p>
+        <div class="cap-detail">5 elements &middot; auto-documentation</div>
+      </div>
+      <div class="cap-card">
+        <span class="cap-icon">&#9654;</span>
+        <h3>Production Docker Deploy</h3>
+        <p>Multi-stage Dockerfiles, Nginx reverse proxy, PostgreSQL + TimescaleDB, Redis, NATS JetStream. Single-command self-hosted deployment.</p>
+        <div class="cap-detail">1 command &middot; 7 services &middot; port 80</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="deploy fade-in" id="deploy">
+  <div class="container" style="text-align:center;">
+    <p class="label">Self-hosted</p>
+    <h2 class="headline-medium">Deploy in three steps.</h2>
+    <p class="body-large">Enterprise-grade, self-hosted. Your data never leaves your infrastructure. No SaaS dependency.</p>
+
+    <div class="deploy-steps">
+      <div class="deploy-step">
+        <div class="deploy-step-number">1</div>
+        <h4>Request Access</h4>
+        <p>Contact us for repository access. Approval required before cloning.</p>
+      </div>
+      <div class="deploy-step">
+        <div class="deploy-step-number">2</div>
+        <h4>Configure</h4>
+        <p>Copy the environment template. Set your database password and JWT secret.</p>
+      </div>
+      <div class="deploy-step">
+        <div class="deploy-step-number">3</div>
+        <h4>Run</h4>
+        <p>One command starts all 7 services. Health checks ensure everything is ready.</p>
+      </div>
+    </div>
+
+    <div class="terminal-mockup">
+      <div class="terminal-header">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+      </div>
+      <div class="terminal-body" style="text-align:left;">
+        <span class="comment"># Access requires approval</span><br>
+        <span class="prompt">$</span> <span style="color:var(--orange);">&#9888; Repository access is restricted.</span><br>
+        <span class="prompt">$</span> <span style="color:var(--orange);">Contact: dimos.gougousis.1976@gmail.com for access.</span><br><br>
+        <span class="comment"># Once approved, deploy in 3 steps:</span><br>
+        <span class="prompt">$</span> git clone https://github.com/DimosGougousis/ai-governance-platform.git<br>
+        <span class="prompt">$</span> cp .env.production.example .env.production<br>
+        <span class="prompt">$</span> ./scripts/deploy-init.sh<br><br>
+        <span style="color:var(--green);">&#10003; All 7 services healthy. Platform ready.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="architecture fade-in" id="architecture">
+  <div class="container">
+    <p class="label">System design</p>
+    <h2 class="headline-medium">Production architecture.</h2>
+    <p class="body-large">Tool-agnostic ingestion, contract validation, and multi-tier dashboards &mdash; all behind a single reverse proxy.</p>
+
+    <div class="arch-diagram">
+      <div class="arch-box arch-layer">
+        <h4>Any Tool Ecosystem</h4>
+        <p class="arch-subtitle">Teams choose their own tools &mdash; the platform accepts data from all of them</p>
+        <div class="arch-tags">
+          <span class="arch-tag">LangSmith</span>
+          <span class="arch-tag">Langfuse</span>
+          <span class="arch-tag">MLflow</span>
+          <span class="arch-tag">N8N</span>
+          <span class="arch-tag">Custom</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">&#9660;&ensp;push via OTLP / Webhook / Bulk JSON&ensp;&#9660;</div>
+
+      <div class="arch-box arch-layer">
+        <h4>Contract Validation &amp; Normalization</h4>
+        <p class="arch-subtitle">Zod schema validation &rarr; conformance check &rarr; normalize &rarr; store</p>
+        <div class="arch-tags">
+          <span class="arch-tag">C1 Identity</span>
+          <span class="arch-tag">C2 Health</span>
+          <span class="arch-tag">C3 Traces</span>
+          <span class="arch-tag">C4 Cost</span>
+          <span class="arch-tag">C5 Drift</span>
+          <span class="arch-tag">C6 Guardrails</span>
+          <span class="arch-tag">C7 Decisions</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">&#9660;</div>
+
+      <div class="arch-box arch-layer">
+        <h4>Data &amp; Application Layer</h4>
+        <p class="arch-subtitle">Fastify API &middot; ARI Engine &middot; MI9 Containment &middot; Alert Engine</p>
+        <div class="arch-tags">
+          <span class="arch-tag">PostgreSQL 16 + TimescaleDB</span>
+          <span class="arch-tag">Redis 7</span>
+          <span class="arch-tag">NATS JetStream</span>
+          <span class="arch-tag">Drizzle ORM</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">&#9660;</div>
+
+      <div class="arch-box arch-layer">
+        <h4>Frontend &amp; Reverse Proxy</h4>
+        <p class="arch-subtitle">Next.js 14 &middot; Nginx &middot; Single port 80 exposure</p>
+        <div class="arch-tags">
+          <span class="arch-tag">T1 Board</span>
+          <span class="arch-tag">T2 CAIO</span>
+          <span class="arch-tag">T3 Team</span>
+          <span class="arch-tag">T4 Runtime</span>
+          <span class="arch-tag">Agent Detail</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="framework-compact fade-in">
+  <div class="container-wide">
+    <p class="label">The foundation</p>
+    <h2 class="headline-medium">114 governance artifacts.</h2>
+    <p class="body-large">The platform enforces what the framework defines. Four pillars covering the full AI product lifecycle.</p>
+
+    <div class="pillar-strip">
+      <a href="../01-discovery-governance/" class="pillar-mini p-discovery">
+        <div class="pillar-number">Pillar 01</div>
+        <h3>Discovery</h3>
+        <p>What should we build? Is it ethical? Risk classification, impact assessments, ethical checklists.</p>
+      </a>
+      <a href="../02-development-governance/" class="pillar-mini p-development">
+        <div class="pillar-number">Pillar 02</div>
+        <h3>Development</h3>
+        <p>How do we build it safely? Eval suites, bias testing, quality gates, TDD for AI.</p>
+      </a>
+      <a href="../03-runtime-governance/" class="pillar-mini p-runtime">
+        <div class="pillar-number">Pillar 03</div>
+        <h3>Runtime</h3>
+        <p>How do we control it? Agent permissions, delegation chains, guardrails, HITL patterns.</p>
+      </a>
+      <a href="../04-operational-governance/" class="pillar-mini p-operational">
+        <div class="pillar-number">Pillar 04</div>
+        <h3>Operational</h3>
+        <p>How do we monitor and comply? Drift detection, incident response, SAFEST tracking.</p>
+      </a>
+    </div>
+
+    <a href="../index.html" class="framework-cta">Back to Home &rsaquo;</a>
+  </div>
+</section>
+
+<section class="regulations fade-in">
+  <div class="container">
+    <p class="label">Regulatory coverage</p>
+    <h2 class="headline-medium">Built for regulators.</h2>
+    <p class="body-large">Aligned with major regulatory frameworks. Compliance tracking is automated, not aspirational.</p>
+    <div class="reg-grid">
+      <span class="reg-pill"><span class="reg-flag">&#127466;&#127482;</span> EU AI Act</span>
+      <span class="reg-pill"><span class="reg-flag">&#127475;&#127473;</span> DNB Guidelines</span>
+      <span class="reg-pill"><span class="reg-flag">&#127466;&#127482;</span> DORA</span>
+      <span class="reg-pill">ISO/IEC 42001</span>
+      <span class="reg-pill">OWASP Top 10 LLMs</span>
+      <span class="reg-pill"><span class="reg-flag">&#127466;&#127482;</span> GDPR</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="../index.html">Home</a>
+      &ensp;&middot;&ensp;
+      <a href="https://github.com/DimosGougousis/ProductGovernance4AgenticWorkflows" target="_blank" rel="noopener">Governance Artifacts</a>
+      &ensp;&middot;&ensp;
+      <a href="https://github.com/DimosGougousis/ai-governance-platform" target="_blank" rel="noopener">Monitoring Platform</a>
+      &ensp;&middot;&ensp;
+      Proprietary
+    </p>
+    <p><em>Built for teams who believe governing AI agents is a competitive advantage.</em></p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

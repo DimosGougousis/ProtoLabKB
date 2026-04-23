@@ -1,0 +1,409 @@
+# Periodic Revalidation Schedule
+#
+# Purpose: Machine-readable schedule defining when and how to re-evaluate AI systems
+#          post-deployment. Revalidation ensures that models continue to perform within
+#          accepted thresholds and comply with evolving regulatory requirements. This
+#          schedule covers time-based, event-based, and model-based triggers, each mapped
+#          to specific evaluation activities, approval authorities, and acceptance criteria.
+#
+# When to Use:
+#   - When deploying a new AI system: configure its revalidation profile from this template
+#   - When a monitoring alert fires (drift, performance degradation): check event-based triggers
+#   - When regulatory requirements change: check regulation-change triggers
+#   - When planning quarterly/annual governance reviews: use as the evaluation calendar
+#   - When integrating with GRC platforms (ServiceNow, Archer): export triggers as workflow rules
+#
+# Who Is Responsible:
+#   - Model Owner: configures the revalidation profile per system, executes revalidations
+#   - 2nd Line (Risk/Compliance): reviews and approves revalidation results for high-risk systems
+#   - AI Governance Committee: approves annual revalidation outcomes and schedule updates
+#   - CAIO (Chief AI Officer): accountable for enterprise revalidation coverage at Tier 1
+#
+# Regulatory Basis:
+#   - EU AI Act Article 72: Post-market monitoring for high-risk AI systems
+#   - EU AI Act Article 9(3): Ongoing risk management throughout the lifecycle
+#   - DORA Article 25: Digital operational resilience testing (including AI/ICT)
+#   - DNB Good Practice: Annual independent model validation for high-risk models
+#   - ECB Guide to Internal Models: Regular backtesting and model performance review
+#   - ISO/IEC 42001 Clause 9: Performance evaluation within the AIMS PDCA cycle
+#   - SAFEST items S-20 (revalidation schedule), S-12 (drift detection)
+#
+# Cross-References:
+#   - Continuous Online Evaluation: ../../../03-runtime-governance/evaluations/continuous-online-evaluation.md
+#   - Pre-Deployment Gate: ../../../02-development-governance/checklists/pre-deployment-gate.yaml
+#   - Risk Classification: ../../../01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml
+#   - AI Incident Report Template: ../templates/ai-incident-report.md
+#   - Tool Landscape (observability): ../../../05-cross-cutting/tool-landscape.md
+#   - RACI Matrix: ../../../05-cross-cutting/governance-roles-raci.md
+#   - Drift Detection Evals: drift-detection-evals.md
+#   - SAFEST Compliance Tracker: ../regulatory/safest-compliance-tracker.yaml
+
+metadata:
+  version: "1.0"
+  last_updated: "2026-02-28"
+  owner: "AI Governance Committee"
+  review_cadence: "Annual (or after material regulatory change)"
+  nist_ai_rmf_function: "Measure"
+  iso_42001_clause: "Clause 9 — Performance Evaluation"
+
+# =============================================================================
+# SECTION 1: RISK-TIER-BASED REVALIDATION SCHEDULES
+# Each AI system inherits a schedule based on its EU AI Act risk tier.
+# Override with system-specific configuration where needed.
+# =============================================================================
+
+risk_tier_schedules:
+  high_risk:
+    description: "AI systems classified as high-risk under EU AI Act Annex III (credit scoring, biometric ID, essential service access, fraud detection impacting account access)"
+    full_revalidation_cadence: "quarterly"
+    independent_validation_cadence: "annual"
+    fairness_review_cadence: "quarterly"
+    backtesting_cadence: "quarterly"
+    red_team_cadence: "semi-annual"
+    regulatory_reporting: true
+    approval_authority: "AI Governance Committee + 2nd Line"
+    governance_tier: "Tier 3 (Lifecycle) with Tier 2 (Policy) escalation"
+    regulatory_refs:
+      - "EU AI Act Art. 72 — post-market monitoring"
+      - "ECB Guide — annual independent validation"
+      - "DORA Art. 25 — digital resilience testing"
+      - "DNB Good Practice — model validation"
+
+  limited_risk:
+    description: "AI systems with transparency obligations (customer-facing chatbots, AI-generated content, emotion recognition)"
+    full_revalidation_cadence: "semi-annual"
+    independent_validation_cadence: "annual"
+    fairness_review_cadence: "semi-annual"
+    backtesting_cadence: "semi-annual"
+    red_team_cadence: "annual"
+    regulatory_reporting: false
+    approval_authority: "Model Owner + 2nd Line"
+    governance_tier: "Tier 3 (Lifecycle)"
+    regulatory_refs:
+      - "EU AI Act Art. 50 — transparency obligations"
+      - "SAFEST S-20 — revalidation schedule"
+
+  minimal_risk:
+    description: "AI systems with no specific EU AI Act obligations (internal analytics, log analysis, code assistants)"
+    full_revalidation_cadence: "annual"
+    independent_validation_cadence: "not_required"
+    fairness_review_cadence: "annual"
+    backtesting_cadence: "annual"
+    red_team_cadence: "not_required"
+    regulatory_reporting: false
+    approval_authority: "Model Owner"
+    governance_tier: "Tier 3 (Lifecycle)"
+    regulatory_refs:
+      - "SAFEST S-20 — best practice"
+      - "ISO 42001 Clause 9 — performance evaluation"
+
+# =============================================================================
+# SECTION 2: REVALIDATION TRIGGER TYPES
+# Three categories: time-based, event-based, model-based.
+# Each trigger defines what evals to run, who approves, and acceptance criteria.
+# =============================================================================
+
+triggers:
+
+  # ---------------------------------------------------------------------------
+  # 2.1 TIME-BASED TRIGGERS
+  # ---------------------------------------------------------------------------
+  time_based:
+    - id: "OPS-REVAL-T01"
+      trigger: "Quarterly full revalidation"
+      applies_to: "high_risk"
+      evaluations:
+        - "Full eval suite execution against production traffic sample"
+        - "Fairness metrics recalculation per protected group"
+        - "Backtesting on most recent quarter of outcome data"
+        - "Safety eval: prompt injection resistance, guardrail bypass testing"
+        - "Observability review: trace analysis for reasoning anomalies (LangSmith/Arize Phoenix spans)"
+      approval_authority: "Model Owner submits; 2nd Line reviews; Committee approves"
+      acceptance_thresholds:
+        performance_metrics: "All acceptance criteria from evaluation strategy must PASS"
+        fairness_metrics: "Demographic parity ratio >= 0.80 across all protected groups"
+        safety_metrics: "Zero critical safety violations in eval suite"
+        drift_metrics: "PSI < 0.20 on all monitored features"
+      deliverables:
+        - "Revalidation report with metric comparison to previous quarter"
+        - "Updated model card if any material changes detected"
+        - "Remediation plan if any threshold is breached"
+      regulatory_ref: "EU AI Act Art. 72; ECB Guide; SAFEST S-20"
+
+    - id: "OPS-REVAL-T02"
+      trigger: "Semi-annual full revalidation"
+      applies_to: "limited_risk"
+      evaluations:
+        - "Full eval suite execution against production traffic sample"
+        - "Fairness metrics recalculation"
+        - "Safety eval including adversarial testing"
+        - "User feedback analysis and complaint trend review"
+      approval_authority: "Model Owner submits; 2nd Line reviews"
+      acceptance_thresholds:
+        performance_metrics: "All acceptance criteria must PASS"
+        fairness_metrics: "Demographic parity ratio >= 0.80"
+        safety_metrics: "Zero critical safety violations"
+      deliverables:
+        - "Revalidation report"
+        - "Updated model card if changes detected"
+      regulatory_ref: "SAFEST S-20; EU AI Act Art. 50"
+
+    - id: "OPS-REVAL-T03"
+      trigger: "Annual full revalidation"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Full eval suite execution"
+        - "Risk reclassification review (has the system's risk profile changed?)"
+        - "Regulatory compliance check against current EU AI Act/DORA requirements"
+        - "Fairness metrics with intersectional analysis"
+        - "Champion-challenger comparison (if challenger models available)"
+        - "Governance process review: are all governance artifacts current?"
+      approval_authority: "Model Owner submits; 2nd Line validates; Committee approves"
+      acceptance_thresholds:
+        performance_metrics: "All acceptance criteria must PASS"
+        risk_classification: "Risk tier unchanged or re-approved by Committee"
+        documentation: "Model card, data sheet, and governance profile are current"
+        regulatory_compliance: "No outstanding compliance gaps"
+      deliverables:
+        - "Annual revalidation report"
+        - "Updated risk classification (if changed)"
+        - "Updated governance profile"
+        - "Committee sign-off record"
+      regulatory_ref: "EU AI Act Art. 72; DORA Art. 25; ISO 42001 Clause 9"
+
+    - id: "OPS-REVAL-T04"
+      trigger: "Annual independent model validation (2nd Line)"
+      applies_to: "high_risk"
+      evaluations:
+        - "Independent reproduction of key performance metrics"
+        - "Independent fairness audit"
+        - "Independent review of data quality and feature engineering"
+        - "Assessment of model limitations and residual risks"
+      approval_authority: "2nd Line executes independently; Committee reviews findings"
+      acceptance_thresholds:
+        validation_outcome: "2nd Line confirms model is fit-for-purpose or issues findings"
+        gap_resolution: "All critical findings must have remediation plan within 30 days"
+      deliverables:
+        - "Independent validation report"
+        - "Findings log with severity ratings"
+        - "Remediation tracker"
+      regulatory_ref: "DNB Good Practice; ECB Guide; SAFEST S-19"
+
+  # ---------------------------------------------------------------------------
+  # 2.2 EVENT-BASED TRIGGERS
+  # These fire when specific conditions are detected. Integration with monitoring
+  # platforms (LangSmith, Arize Phoenix, Opik, Langfuse) enables auto-triggering.
+  # ---------------------------------------------------------------------------
+  event_based:
+    - id: "OPS-REVAL-E01"
+      trigger: "Data drift detected"
+      condition: "PSI > 0.20 on any monitored feature for 7+ consecutive days, OR monitoring platform fires drift alert"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Root cause analysis of drift (upstream data change, seasonal, market shift)"
+        - "Re-run eval suite on recent production sample"
+        - "Assess model performance impact of detected drift"
+        - "Check fairness metrics for drift-correlated bias shifts"
+      approval_authority: "Model Owner determines severity; 2nd Line for high-risk systems"
+      response_time: "Investigation starts within 2 business days of alert"
+      integration_point: "Auto-triggered by observability platform alerts (Arize Phoenix drift monitors, Langfuse trace analytics)"
+      regulatory_ref: "SAFEST S-12; EU AI Act Art. 72"
+
+    - id: "OPS-REVAL-E02"
+      trigger: "Performance breach detected"
+      condition: "Any acceptance criterion metric falls below its defined threshold in production"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Root cause analysis (data drift, concept drift, upstream change, infrastructure issue)"
+        - "Re-run full eval suite to confirm breach"
+        - "Assess customer impact and potential harm"
+        - "Determine: rollback, fix, or temporary acceptance with deadline"
+      approval_authority: "Model Owner + 2nd Line for limited/high-risk"
+      response_time: "Critical breaches: same-day investigation; non-critical: within 2 business days"
+      integration_point: "Auto-triggered by monitoring alert thresholds defined in continuous-online-evaluation.md"
+      regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(3)"
+
+    - id: "OPS-REVAL-E03"
+      trigger: "Regulation change"
+      condition: "Material change to EU AI Act implementing acts, DORA technical standards, DNB guidance, or EBA guidelines affecting the AI system"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Gap analysis: current compliance vs. new requirements"
+        - "Impact assessment: does the change affect risk classification?"
+        - "Determine if eval suite needs updating to cover new requirements"
+        - "Update regulatory mapping in SAFEST compliance tracker"
+      approval_authority: "Compliance Officer leads; Committee approves updated compliance plan"
+      response_time: "Gap analysis within 30 days of regulation publication"
+      regulatory_ref: "EU AI Act; DORA; ISO 42001 Clause 6 — risk assessment updates"
+
+    - id: "OPS-REVAL-E04"
+      trigger: "AI incident occurred"
+      condition: "Any incident classified as Severity 1 or Severity 2 (see ai-incident-report.md)"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Full eval suite re-run to confirm system is within acceptable thresholds"
+        - "Targeted eval for the specific failure mode identified in the incident"
+        - "Agent-specific: reasoning trace audit, tool-use permission review"
+        - "Red-team test targeting the discovered vulnerability"
+      approval_authority: "Model Owner + 2nd Line; Committee for Severity 1"
+      response_time: "Eval starts within 24 hours of incident closure"
+      integration_point: "Triggered by incident management workflow; see ai-incident-report.md corrective actions"
+      regulatory_ref: "DORA Art. 13; EU AI Act Art. 73; SAFEST A-15, A-18"
+
+    - id: "OPS-REVAL-E05"
+      trigger: "Security vulnerability discovered"
+      condition: "New vulnerability affecting the AI system's supply chain, model, or tooling is published (AVID database, CVE, vendor advisory)"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Assess exposure: is the system affected by the vulnerability?"
+        - "Run targeted security eval (prompt injection, data extraction, tool exploit)"
+        - "Automated red-teaming scan using Noma AI or Straiker"
+        - "Supply chain dependency review"
+      approval_authority: "Security team + Model Owner; 2nd Line for high-risk"
+      response_time: "Critical vulnerabilities: same-day assessment; others: within 5 business days"
+      integration_point: "Monitor AVID (AI Vulnerability Database) and vendor security advisories"
+      regulatory_ref: "DORA Art. 8; EU AI Act Art. 15(4); SAFEST S-06"
+
+    - id: "OPS-REVAL-E06"
+      trigger: "Fairness complaint pattern detected"
+      condition: "3+ customer complaints alleging bias or unfair treatment within a 30-day period, OR fairness monitoring shows metric breach"
+      applies_to: "limited_risk, high_risk"
+      evaluations:
+        - "Deep-dive fairness analysis on the affected demographic group(s)"
+        - "Re-run bias testing with updated production data"
+        - "Intersectional analysis if complaint pattern suggests compound bias"
+        - "Root cause: training data bias, concept drift, or feature proxy effect?"
+      approval_authority: "Model Owner + Compliance Officer + DPO"
+      response_time: "Investigation starts within 3 business days"
+      regulatory_ref: "SAFEST F-13, F-14; EU AI Act Art. 10; Dutch Equal Treatment Act"
+
+  # ---------------------------------------------------------------------------
+  # 2.3 MODEL-BASED TRIGGERS
+  # ---------------------------------------------------------------------------
+  model_based:
+    - id: "OPS-REVAL-M01"
+      trigger: "Model version update"
+      condition: "New model version deployed (retrained model, updated weights, new architecture)"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Full pre-deployment gate checklist (pre-deployment-gate.yaml)"
+        - "Regression testing against previous version's eval results"
+        - "Fairness comparison: new version vs. previous version"
+        - "Shadow mode or canary deployment per continuous-online-evaluation.md"
+      approval_authority: "Per pre-deployment gate approval authority for the risk tier"
+      response_time: "Complete before production deployment"
+      regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(7)"
+
+    - id: "OPS-REVAL-M02"
+      trigger: "Fine-tuning applied"
+      condition: "Existing model fine-tuned on new data (additional training, RLHF updates, adapter modifications)"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Full eval suite re-run"
+        - "Fairness evaluation: fine-tuning data may introduce new biases"
+        - "Safety eval: fine-tuning can degrade safety alignment"
+        - "Catastrophic forgetting check: verify previously passing test cases still pass"
+      approval_authority: "Model Owner + 2nd Line for limited/high-risk"
+      response_time: "Complete before production deployment"
+      regulatory_ref: "SAFEST S-03; EU AI Act Art. 10"
+
+    - id: "OPS-REVAL-M03"
+      trigger: "Upstream LLM provider version change"
+      condition: "Third-party LLM provider updates their model version (e.g., GPT version bump, Claude update, Gemini update)"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Full eval suite re-run on the new provider version"
+        - "Regression testing: compare outputs to previous version"
+        - "Safety eval: verify guardrails still function correctly"
+        - "Prompt compatibility check: system prompts may behave differently"
+        - "Agent-specific: tool-use behavior may change; verify permission boundaries hold"
+      approval_authority: "Model Owner; 2nd Line for high-risk"
+      response_time: "Eval within 5 business days of provider announcement; block auto-upgrade until eval completes"
+      regulatory_ref: "SAFEST K-13, K-14; EBA GL/2019/02 (outsourcing); DORA Art. 28"
+
+    - id: "OPS-REVAL-M04"
+      trigger: "Guardrail or prompt configuration change"
+      condition: "Material change to system prompt, guardrail rules, safety rails, or agent permission boundaries"
+      applies_to: "all_tiers"
+      evaluations:
+        - "Safety eval suite re-run"
+        - "Prompt injection resistance test"
+        - "Agent permission boundary verification"
+        - "Regression test on golden dataset"
+      approval_authority: "Model Owner; 2nd Line for high-risk"
+      response_time: "Complete before production deployment of the configuration change"
+      regulatory_ref: "SAFEST S-06; EU AI Act Art. 15(4)"
+
+# =============================================================================
+# SECTION 3: SYSTEM-SPECIFIC CONFIGURATION TEMPLATE
+# Clone and customize for each deployed AI system.
+# =============================================================================
+
+system_revalidation_profile_template:
+  system_name: "[FILL IN]"
+  system_id: "[FILL IN from AI system inventory]"
+  risk_tier: "[high | limited | minimal]"
+  model_type: "[LLM agent | ML classifier | ML regressor | multi-agent system | hybrid]"
+  is_agentic: false  # Set true if the system uses tool-calling, delegation, or autonomous actions
+  deployment_date: "[YYYY-MM-DD]"
+  last_revalidation_date: ""
+  next_scheduled_revalidation: ""
+  revalidation_history: []
+  # Override tier-level defaults if needed:
+  custom_cadence_override: ""  # e.g., "monthly" if regulatory or business need requires it
+  custom_cadence_justification: ""
+  # Observability integration:
+  observability_platform: "[LangSmith | Arize Phoenix | Opik | Langfuse | other]"
+  drift_alert_configured: false
+  performance_alert_configured: false
+  auto_trigger_enabled: false  # true = monitoring alerts auto-create revalidation tickets
+  # Agentic system extensions:
+  agent_extensions:
+    permission_boundary_review_cadence: "[quarterly | semi-annual | annual]"
+    tool_use_audit_cadence: "[quarterly | semi-annual | annual]"
+    delegation_chain_review_cadence: "[quarterly | semi-annual | annual]"
+    reasoning_trace_sample_review: "[weekly | monthly | quarterly]"
+
+# =============================================================================
+# SECTION 4: DORA DIGITAL RESILIENCE TESTING ALIGNMENT
+# Maps revalidation activities to DORA testing requirements.
+# =============================================================================
+
+dora_alignment:
+  - dora_requirement: "DORA Art. 25(1) — ICT tools and systems testing"
+    revalidation_mapping: "Quarterly full revalidation (OPS-REVAL-T01) covers system testing"
+    evidence_artifact: "Revalidation report with system health metrics"
+  - dora_requirement: "DORA Art. 25(2) — Threat-led penetration testing (TLPT)"
+    revalidation_mapping: "Semi-annual red-team testing for high-risk systems"
+    evidence_artifact: "Red-team test report; automated red-teaming output from Noma AI / Straiker"
+  - dora_requirement: "DORA Art. 11 — Backup, restoration, recovery testing"
+    revalidation_mapping: "Annual revalidation (OPS-REVAL-T03) includes rollback and fallback testing"
+    evidence_artifact: "Rollback test execution log; recovery time measurement"
+
+# =============================================================================
+# SECTION 5: REVALIDATION OUTCOME ACTIONS
+# What happens after a revalidation completes.
+# =============================================================================
+
+outcome_actions:
+  pass:
+    description: "All acceptance thresholds met. System continues operating."
+    actions:
+      - "Record revalidation outcome in model change log"
+      - "Update next_scheduled_revalidation date"
+      - "File evidence in governance record"
+  conditional_pass:
+    description: "Minor threshold breaches detected but system remains operational with remediation plan."
+    actions:
+      - "Document breaches and remediation plan with deadline"
+      - "Escalate to 2nd Line for limited/high-risk systems"
+      - "Schedule follow-up revalidation within 30 days"
+      - "Add monitoring for the specific degraded metric"
+  fail:
+    description: "Critical threshold breached. System requires immediate action."
+    actions:
+      - "Activate rollback or circuit breaker per incident response plan"
+      - "Declare incident and follow ai-incident-report.md template"
+      - "Notify AI Governance Committee"
+      - "For high-risk: assess regulatory notification requirements (DNB, DPA)"
+      - "Block system from production until remediation is complete and re-validated"

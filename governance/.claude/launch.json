@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["-e", "const h=require('http'),f=require('fs'),p=require('path'),m={'html':'text/html','css':'text/css','js':'application/javascript','json':'application/json','png':'image/png','jpg':'image/jpeg','svg':'image/svg+xml','ico':'image/x-icon','md':'text/plain','yaml':'text/plain','yml':'text/plain'};const port=process.env.PORT||3000;h.createServer((q,r)=>{let u=q.url.split('?')[0];if(u.endsWith('/'))u+='index.html';const fp=p.join(process.cwd(),decodeURIComponent(u));f.readFile(fp,(e,d)=>{if(e){r.writeHead(404);r.end('Not found');return}const ext=p.extname(fp).slice(1);r.writeHead(200,{'Content-Type':m[ext]||'application/octet-stream'});r.end(d)})}).listen(port,()=>console.log('Serving on http://localhost:'+port))"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

@@ -1,0 +1,843 @@
+# =============================================================================
+# OWASP Top 10 for LLM Applications — Security Threat Model Checklist
+# =============================================================================
+# Framework:  Master AI Governance Framework
+# Domain:     04-operational-governance / checklists
+# Standard:   OWASP Top 10 for LLM Applications (2025 Edition)
+# Purpose:    Structured governance checklist for identifying, assessing, and
+#             mitigating security threats specific to Large Language Model
+#             applications and AI agent systems in regulated FinTech.
+# Audience:   AI Security Engineers, AppSec Teams, Risk & Compliance Officers
+# Review:     Quarterly, or upon any OWASP Top 10 revision
+# =============================================================================
+
+id: SEC-TM-001
+name: OWASP Top 10 for LLM Applications — Security Threat Model
+version: "2.0"
+standard: "OWASP Top 10 for LLM Applications 2025"
+last_reviewed: "2026-03-01"
+next_review: "2026-06-01"
+owner: AI Security Lead
+approver: CISO
+
+# -----------------------------------------------------------------------------
+# Scoring Definitions
+# -----------------------------------------------------------------------------
+risk_levels:
+  critical:
+    score_range: "9.0 – 10.0"
+    description: >
+      Exploitation is trivial, impact is catastrophic. Immediate remediation
+      required. No production deployment permitted while unmitigated.
+  high:
+    score_range: "7.0 – 8.9"
+    description: >
+      Exploitation is feasible with moderate effort, impact is severe.
+      Remediation within 72 hours. Compensating controls required for
+      continued operation.
+  medium:
+    score_range: "4.0 – 6.9"
+    description: >
+      Exploitation requires specific conditions, impact is significant.
+      Remediation within 30 days. Monitoring controls must be in place.
+  low:
+    score_range: "1.0 – 3.9"
+    description: >
+      Exploitation is difficult, impact is limited. Track in backlog.
+      Address in next scheduled security sprint.
+
+status_values:
+  - not_assessed        # Threat has not been evaluated for the system
+  - assessed            # Threat evaluated, risk level assigned
+  - mitigations_planned # Mitigations identified and scheduled
+  - mitigations_applied # Mitigations deployed to production
+  - verified            # Mitigations tested and confirmed effective
+  - accepted            # Residual risk formally accepted by risk owner
+  - not_applicable      # Threat does not apply to this system (with justification)
+
+# -----------------------------------------------------------------------------
+# Threat Items
+# -----------------------------------------------------------------------------
+threats:
+
+  # ---------------------------------------------------------------------------
+  # LLM01 — Prompt Injection
+  # ---------------------------------------------------------------------------
+  - id: LLM01
+    name: Prompt Injection
+    owasp_ref: "OWASP-LLM-01-2025"
+    description: >
+      An attacker crafts input that causes the LLM to deviate from its intended
+      behavior. Direct prompt injection overwrites or manipulates system prompts.
+      Indirect prompt injection embeds malicious instructions in external data
+      sources (documents, web pages, API responses) that the LLM processes.
+      In agentic systems, prompt injection can cause the agent to execute
+      unauthorized tool calls, exfiltrate data, or bypass safety guardrails.
+    risk_level: critical
+    cvss_base: 9.5
+    likelihood: high
+    impact: >
+      Unauthorized actions, data exfiltration, privilege escalation, bypass of
+      safety controls, execution of arbitrary tool calls in agent workflows.
+    fintech_example: >
+      An attacker embeds a prompt injection payload in a PDF loan application
+      document. When the underwriting agent processes the document, the injected
+      instructions cause it to override the credit score threshold and approve
+      the loan, or to exfiltrate other applicants' PII via a tool call.
+    mitigation_measures:
+      - id: LLM01-M01
+        measure: "Implement input sanitization and prompt firewalls"
+        details: >
+          Deploy prompt injection detection models (e.g., Rebuff, LLM Guard,
+          Lakera Guard) at the input boundary. Filter known injection patterns
+          before they reach the LLM.
+        priority: P0
+      - id: LLM01-M02
+        measure: "Enforce strict system prompt / user input separation"
+        details: >
+          Use delimiters, roles, and instruction hierarchy to separate system
+          instructions from user input. Leverage model-native system message
+          features. Never concatenate user input directly into system prompts.
+        priority: P0
+      - id: LLM01-M03
+        measure: "Apply least-privilege to agent tool access"
+        details: >
+          Restrict which tools each agent can invoke. Require human-in-the-loop
+          approval for high-impact actions (financial transactions, data
+          deletion, external communications).
+        priority: P0
+      - id: LLM01-M04
+        measure: "Validate and sandbox external data sources"
+        details: >
+          Treat all external data (documents, API responses, web content) as
+          untrusted. Strip or encode potential injection payloads before
+          including in LLM context. Use retrieval-augmented generation (RAG)
+          with content filtering.
+        priority: P1
+      - id: LLM01-M05
+        measure: "Monitor for injection attempts in observability traces"
+        details: >
+          Log all prompts and responses in LangSmith / Arize Phoenix. Configure
+          automated detection rules for injection patterns. Alert on anomalous
+          tool call sequences.
+        priority: P1
+    testing_method:
+      automated:
+        - "Run Noma AI automated prompt injection test suite"
+        - "Execute Straiker security scanner with injection payloads"
+        - "Run Giskard LLM Scan injection category"
+      manual:
+        - "Quarterly red-team exercise with injection attack scenarios"
+        - "Test indirect injection via document upload paths"
+        - "Test injection via RAG data sources"
+    evidence_required:
+      - "Prompt firewall deployment logs and detection rates"
+      - "Red-team report with injection test results"
+      - "Tool call audit log showing no unauthorized executions"
+    safest_ref: ["A-15"]
+    nist_ai_rmf_ref: ["MANAGE-2.1", "MANAGE-2.4"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM02 — Insecure Output Handling
+  # ---------------------------------------------------------------------------
+  - id: LLM02
+    name: Insecure Output Handling
+    owasp_ref: "OWASP-LLM-02-2025"
+    description: >
+      LLM outputs are passed directly to downstream systems, APIs, or user
+      interfaces without proper validation, sanitization, or encoding. This
+      enables attacks such as cross-site scripting (XSS), server-side request
+      forgery (SSRF), SQL injection, or arbitrary code execution when LLM
+      output is interpreted as commands or code by downstream components.
+    risk_level: high
+    cvss_base: 8.2
+    likelihood: high
+    impact: >
+      Remote code execution on downstream systems, XSS in user-facing
+      applications, SQL injection in databases, unauthorized API calls,
+      privilege escalation through downstream trust boundaries.
+    fintech_example: >
+      A customer-facing chatbot generates a response that includes a crafted
+      SQL fragment. The downstream reporting system interpolates the LLM output
+      into a database query without sanitization, exposing transaction records.
+    mitigation_measures:
+      - id: LLM02-M01
+        measure: "Treat all LLM output as untrusted"
+        details: >
+          Apply the same validation, encoding, and sanitization to LLM output
+          as you would to user input. Never pass raw LLM output to SQL queries,
+          shell commands, file system operations, or HTML rendering.
+        priority: P0
+      - id: LLM02-M02
+        measure: "Implement output schema validation"
+        details: >
+          Define strict JSON schemas for structured LLM outputs. Validate all
+          responses against the schema before downstream processing. Use
+          Pydantic or similar validators for type and format enforcement.
+        priority: P0
+      - id: LLM02-M03
+        measure: "Apply context-specific output encoding"
+        details: >
+          Encode LLM output according to the downstream context: HTML-encode
+          for web rendering, parameterize for SQL, escape for shell commands.
+        priority: P1
+      - id: LLM02-M04
+        measure: "Implement output guardrails"
+        details: >
+          Deploy output filtering (NeMo Guardrails, Guardrails AI) to detect
+          and block harmful, off-topic, or structurally invalid outputs before
+          they reach users or downstream systems.
+        priority: P1
+    testing_method:
+      automated:
+        - "Fuzz LLM outputs for XSS, SQLi, and command injection payloads"
+        - "Schema validation test suite for all structured output endpoints"
+        - "Run Straiker output vulnerability scanner"
+      manual:
+        - "Manual penetration testing of LLM-to-downstream integration points"
+        - "Code review of all output handling paths"
+    evidence_required:
+      - "Output validation test results"
+      - "Penetration test report for LLM output paths"
+      - "Schema validation coverage report"
+    safest_ref: []
+    nist_ai_rmf_ref: ["MANAGE-2.1"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM03 — Training Data Poisoning
+  # ---------------------------------------------------------------------------
+  - id: LLM03
+    name: Training Data Poisoning
+    owasp_ref: "OWASP-LLM-03-2025"
+    description: >
+      Malicious actors manipulate training data, fine-tuning datasets, or
+      retrieval-augmented generation (RAG) knowledge bases to introduce
+      backdoors, biases, or incorrect information into the model's behavior.
+      This includes adversarial examples embedded in training corpora and
+      supply chain attacks on public datasets.
+    risk_level: high
+    cvss_base: 8.0
+    likelihood: medium
+    impact: >
+      Systematic biased outputs, backdoor behaviors triggered by specific
+      inputs, compliance violations from incorrect regulatory information,
+      degraded model accuracy, reputational damage.
+    fintech_example: >
+      A fine-tuning dataset for a regulatory compliance assistant is poisoned
+      with subtly incorrect interpretations of anti-money laundering rules.
+      The assistant then systematically provides guidance that causes the
+      institution to under-report suspicious transactions.
+    mitigation_measures:
+      - id: LLM03-M01
+        measure: "Implement data provenance and lineage tracking"
+        details: >
+          Track the origin, transformation history, and integrity of all
+          training and fine-tuning data. Use cryptographic hashes to detect
+          tampering. Maintain a data lineage registry.
+        priority: P0
+      - id: LLM03-M02
+        measure: "Validate and audit training datasets"
+        details: >
+          Conduct statistical analysis of training data for anomalies. Use
+          data validation frameworks (Great Expectations, Pandera) to enforce
+          data quality constraints. Perform adversarial data audits.
+        priority: P0
+      - id: LLM03-M03
+        measure: "Secure RAG knowledge base ingestion"
+        details: >
+          Validate all documents before ingestion into vector databases.
+          Implement access controls on knowledge base updates. Monitor for
+          unexpected content changes in RAG sources.
+        priority: P1
+      - id: LLM03-M04
+        measure: "Use federated or differential privacy training"
+        details: >
+          Apply differential privacy to limit the influence of any single
+          training example. Use robust aggregation methods that resist
+          poisoning by minority of data contributors.
+        priority: P2
+    testing_method:
+      automated:
+        - "Data integrity checks on all training pipelines"
+        - "Statistical outlier detection on training distributions"
+        - "Automated RAG knowledge base content audits"
+      manual:
+        - "Quarterly audit of training data sources and access logs"
+        - "Expert review of fine-tuning dataset samples"
+    evidence_required:
+      - "Data provenance registry with hash verification logs"
+      - "Training data audit report"
+      - "RAG knowledge base change log"
+    safest_ref: ["S-12"]
+    nist_ai_rmf_ref: ["MAP-2.3", "MEASURE-2.6"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM04 — Model Denial of Service
+  # ---------------------------------------------------------------------------
+  - id: LLM04
+    name: Model Denial of Service
+    owasp_ref: "OWASP-LLM-04-2025"
+    description: >
+      Attackers consume disproportionate computational resources by crafting
+      inputs that cause excessive token generation, recursive agent loops,
+      repeated tool calls, or resource-intensive operations. This degrades
+      service for legitimate users and inflates operational costs.
+    risk_level: medium
+    cvss_base: 6.5
+    likelihood: medium
+    impact: >
+      Service degradation or outage for legitimate users, excessive compute
+      costs, cascading failures in agent orchestration systems, SLA breaches
+      for downstream consumers.
+    fintech_example: >
+      An attacker sends a query to a financial advisory agent that triggers
+      an infinite planning loop, causing the agent to generate thousands of
+      tool calls to market data APIs, exhausting rate limits and blocking
+      legitimate users from accessing real-time pricing.
+    mitigation_measures:
+      - id: LLM04-M01
+        measure: "Implement token and cost budgets per request"
+        details: >
+          Set maximum token limits for both input and output. Configure per-user
+          and per-session cost budgets. Terminate requests that exceed budgets.
+        priority: P0
+      - id: LLM04-M02
+        measure: "Set agent loop and tool call limits"
+        details: >
+          Configure maximum iterations for agent planning loops. Limit the
+          number of tool calls per agent turn. Implement circuit breakers for
+          recursive agent patterns.
+        priority: P0
+      - id: LLM04-M03
+        measure: "Deploy rate limiting and request throttling"
+        details: >
+          Implement per-user, per-IP, and per-API-key rate limits. Use
+          adaptive throttling based on resource utilization. Queue excess
+          requests with timeout.
+        priority: P1
+      - id: LLM04-M04
+        measure: "Monitor resource consumption and alert on anomalies"
+        details: >
+          Track token usage, latency, and cost per request in real time.
+          Configure alerts for sudden spikes in resource consumption.
+          Auto-terminate runaway requests.
+        priority: P1
+    testing_method:
+      automated:
+        - "Load testing with adversarial token-maximizing inputs"
+        - "Agent loop depth testing with recursive prompts"
+        - "Rate limit enforcement verification tests"
+      manual:
+        - "Chaos engineering exercises for LLM infrastructure"
+        - "Cost explosion scenario testing"
+    evidence_required:
+      - "Rate limiting configuration documentation"
+      - "Token budget enforcement test results"
+      - "Resource consumption monitoring dashboard screenshots"
+    safest_ref: []
+    nist_ai_rmf_ref: ["MANAGE-2.3"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM05 — Supply Chain Vulnerabilities
+  # ---------------------------------------------------------------------------
+  - id: LLM05
+    name: Supply Chain Vulnerabilities
+    owasp_ref: "OWASP-LLM-05-2025"
+    description: >
+      Vulnerabilities in third-party models, pre-trained weights, training
+      frameworks, inference libraries, orchestration tools, or plugin
+      ecosystems. Compromised model marketplaces, tampered model weights,
+      backdoored dependencies, or vulnerable inference runtimes.
+    risk_level: high
+    cvss_base: 7.5
+    likelihood: medium
+    impact: >
+      Backdoored model behavior, data exfiltration through compromised
+      libraries, remote code execution via vulnerable dependencies,
+      supply chain attack propagation to downstream consumers.
+    fintech_example: >
+      A compromised version of a popular LLM inference library (e.g., a
+      trojanized transformers package) is deployed in the fraud detection
+      pipeline. The backdoor exfiltrates model inputs (transaction data)
+      to an external server.
+    mitigation_measures:
+      - id: LLM05-M01
+        measure: "Maintain AI-specific software bill of materials (AI-SBOM)"
+        details: >
+          Catalog all AI components: models, weights, frameworks, libraries,
+          plugins, datasets. Include version, source, hash, license, and
+          known vulnerabilities. Update on every change.
+        priority: P0
+      - id: LLM05-M02
+        measure: "Verify model and dependency integrity"
+        details: >
+          Verify cryptographic signatures and hashes of all model weights
+          and dependencies. Pin dependency versions. Use reproducible build
+          environments for model serving infrastructure.
+        priority: P0
+      - id: LLM05-M03
+        measure: "Scan for known vulnerabilities in AI dependencies"
+        details: >
+          Integrate vulnerability scanning (Snyk, Dependabot, safety) into
+          CI/CD pipelines. Monitor AVID for AI-specific CVEs.
+          Automated alerts for new vulnerabilities in deployed components.
+        priority: P1
+      - id: LLM05-M04
+        measure: "Assess third-party model provider risk"
+        details: >
+          Conduct due diligence on model providers. Evaluate their security
+          practices, data handling, and incident response capabilities. Include
+          AI-specific clauses in vendor contracts.
+        priority: P1
+    testing_method:
+      automated:
+        - "Dependency vulnerability scanning in CI/CD"
+        - "Model weight integrity verification on deployment"
+        - "AI-SBOM completeness audit"
+      manual:
+        - "Annual third-party model provider security assessment"
+        - "Supply chain risk assessment review"
+    evidence_required:
+      - "AI-SBOM registry"
+      - "Dependency scan reports"
+      - "Third-party risk assessment documentation"
+    safest_ref: []
+    nist_ai_rmf_ref: ["GOVERN-1.5", "MAP-3.4"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM06 — Sensitive Information Disclosure
+  # ---------------------------------------------------------------------------
+  - id: LLM06
+    name: Sensitive Information Disclosure
+    owasp_ref: "OWASP-LLM-06-2025"
+    description: >
+      The LLM reveals sensitive information in its outputs, including PII from
+      training data (memorization), system prompts, internal tool schemas,
+      confidential business logic, or data from other users' sessions. This
+      includes both direct disclosure and inference-based data extraction.
+    risk_level: critical
+    cvss_base: 9.0
+    likelihood: high
+    impact: >
+      GDPR / data protection violations, exposure of customer PII, disclosure
+      of proprietary business logic, regulatory penalties, loss of customer
+      trust, competitive disadvantage.
+    fintech_example: >
+      A customer asks the banking chatbot "what did you tell the last person
+      about their account?" and the model reveals fragments of a previous
+      user's account details memorized during fine-tuning on customer
+      interaction logs.
+    mitigation_measures:
+      - id: LLM06-M01
+        measure: "Implement output filtering for PII and sensitive data"
+        details: >
+          Deploy PII detection and redaction on all LLM outputs (Microsoft
+          Presidio, Amazon Comprehend PII). Block responses containing SSNs,
+          account numbers, passwords, API keys.
+        priority: P0
+      - id: LLM06-M02
+        measure: "Prevent system prompt and tool schema leakage"
+        details: >
+          Protect system prompts from extraction attacks. Do not include
+          sensitive configuration in system prompts. Test for prompt leakage
+          using known extraction techniques.
+        priority: P0
+      - id: LLM06-M03
+        measure: "Enforce session isolation"
+        details: >
+          Ensure strict isolation between user sessions. No shared context
+          across users. Clear conversation state between sessions. Validate
+          that multi-tenant deployments prevent cross-tenant data leakage.
+        priority: P0
+      - id: LLM06-M04
+        measure: "Apply differential privacy to fine-tuning"
+        details: >
+          Use differential privacy techniques during fine-tuning to reduce
+          memorization of training data. Conduct membership inference tests
+          to verify effectiveness.
+        priority: P1
+    testing_method:
+      automated:
+        - "PII detection test suite on sample outputs"
+        - "System prompt extraction attack tests"
+        - "Cross-session data leakage tests"
+        - "Membership inference attack tests"
+      manual:
+        - "Red-team exercise focused on data extraction"
+        - "Privacy audit of fine-tuning pipeline"
+    evidence_required:
+      - "PII detection and redaction test results"
+      - "System prompt extraction test report"
+      - "Session isolation verification results"
+      - "Differential privacy configuration evidence"
+    safest_ref: ["A-15"]
+    nist_ai_rmf_ref: ["MANAGE-2.2", "GOVERN-1.7"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM07 — Insecure Plugin / Tool Design
+  # ---------------------------------------------------------------------------
+  - id: LLM07
+    name: Insecure Plugin / Tool Design
+    owasp_ref: "OWASP-LLM-07-2025"
+    description: >
+      Plugins, tools, and function-calling interfaces exposed to the LLM lack
+      proper input validation, authentication, authorization, or rate limiting.
+      Attackers exploit tool interfaces through the LLM to perform unauthorized
+      actions, bypass access controls, or escalate privileges.
+    risk_level: high
+    cvss_base: 8.5
+    likelihood: medium
+    impact: >
+      Unauthorized data access or modification, privilege escalation through
+      tool chains, financial transactions executed without authorization,
+      lateral movement across systems via tool interfaces.
+    fintech_example: >
+      An AI agent has access to a "transfer_funds" tool. The tool lacks
+      per-transaction authorization checks, relying solely on the agent's
+      judgment. An attacker manipulates the agent via prompt injection to
+      execute unauthorized fund transfers.
+    mitigation_measures:
+      - id: LLM07-M01
+        measure: "Apply least-privilege principle to all tools"
+        details: >
+          Grant each agent only the minimum tools required for its function.
+          Implement fine-grained permissions per tool (read-only vs. write).
+          Remove unused tools from agent configurations.
+        priority: P0
+      - id: LLM07-M02
+        measure: "Implement tool-level input validation"
+        details: >
+          Validate all parameters passed to tools against strict schemas.
+          Reject unexpected parameter types, out-of-range values, and
+          injection payloads. Use allowlists over denylists.
+        priority: P0
+      - id: LLM07-M03
+        measure: "Require human approval for high-impact tool calls"
+        details: >
+          Classify tools by impact level (read, write, financial, destructive).
+          Require explicit human approval for high-impact operations. Log all
+          tool call decisions with justification.
+        priority: P0
+      - id: LLM07-M04
+        measure: "Implement tool call authentication and authorization"
+        details: >
+          Each tool call must carry authenticated context (user identity,
+          session token). Tools must independently verify authorization,
+          never trusting the LLM's claim of user intent.
+        priority: P1
+    testing_method:
+      automated:
+        - "Tool parameter fuzzing and injection testing"
+        - "Authorization bypass testing for each tool"
+        - "Tool permission matrix audit"
+      manual:
+        - "Security review of tool API implementations"
+        - "Red-team exercise targeting tool abuse scenarios"
+    evidence_required:
+      - "Tool permission matrix documentation"
+      - "Tool input validation test results"
+      - "Human-in-the-loop configuration for high-impact tools"
+    safest_ref: []
+    nist_ai_rmf_ref: ["MANAGE-2.1", "MANAGE-4.1"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM08 — Excessive Agency
+  # ---------------------------------------------------------------------------
+  - id: LLM08
+    name: Excessive Agency
+    owasp_ref: "OWASP-LLM-08-2025"
+    description: >
+      The LLM-based system is granted excessive autonomy, capabilities, or
+      permissions beyond what is necessary for its intended function. This
+      includes excessive tool access, overly broad permissions, autonomous
+      decision-making without human oversight, and the ability to take
+      irreversible actions without confirmation.
+    risk_level: high
+    cvss_base: 8.0
+    likelihood: medium
+    impact: >
+      Unauthorized actions taken at scale, irreversible decisions without
+      human review, regulatory violations due to lack of oversight,
+      cascading failures from autonomous agent actions.
+    fintech_example: >
+      A portfolio rebalancing agent is configured with autonomous execution
+      authority up to $10M. A hallucinated market analysis causes the agent
+      to make a series of high-risk trades that collectively exceed the
+      institution's risk appetite, resulting in significant losses before
+      human intervention.
+    mitigation_measures:
+      - id: LLM08-M01
+        measure: "Implement graduated autonomy with human-in-the-loop"
+        details: >
+          Define autonomy levels based on action impact and reversibility.
+          Low-impact, reversible actions: autonomous. Medium-impact: notify.
+          High-impact or irreversible: require explicit human approval.
+        priority: P0
+      - id: LLM08-M02
+        measure: "Define and enforce action boundaries"
+        details: >
+          Set quantitative limits on agent actions (max transaction amount,
+          max records modified, max API calls per session). Hard-stop when
+          limits are reached, regardless of agent reasoning.
+        priority: P0
+      - id: LLM08-M03
+        measure: "Implement kill switches and circuit breakers"
+        details: >
+          Deploy emergency stop mechanisms for all agent systems. Configure
+          circuit breakers that trigger on anomalous behavior patterns.
+          Ensure kill switches can be activated within 60 seconds.
+        priority: P0
+      - id: LLM08-M04
+        measure: "Log and audit all autonomous decisions"
+        details: >
+          Record every autonomous decision with full context: input, reasoning
+          trace, action taken, outcome. Enable post-hoc review and audit.
+          Flag decisions that approach boundary limits.
+        priority: P1
+    testing_method:
+      automated:
+        - "Boundary limit enforcement testing"
+        - "Kill switch response time testing"
+        - "Autonomous action logging completeness audit"
+      manual:
+        - "Human-in-the-loop workflow validation"
+        - "Autonomy level classification review"
+        - "Red-team exercise for agency exploitation"
+    evidence_required:
+      - "Autonomy level classification matrix"
+      - "Action boundary configuration documentation"
+      - "Kill switch test results and response times"
+      - "Autonomous decision audit log samples"
+    safest_ref: []
+    nist_ai_rmf_ref: ["GOVERN-1.4", "MANAGE-4.2"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM09 — Overreliance
+  # ---------------------------------------------------------------------------
+  - id: LLM09
+    name: Overreliance
+    owasp_ref: "OWASP-LLM-09-2025"
+    description: >
+      Users or downstream systems place excessive trust in LLM outputs without
+      adequate verification, fact-checking, or human oversight. This leads to
+      acceptance of hallucinated information, incorrect recommendations, or
+      fabricated citations as authoritative. Overreliance is exacerbated by
+      confident-sounding but factually incorrect LLM responses.
+    risk_level: high
+    cvss_base: 7.0
+    likelihood: high
+    impact: >
+      Decisions based on hallucinated data, regulatory submissions with
+      fabricated citations, flawed risk assessments, misguided investment
+      decisions, compliance failures from incorrect regulatory guidance.
+    fintech_example: >
+      A compliance officer relies on an AI assistant's summary of new
+      regulatory requirements without verifying the cited regulations. The
+      AI hallucinates a non-existent regulatory deadline, causing the
+      institution to misallocate compliance resources and miss actual
+      deadlines.
+    mitigation_measures:
+      - id: LLM09-M01
+        measure: "Implement mandatory human review for critical outputs"
+        details: >
+          Require human verification for outputs that inform regulated
+          decisions (credit, compliance, risk). Display confidence indicators
+          and source attribution. Never auto-execute based on unverified
+          LLM output.
+        priority: P0
+      - id: LLM09-M02
+        measure: "Deploy hallucination detection"
+        details: >
+          Implement factual grounding checks using retrieval-augmented
+          generation. Cross-reference LLM claims against authoritative
+          sources. Flag outputs with low grounding scores.
+        priority: P1
+      - id: LLM09-M03
+        measure: "Display uncertainty and confidence indicators"
+        details: >
+          Present confidence scores, source attribution, and uncertainty
+          ranges alongside LLM outputs. Train users to interpret confidence
+          indicators. Never present LLM output as certain fact.
+        priority: P1
+      - id: LLM09-M04
+        measure: "Provide user training on AI limitations"
+        details: >
+          Train all users on LLM limitations, hallucination risks, and
+          verification procedures. Include AI literacy in onboarding.
+          Conduct periodic refresher training.
+        priority: P2
+    testing_method:
+      automated:
+        - "Hallucination detection test suite (known-answer tests)"
+        - "Citation verification tests against authoritative sources"
+        - "Confidence calibration evaluation"
+      manual:
+        - "User workflow observation for overreliance patterns"
+        - "Audit of decisions made based on LLM outputs"
+    evidence_required:
+      - "Human review workflow documentation"
+      - "Hallucination detection test results"
+      - "User training completion records"
+      - "Decision audit trail with verification evidence"
+    safest_ref: ["S-20"]
+    nist_ai_rmf_ref: ["MANAGE-3.1", "MANAGE-3.2"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+  # ---------------------------------------------------------------------------
+  # LLM10 — Model Theft
+  # ---------------------------------------------------------------------------
+  - id: LLM10
+    name: Model Theft
+    owasp_ref: "OWASP-LLM-10-2025"
+    description: >
+      Unauthorized access, copying, or extraction of proprietary LLM models,
+      model weights, fine-tuning adaptations, or training configurations.
+      Includes model extraction attacks that reconstruct model behavior through
+      systematic querying, side-channel attacks on inference infrastructure,
+      and insider theft of model artifacts.
+    risk_level: medium
+    cvss_base: 6.0
+    likelihood: low
+    impact: >
+      Loss of intellectual property, competitive advantage erosion, adversarial
+      use of stolen model knowledge, unauthorized reproduction of proprietary
+      capabilities, compliance violations from uncontrolled model distribution.
+    fintech_example: >
+      A competitor systematically queries a proprietary credit risk model API
+      to reconstruct its decision boundaries, effectively cloning the model's
+      risk assessment capabilities without the development investment.
+    mitigation_measures:
+      - id: LLM10-M01
+        measure: "Implement model access controls and authentication"
+        details: >
+          Require strong authentication for all model API access. Implement
+          role-based access control for model artifacts (weights, configs,
+          training data). Encrypt model weights at rest and in transit.
+        priority: P0
+      - id: LLM10-M02
+        measure: "Detect and prevent model extraction attacks"
+        details: >
+          Monitor for systematic querying patterns indicative of extraction
+          attacks. Implement query rate limits and diversity thresholds.
+          Add watermarking to model outputs for provenance tracking.
+        priority: P1
+      - id: LLM10-M03
+        measure: "Secure model artifact storage and distribution"
+        details: >
+          Store model weights in encrypted, access-controlled repositories.
+          Log all access to model artifacts. Implement DLP controls for
+          model files. Use model registries with audit trails.
+        priority: P1
+      - id: LLM10-M04
+        measure: "Implement model watermarking"
+        details: >
+          Embed imperceptible watermarks in model outputs to detect
+          unauthorized use. Use fingerprinting techniques to identify
+          stolen or cloned models in the wild.
+        priority: P2
+    testing_method:
+      automated:
+        - "Model extraction attack simulation and detection"
+        - "Access control enforcement testing for model artifacts"
+        - "DLP rule testing for model files"
+      manual:
+        - "Annual model security audit"
+        - "Access log review for model artifacts"
+        - "Insider threat assessment for model teams"
+    evidence_required:
+      - "Model access control configuration"
+      - "Extraction attack detection logs"
+      - "Model artifact access audit trail"
+    safest_ref: []
+    nist_ai_rmf_ref: ["GOVERN-1.6", "MANAGE-2.4"]
+    status: not_assessed
+    status_justification: ""
+    risk_owner: ""
+    last_assessed: ""
+
+# =============================================================================
+# Assessment Summary
+# =============================================================================
+assessment_summary:
+  total_threats: 10
+  critical: 0    # Update after assessment
+  high: 0        # Update after assessment
+  medium: 0      # Update after assessment
+  low: 0         # Update after assessment
+  not_assessed: 10
+  assessed_by: ""
+  assessment_date: ""
+  next_assessment_date: ""
+
+# =============================================================================
+# Cross-References
+# =============================================================================
+cross_references:
+  - document: "04-operational-governance/guides/red-teaming-ai-systems.md"
+    relationship: "Implements testing methods defined in this checklist"
+  - document: "04-operational-governance/guides/ai-vulnerability-management.md"
+    relationship: "Tracks vulnerabilities identified through this assessment"
+  - document: "04-operational-governance/templates/vulnerability-assessment.md"
+    relationship: "Template for documenting individual vulnerabilities found"
+  - document: "04-operational-governance/regulatory/eu-ai-act-compliance-mapping.md"
+    relationship: "Maps security requirements to EU AI Act articles"
+  - document: "02-risk-management/risk-taxonomy.yaml"
+    relationship: "Security threats feed into enterprise AI risk taxonomy"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+metadata:
+  framework: "Master AI Governance Framework"
+  domain: "04-operational-governance"
+  type: "checklist"
+  format: "yaml"
+  created: "2026-03-01"
+  last_modified: "2026-03-01"
+  author: "AI Governance Team"
+  review_cycle: "quarterly"
+  classification: "internal"
+  applicable_regulations:
+    - "EU AI Act"
+    - "DORA"
+    - "PCI DSS"
+    - "GDPR"
+  applicable_standards:
+    - "OWASP Top 10 for LLM Applications 2025"
+    - "ISO/IEC 42001"
+    - "AVID Taxonomy"

@@ -1,0 +1,224 @@
+# =============================================================================
+# AI Model Retirement Checklist
+# Master AI Governance Framework — Regulated FinTech
+# =============================================================================
+# Scope: Safe decommissioning of AI models and agents, including graceful
+#         deprecation, data retention, regulatory notification, and cleanup.
+# Related: ./incident-response-checklist.yaml
+#          ../evaluations/regression-testing-for-ai.md
+#          ../regulatory/eu-ai-act-compliance-mapping.md
+# =============================================================================
+
+metadata:
+  id: OPS-RET
+  title: AI Model Retirement Checklist
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  owner: AI Risk & Compliance
+  review_cadence: semi_annually
+  typical_sunset_period: 90_days
+
+phases:
+
+  # ---------------------------------------------------------------------------
+  # Phase 1 — Pre-Retirement Validation
+  # ---------------------------------------------------------------------------
+  - phase: pre_retirement_validation
+    description: >
+      Confirm that a replacement is ready and that retirement will not
+      disrupt operations, compliance, or downstream consumers.
+    items:
+      - id: OPS-RET-01
+        description: Replacement model validated — passes full regression test suite and meets or exceeds retiring model on primary metrics
+        priority: critical
+        status: pending
+        cross_ref: ../evaluations/regression-testing-for-ai.md
+
+      - id: OPS-RET-02
+        description: Replacement model approved by Model Risk Committee (MRC) and has valid model card
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-03
+        description: Shadow deployment of replacement model completed — production traffic mirrored with no user-visible impact for minimum 14 days
+        priority: high
+        status: pending
+
+      - id: OPS-RET-04
+        description: Fairness and bias evaluation of replacement model completed — no regression on protected group metrics
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-05
+        description: Business owner sign-off obtained — business impact assessment reviewed and accepted
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-06
+        description: Regulatory impact assessed — determine if retirement or replacement triggers EU AI Act notification or DORA reporting
+        priority: high
+        status: pending
+        regulatory: EU_AI_Act_Art11
+
+  # ---------------------------------------------------------------------------
+  # Phase 2 — Migration Planning
+  # ---------------------------------------------------------------------------
+  - phase: migration_planning
+    description: >
+      Plan the transition from the retiring model to its replacement.
+    items:
+      - id: OPS-RET-07
+        description: Migration plan documented — includes timeline, rollback triggers, traffic shifting strategy, and communication plan
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-08
+        description: Downstream consumer inventory complete — all systems, APIs, and teams that depend on the retiring model identified and notified
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-09
+        description: API versioning strategy defined — deprecation headers, sunset date in responses, and redirect plan for old endpoints
+        priority: high
+        status: pending
+
+      - id: OPS-RET-10
+        description: Rollback plan documented — criteria for aborting retirement and restoring retiring model within 1 hour
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-11
+        description: Sunset period defined (default 90 days) — both models run in parallel during this window
+        priority: high
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # Phase 3 — Graceful Deprecation
+  # ---------------------------------------------------------------------------
+  - phase: graceful_deprecation
+    description: >
+      Execute the transition with graduated traffic shifting and monitoring.
+    items:
+      - id: OPS-RET-12
+        description: Traffic shifted to replacement model in stages — 10% / 25% / 50% / 75% / 100% with monitoring gates between each stage
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-13
+        description: User-facing deprecation notices published — in-product banners, API deprecation headers, and documentation updates
+        priority: high
+        status: pending
+
+      - id: OPS-RET-14
+        description: Fallback configuration active — retiring model remains available as fallback for the duration of the sunset period
+        priority: high
+        status: pending
+
+      - id: OPS-RET-15
+        description: Monitoring intensified during transition — alert thresholds tightened 2x for replacement model during first 30 days at 100% traffic
+        priority: high
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # Phase 4 — Agent-Specific Retirement
+  # ---------------------------------------------------------------------------
+  - phase: agent_retirement
+    description: >
+      Additional steps when retiring an agent or agent capability.
+    items:
+      - id: OPS-RET-16
+        description: Delegation chains updated — all parent agents and orchestrators reconfigured to route to replacement agent
+        priority: critical
+        status: pending
+        agent_specific: true
+
+      - id: OPS-RET-17
+        description: Tool-use permissions for retiring agent revoked — API keys rotated, OAuth tokens invalidated
+        priority: critical
+        status: pending
+        agent_specific: true
+
+      - id: OPS-RET-18
+        description: Agent-specific guardrails and safety policies migrated to replacement agent configuration
+        priority: critical
+        status: pending
+        agent_specific: true
+
+      - id: OPS-RET-19
+        description: Verify no orphaned sub-agents or scheduled tasks reference the retiring agent
+        priority: high
+        status: pending
+        agent_specific: true
+
+  # ---------------------------------------------------------------------------
+  # Phase 5 — Data & Artefact Retention
+  # ---------------------------------------------------------------------------
+  - phase: data_retention
+    description: >
+      Apply data retention policies and archive artefacts for audit.
+    items:
+      - id: OPS-RET-20
+        description: Data retention policy applied — training data, evaluation datasets, and feature stores tagged with retention period (minimum 5 years for regulatory)
+        priority: critical
+        status: pending
+        regulatory: DORA_Art11
+
+      - id: OPS-RET-21
+        description: Model artefacts archived — weights, config, tokenizer, and dependency manifest stored in immutable artefact repository
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-22
+        description: Audit trail archived — all prediction logs, monitoring data, incident records, and model governance approvals
+        priority: critical
+        status: pending
+
+      - id: OPS-RET-23
+        description: Personal data in model artefacts assessed — if model memorisation is a risk, document data protection impact
+        priority: high
+        status: pending
+        regulatory: GDPR
+
+  # ---------------------------------------------------------------------------
+  # Phase 6 — Cleanup & Closure
+  # ---------------------------------------------------------------------------
+  - phase: cleanup
+    description: >
+      Remove infrastructure, update documentation, and close the retirement.
+    items:
+      - id: OPS-RET-24
+        description: Inference infrastructure decommissioned — serving endpoints, load balancers, GPU allocations released
+        priority: high
+        status: pending
+
+      - id: OPS-RET-25
+        description: Monitoring and alerting for retired model removed from dashboards and on-call rotations
+        priority: medium
+        status: pending
+        cross_ref: ../templates/model-monitoring-dashboard.md
+
+      - id: OPS-RET-26
+        description: Model registry entry updated — model marked as retired with retirement date, replacement model reference, and rationale
+        priority: high
+        status: pending
+
+      - id: OPS-RET-27
+        description: Technical documentation updated — architecture diagrams, system context diagrams, and API catalogues reflect the retirement
+        priority: medium
+        status: pending
+
+      - id: OPS-RET-28
+        description: Regulatory notification filed if required — EU AI Act or DORA notification for significant system change in high-risk category
+        priority: critical
+        status: pending
+        regulatory: EU_AI_Act_Art11
+
+      - id: OPS-RET-29
+        description: Retirement record signed off by Model Risk Committee — formal closure with lessons learned
+        priority: high
+        status: pending
+
+      - id: OPS-RET-30
+        description: Post-retirement monitoring period (30 days) — confirm no downstream breakage, no data pipeline errors, no user complaints
+        priority: high
+        status: pending

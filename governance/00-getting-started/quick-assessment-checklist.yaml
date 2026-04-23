@@ -1,0 +1,505 @@
+# =============================================================================
+# AI Governance Quick Assessment Checklist
+# =============================================================================
+# Purpose:  20-item self-assessment to determine your organisation's starting
+#           point and recommended risk tier within the AI Governance Framework
+#           for Agentic Workflows in Regulated FinTech.
+#
+# How to use:
+#   1. Answer each question honestly based on current state (not aspirational).
+#   2. Record the score for each answer.
+#   3. Sum total score and consult the scoring section at the bottom.
+#   4. Follow the recommended starting path.
+#
+# Cross-references:
+#   - 05-cross-cutting/regulatory-reference-index.md (regulatory context)
+#   - 01-foundations/governance-charter.md (governance structure)
+#   - 02-pre-deployment/risk-management-plan.md (risk management)
+# =============================================================================
+
+metadata:
+  title: "AI Governance Quick Assessment Checklist"
+  version: "1.0"
+  date: "2026-02-28"
+  framework: "AI Governance Framework for Agentic Workflows"
+  owner: "AI Governance Office"
+  review_cycle: "Semi-annually"
+  instructions: |
+    For each question, select the answer option (a, b, or c) that best
+    describes your organisation's CURRENT state. Be honest --- this assessment
+    is for internal planning, not external reporting. Record the numeric score
+    next to your chosen answer. Sum all scores to determine your recommended
+    starting path and risk tier.
+
+# =============================================================================
+# Assessment Questions
+# =============================================================================
+
+questions:
+
+  # ---------------------------------------------------------------------------
+  # Category A: Governance Maturity (Questions 1-5)
+  # ---------------------------------------------------------------------------
+
+  - id: Q01
+    category: governance_maturity
+    question: "Does your organisation have a formal AI governance policy or charter?"
+    options:
+      a:
+        text: "No policy exists; AI adoption is ad-hoc"
+        score: 0
+      b:
+        text: "Informal guidelines exist but are not enforced or documented"
+        score: 1
+      c:
+        text: "A formal, board-approved AI governance charter is in place and reviewed periodically"
+        score: 3
+    recommendation:
+      if_a: "Start with 01-foundations/governance-charter.md to establish baseline governance."
+      if_b: "Formalise existing guidelines using 01-foundations/governance-charter.md as a template."
+      if_c: "Review charter against ISO/IEC 42001 Clause 5."
+
+  - id: Q02
+    category: governance_maturity
+    question: "Are roles and responsibilities for AI development, deployment, and oversight clearly defined?"
+    options:
+      a:
+        text: "No defined roles; developers make their own decisions"
+        score: 0
+      b:
+        text: "Some roles are defined but gaps exist (e.g., no model risk owner)"
+        score: 1
+      c:
+        text: "Comprehensive RACI matrix covering all AI lifecycle stages is maintained"
+        score: 3
+    recommendation:
+      if_a: "Use 01-foundations/roles-and-responsibilities.md to define core roles."
+      if_b: "Fill gaps using the roles-and-responsibilities.md actor identification process."
+      if_c: "Verify coverage includes NHI/machine-identity roles per 05-cross-cutting/machine-identity-nhi.md."
+
+  - id: Q03
+    category: governance_maturity
+    question: "Is there an escalation path for AI-related incidents or ethical concerns?"
+    options:
+      a:
+        text: "No escalation path; issues are handled informally"
+        score: 0
+      b:
+        text: "Escalation path exists for major incidents but not for ethical concerns"
+        score: 1
+      c:
+        text: "Documented escalation policy covers technical incidents, ethical concerns, and regulatory events"
+        score: 3
+    recommendation:
+      if_a: "Establish escalation policy using 01-foundations/escalation-policy.md."
+      if_b: "Extend coverage to ethical and regulatory scenarios per DNB SAFEST Accountability pillar."
+      if_c: "Test escalation paths through tabletop exercises quarterly."
+
+  - id: Q04
+    category: governance_maturity
+    question: "How does your organisation track compliance with AI-relevant regulations?"
+    options:
+      a:
+        text: "No systematic tracking; compliance is reactive"
+        score: 0
+      b:
+        text: "Spreadsheet-based tracking exists for some regulations"
+        score: 1
+      c:
+        text: "Comprehensive compliance trackers aligned to a regulatory reference index are maintained"
+        score: 3
+    recommendation:
+      if_a: "Start with 05-cross-cutting/regulatory-reference-index.md to identify applicable regulations."
+      if_b: "Migrate to structured trackers in 06-compliance/trackers/."
+      if_c: "Ensure quarterly review cadence per the regulatory-reference-index maintenance schedule."
+
+  - id: Q05
+    category: governance_maturity
+    question: "Does your organisation conduct management reviews of AI systems?"
+    options:
+      a:
+        text: "No management reviews of AI systems"
+        score: 0
+      b:
+        text: "Reviews happen ad-hoc when problems arise"
+        score: 1
+      c:
+        text: "Scheduled management reviews with documented outcomes per ISO 42001 Clause 9"
+        score: 3
+    recommendation:
+      if_a: "Institute quarterly AI review meetings using ISO 42001 Clause 9 as guide."
+      if_b: "Move to a scheduled cadence with standardised reporting."
+      if_c: "Integrate drift detection metrics (04-operational-governance/templates/drift-detection-runbook.md) into review inputs."
+
+  # ---------------------------------------------------------------------------
+  # Category B: Risk Exposure (Questions 6-10)
+  # ---------------------------------------------------------------------------
+
+  - id: Q06
+    category: risk_exposure
+    question: "Do your AI agents make or influence decisions with legal or financial consequences for individuals?"
+    options:
+      a:
+        text: "Yes, agents make autonomous decisions affecting credit, payments, or investment"
+        score: 3
+      b:
+        text: "Agents provide recommendations that humans review before action"
+        score: 1
+      c:
+        text: "Agents perform only low-risk tasks (content generation, internal summarisation)"
+        score: 0
+    recommendation:
+      if_a: "Classify as high-risk per EU AI Act Art 6; full framework adoption required."
+      if_b: "Standard path; ensure human-oversight protocol is robust."
+      if_c: "Minimal path may suffice; focus on transparency and basic guardrails."
+
+  - id: Q07
+    category: risk_exposure
+    question: "Do your AI agents process personal data of EU residents?"
+    options:
+      a:
+        text: "Yes, including special-category data (health, biometric, financial)"
+        score: 3
+      b:
+        text: "Yes, but only standard personal data (name, email, transaction history)"
+        score: 2
+      c:
+        text: "No personal data is processed by AI agents"
+        score: 0
+    recommendation:
+      if_a: "DPIA mandatory (GDPR Art 35); implement 02-pre-deployment/templates/dpia-template.md."
+      if_b: "DPIA likely required; assess necessity per GDPR Art 35 criteria."
+      if_c: "Document the basis for this determination; revisit if scope changes."
+
+  - id: Q08
+    category: risk_exposure
+    question: "Do your AI agents interact directly with retail customers?"
+    options:
+      a:
+        text: "Yes, agents converse with retail clients in real-time"
+        score: 3
+      b:
+        text: "Agents assist internal staff who then interact with clients"
+        score: 1
+      c:
+        text: "Agents are used for internal operations only"
+        score: 0
+    recommendation:
+      if_a: "EU AI Act Art 52 transparency obligations apply; deploy NeMo Guardrails (03-runtime-governance/guides/integrating-nemo-guardrails.md)."
+      if_b: "Ensure internal users understand AI limitations; implement output validation."
+      if_c: "Lower risk but still ensure traceability for internal audit."
+
+  - id: Q09
+    category: risk_exposure
+    question: "Do your AI agents have tool-use capabilities (API calls, database writes, transactions)?"
+    options:
+      a:
+        text: "Yes, agents can execute financial transactions or modify records autonomously"
+        score: 3
+      b:
+        text: "Agents can call read-only APIs but cannot write or transact"
+        score: 1
+      c:
+        text: "Agents have no tool-use capabilities (pure text generation)"
+        score: 0
+    recommendation:
+      if_a: "High-risk agentic pattern; implement full runtime guardrails, NHI controls, and red-teaming."
+      if_b: "Moderate risk; ensure data provenance tracking and access controls."
+      if_c: "Focus on output quality and hallucination prevention."
+
+  - id: Q10
+    category: risk_exposure
+    question: "Are your AI systems using third-party models (OpenAI, Anthropic, open-source)?"
+    options:
+      a:
+        text: "Yes, we rely on third-party hosted models (API-based)"
+        score: 2
+      b:
+        text: "We use open-source models we host and fine-tune ourselves"
+        score: 1
+      c:
+        text: "We develop all models in-house from scratch"
+        score: 0
+    recommendation:
+      if_a: "Third-party risk assessment required; see 02-pre-deployment/third-party-model-assessment.md and DORA Art 28-44."
+      if_b: "Ensure supply-chain integrity; track model provenance."
+      if_c: "Full model governance applies; document per EU AI Act Art 11."
+
+  # ---------------------------------------------------------------------------
+  # Category C: Regulatory Requirements (Questions 11-14)
+  # ---------------------------------------------------------------------------
+
+  - id: Q11
+    category: regulatory_requirements
+    question: "Is your organisation supervised by DNB, AFM, or another EU financial regulator?"
+    options:
+      a:
+        text: "Yes, we hold a banking, insurance, or investment firm licence"
+        score: 3
+      b:
+        text: "We are a fintech with a limited licence (e.g., PSD2 PI/EMI)"
+        score: 2
+      c:
+        text: "We are not a regulated financial entity"
+        score: 0
+    recommendation:
+      if_a: "Full DORA, Wft, and DNB SAFEST compliance required."
+      if_b: "PSD2 and proportionate DORA obligations apply."
+      if_c: "EU AI Act still applies; GDPR applies if processing EU personal data."
+
+  - id: Q12
+    category: regulatory_requirements
+    question: "Does your organisation provide crypto-asset services?"
+    options:
+      a:
+        text: "Yes, we are or will be a licensed CASP under MiCAR"
+        score: 3
+      b:
+        text: "We provide ancillary services related to crypto-assets"
+        score: 1
+      c:
+        text: "No crypto-asset activities"
+        score: 0
+    recommendation:
+      if_a: "MiCAR obligations apply; see regulatory-reference-index.md section 9."
+      if_b: "Assess whether MiCAR scope captures your ancillary services."
+      if_c: "MiCAR not applicable; document exclusion rationale."
+
+  - id: Q13
+    category: regulatory_requirements
+    question: "Will your AI system be classified as high-risk under the EU AI Act?"
+    options:
+      a:
+        text: "Yes, or very likely (creditworthiness, insurance, employment decisions)"
+        score: 3
+      b:
+        text: "Uncertain; a formal classification has not been performed"
+        score: 2
+      c:
+        text: "No; system falls under limited or minimal risk category"
+        score: 0
+    recommendation:
+      if_a: "Full EU AI Act compliance path; all Chapter III Section 2 obligations apply."
+      if_b: "Perform classification using 01-foundations/risk-classification-methodology.md immediately."
+      if_c: "Transparency obligations (Art 52) may still apply; document classification."
+
+  - id: Q14
+    category: regulatory_requirements
+    question: "Have you conducted a Data Protection Impact Assessment (DPIA) for your AI systems?"
+    options:
+      a:
+        text: "No DPIA has been conducted"
+        score: 0
+      b:
+        text: "A DPIA was conducted but is outdated or incomplete"
+        score: 1
+      c:
+        text: "Current DPIA exists and is reviewed at least annually"
+        score: 3
+    recommendation:
+      if_a: "Use 02-pre-deployment/templates/dpia-template.md; this is likely a legal requirement."
+      if_b: "Update DPIA and establish annual review cycle."
+      if_c: "Ensure DPIA covers agentic-specific risks (tool-use, multi-agent, NHI)."
+
+  # ---------------------------------------------------------------------------
+  # Category D: Technical Capability (Questions 15-18)
+  # ---------------------------------------------------------------------------
+
+  - id: Q15
+    category: technical_capability
+    question: "Do you have observability and tracing for your AI agent pipelines?"
+    options:
+      a:
+        text: "No observability; we cannot trace agent decisions"
+        score: 0
+      b:
+        text: "Basic logging exists but no structured tracing or observability platform"
+        score: 1
+      c:
+        text: "Structured tracing via LangSmith, Arize Phoenix, Opik, Langfuse, or equivalent"
+        score: 3
+    recommendation:
+      if_a: "Critical gap; implement tracing immediately per 04-operational-governance/guides/traceability-with-langchain.md."
+      if_b: "Upgrade to structured observability; regulatory audit trails require it."
+      if_c: "Ensure traces meet retention requirements; integrate with drift detection."
+
+  - id: Q16
+    category: technical_capability
+    question: "Do you have guardrails (input/output validation) on your AI agents?"
+    options:
+      a:
+        text: "No guardrails; model outputs are used as-is"
+        score: 0
+      b:
+        text: "Basic content filtering but no structured output validation"
+        score: 1
+      c:
+        text: "Comprehensive guardrails (NeMo, Guardrails AI, or equivalent) with topical, safety, and output validation"
+        score: 3
+    recommendation:
+      if_a: "Urgent; implement NeMo Guardrails (03-runtime-governance/guides/integrating-nemo-guardrails.md) and/or Guardrails AI (03-runtime-governance/guides/integrating-guardrails-ai.md)."
+      if_b: "Add structured output validation and FinTech-specific custom validators."
+      if_c: "Ensure guardrail effectiveness is monitored; integrate with observability."
+
+  - id: Q17
+    category: technical_capability
+    question: "Do you perform red-teaming or adversarial testing on your AI systems?"
+    options:
+      a:
+        text: "No adversarial testing is performed"
+        score: 0
+      b:
+        text: "Manual testing occurs before release but is not systematic"
+        score: 1
+      c:
+        text: "Automated and manual red-teaming (Noma AI, Straiker, Giskard, or equivalent) runs continuously"
+        score: 3
+    recommendation:
+      if_a: "Start with 04-operational-governance/guides/red-teaming-ai-systems.md; DORA requires resilience testing."
+      if_b: "Systematise with automated tools and a regular cadence."
+      if_c: "Ensure red-team findings feed into remediation tracking and guardrail updates."
+
+  - id: Q18
+    category: technical_capability
+    question: "Do you track data provenance and lineage through your AI pipelines?"
+    options:
+      a:
+        text: "No data lineage tracking; we do not know what data influenced agent decisions"
+        score: 0
+      b:
+        text: "Partial lineage exists for training data but not for runtime context/RAG sources"
+        score: 1
+      c:
+        text: "Full provenance tracking from data source through agent pipeline to output"
+        score: 3
+    recommendation:
+      if_a: "Implement data lineage per 05-cross-cutting/data-provenance-and-lineage.md; EU AI Act Art 10 requires it."
+      if_b: "Extend to runtime data (RAG retrieval, tool outputs, context injection)."
+      if_c: "Ensure provenance metadata is included in audit trail exports."
+
+  # ---------------------------------------------------------------------------
+  # Category E: Organisational Readiness (Questions 19-20)
+  # ---------------------------------------------------------------------------
+
+  - id: Q19
+    category: organisational_readiness
+    question: "Does your organisation have AI-specific training and awareness programmes?"
+    options:
+      a:
+        text: "No AI-specific training exists"
+        score: 0
+      b:
+        text: "Ad-hoc training for technical teams only"
+        score: 1
+      c:
+        text: "Role-based AI training for technical, business, and oversight roles"
+        score: 3
+    recommendation:
+      if_a: "Develop training plan per 05-cross-cutting/training-and-awareness-plan.md; DNB SAFEST Skills pillar requires it."
+      if_b: "Extend to non-technical roles; include AI governance awareness."
+      if_c: "Ensure training covers agentic-specific topics (NHI, tool-use risks, guardrails)."
+
+  - id: Q20
+    category: organisational_readiness
+    question: "Does your organisation treat AI agents as machine identities within IAM?"
+    options:
+      a:
+        text: "No; agents use shared service accounts or developer credentials"
+        score: 0
+      b:
+        text: "Agents have dedicated service accounts but no lifecycle management"
+        score: 1
+      c:
+        text: "Agents are managed as Non-Human Identities (NHI) with provisioning, rotation, RBAC, and deprovisioning"
+        score: 3
+    recommendation:
+      if_a: "Critical security gap; see 05-cross-cutting/machine-identity-nhi.md."
+      if_b: "Implement NHI lifecycle management (DORA Art 8 ICT asset identification)."
+      if_c: "Ensure NHI inventory is integrated with CMDB and agent registry."
+
+# =============================================================================
+# Scoring System
+# =============================================================================
+
+scoring:
+  max_possible_score: 60  # 20 questions x max 3 points each
+  tiers:
+    minimal:
+      range: "0-15"
+      label: "Getting Started"
+      description: |
+        Your organisation is in the early stages of AI governance. Start with
+        foundational documents and focus on the highest-risk gaps identified
+        by individual question recommendations.
+      recommended_path:
+        - "01-foundations/governance-charter.md"
+        - "01-foundations/roles-and-responsibilities.md"
+        - "05-cross-cutting/regulatory-reference-index.md"
+        - "02-pre-deployment/risk-management-plan.md"
+      estimated_effort: "3-6 months to reach Standard tier"
+
+    standard:
+      range: "16-40"
+      label: "Building Maturity"
+      description: |
+        Your organisation has foundational governance in place but gaps remain
+        in technical controls, regulatory coverage, or organisational readiness.
+        Focus on closing the specific gaps identified.
+      recommended_path:
+        - "03-runtime-governance/guides/integrating-nemo-guardrails.md"
+        - "03-runtime-governance/guides/integrating-guardrails-ai.md"
+        - "04-operational-governance/guides/traceability-with-langchain.md"
+        - "04-operational-governance/guides/red-teaming-ai-systems.md"
+        - "05-cross-cutting/machine-identity-nhi.md"
+      estimated_effort: "2-4 months to reach Comprehensive tier"
+
+    comprehensive:
+      range: "41-60"
+      label: "Advanced Governance"
+      description: |
+        Your organisation has mature AI governance. Focus on continuous
+        improvement, advanced monitoring, and staying ahead of regulatory
+        changes.
+      recommended_path:
+        - "04-operational-governance/templates/drift-detection-runbook.md"
+        - "04-operational-governance/guides/red-teaming-ai-systems.md (continuous mode)"
+        - "05-cross-cutting/data-provenance-and-lineage.md"
+        - "06-compliance/trackers/ (all regulation trackers)"
+      estimated_effort: "Ongoing continuous improvement"
+
+  risk_tier_determination:
+    description: |
+      Your risk tier is determined by the HIGHEST score in the Risk Exposure
+      category (questions Q06-Q10). Even if your overall score is low, a high
+      risk-exposure score demands more rigorous controls.
+    logic:
+      - condition: "Any Risk Exposure question scored 3"
+        tier: "High Risk"
+        implication: "Full framework adoption mandatory. All EU AI Act high-risk obligations apply."
+      - condition: "Maximum Risk Exposure score is 2"
+        tier: "Elevated Risk"
+        implication: "Standard-plus path. Prioritise guardrails, observability, and third-party risk."
+      - condition: "Maximum Risk Exposure score is 1"
+        tier: "Moderate Risk"
+        implication: "Standard path with focus on proportionate controls."
+      - condition: "All Risk Exposure scores are 0"
+        tier: "Low Risk"
+        implication: "Minimal path with transparency and basic monitoring."
+
+# =============================================================================
+# Next Steps After Assessment
+# =============================================================================
+
+next_steps:
+  - step: 1
+    action: "Record your total score and risk tier"
+    details: "Save results in your project documentation for baseline comparison."
+  - step: 2
+    action: "Follow your recommended starting path"
+    details: "Work through the recommended documents in order."
+  - step: 3
+    action: "Re-assess in 6 months"
+    details: "Run this checklist again to measure governance maturity improvement."
+  - step: 4
+    action: "Map to compliance trackers"
+    details: "Use 05-cross-cutting/regulatory-reference-index.md to identify applicable regulations and begin populating compliance trackers."

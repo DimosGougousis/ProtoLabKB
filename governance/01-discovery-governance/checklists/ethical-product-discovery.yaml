@@ -1,0 +1,543 @@
+# =============================================================================
+# Ethical Product Discovery Checklist
+# Master AI Governance Framework - Discovery Pillar
+# =============================================================================
+# Inspired by: Thoughtworks Responsible Tech Playbook, IEEE Ethically Aligned
+#              Design, OECD AI Principles, EU AI Act (2024)
+# Scope:       Pre-build ethics review for FinTech AI agents and agentic workflows
+# Usage:       Complete BEFORE any development sprint begins. All "critical" items
+#              must be resolved or have documented exceptions approved by the Ethics
+#              Review Board before proceeding to the Development pillar.
+#
+# Cross-references:
+#   - ../templates/ai-ethics-impact-assessment.md  (deep-dive per item)
+#   - ../templates/stakeholder-value-map.md        (stakeholder analysis)
+#   - ../guides/pair-guide-for-pms.md              (user-centric patterns)
+#   - ../../02-development-governance/             (implementation controls)
+#   - ../../03-runtime-governance/                 (production monitoring)
+#   - ../../04-operational-governance/             (incident & audit)
+# =============================================================================
+
+metadata:
+  framework: "Master AI Governance Framework"
+  pillar: "01-Discovery"
+  artifact: "Ethical Product Discovery Checklist"
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  owner: "AI Ethics & Governance Office"
+  review_cadence: "Quarterly"
+  applicable_regulations:
+    - "EU AI Act (Regulation 2024/1689)"
+    - "FCA Consumer Duty (PS22/9)"
+    - "SEC Regulation Best Interest"
+    - "ECOA / Regulation B (Fair Lending)"
+    - "GDPR (Regulation 2016/679)"
+    - "CCPA / CPRA"
+  completion_requirements:
+    critical: "All must be PASS or have Ethics Board exception"
+    important: "90% must be PASS; remaining need documented plan"
+    recommended: "Best-effort; track in backlog if deferred"
+
+# -----------------------------------------------------------------------------
+# CATEGORY 1: STAKEHOLDER IMPACT
+# Thoughtworks lens: "Who benefits? Who is harmed? Who decides?"
+# -----------------------------------------------------------------------------
+categories:
+
+  - id: "stakeholder_impact"
+    name: "Stakeholder Impact Analysis"
+    description: >
+      Identify every group affected by the AI system -- direct users,
+      indirect beneficiaries, and those who bear risk without choosing to.
+      In FinTech, this includes retail customers, institutional clients,
+      regulators, and communities affected by lending or investment decisions.
+    cross_reference: "../templates/stakeholder-value-map.md"
+    items:
+
+      - id: "SI-001"
+        item: "Primary beneficiaries identified and documented with explicit value propositions"
+        description: >
+          List all groups that directly benefit from the AI product. For each
+          group, articulate the specific value the AI delivers (e.g., faster
+          loan decisions, lower fraud losses). Verify that value is real and
+          measurable, not aspirational.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 9(2)(a) - risk management shall identify foreseeable risks"
+
+      - id: "SI-002"
+        item: "Affected non-users identified (people impacted who never chose to interact)"
+        description: >
+          Identify individuals or communities affected by the AI system who
+          are not its users. In credit scoring, this includes applicants denied
+          credit and communities where lending patterns shift. In trading, this
+          includes counterparties and market participants.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA / Reg B - adverse action notice requirements"
+
+      - id: "SI-003"
+        item: "Power dynamics between AI operator and affected individuals assessed"
+        description: >
+          Evaluate whether the AI creates or amplifies power asymmetries.
+          A bank using AI to assess creditworthiness holds power over applicants.
+          Document these dynamics and describe safeguards to prevent exploitation.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "FCA Consumer Duty - firms must act to deliver good outcomes"
+
+      - id: "SI-004"
+        item: "Vulnerable population impact assessed (elderly, low-income, disabled, low-literacy)"
+        description: >
+          Explicitly evaluate impact on vulnerable populations who may be
+          disproportionately affected. In FinTech, consider financial literacy
+          gaps, digital access barriers, and language barriers.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "FCA Consumer Duty PS22/9 - heightened duty for vulnerable customers"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 2: SOCIETAL IMPACT
+  # ---------------------------------------------------------------------------
+  - id: "societal_impact"
+    name: "Societal Impact Assessment"
+    description: >
+      Evaluate the broader societal consequences of deploying the AI system,
+      including systemic risks to financial markets, effects on employment,
+      and potential for reinforcing structural inequalities.
+    items:
+
+      - id: "SOC-001"
+        item: "Systemic risk to financial markets evaluated"
+        description: >
+          Assess whether the AI, if widely adopted, could contribute to
+          systemic financial risk (e.g., correlated trading strategies,
+          herding in credit decisions, flash-crash amplification).
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Annex III - AI in critical infrastructure; Basel III systemic risk"
+
+      - id: "SOC-002"
+        item: "Employment displacement impact documented"
+        description: >
+          Document which human roles the AI replaces or augments. If roles
+          are eliminated, document transition plans and whether affected
+          workers have been consulted.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "OECD AI Principle 1.2 - inclusive growth and sustainable development"
+
+      - id: "SOC-003"
+        item: "Financial inclusion impact assessed (does the AI widen or narrow access?)"
+        description: >
+          Evaluate whether the AI broadens financial inclusion (e.g., serving
+          underbanked populations) or narrows it (e.g., excluding thin-file
+          applicants). Document evidence for the assessment.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "Community Reinvestment Act; ECOA fair lending"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 3: ENVIRONMENTAL IMPACT
+  # ---------------------------------------------------------------------------
+  - id: "environmental_impact"
+    name: "Environmental Impact"
+    description: >
+      Assess the environmental cost of training, deploying, and operating
+      the AI system, including energy consumption, carbon footprint, and
+      hardware lifecycle.
+    items:
+
+      - id: "ENV-001"
+        item: "Training compute carbon footprint estimated"
+        description: >
+          Estimate the CO2 equivalent of model training using recognized
+          tools (e.g., ML CO2 Impact, CodeCarbon). Include retraining
+          frequency in the lifecycle estimate.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 11(1) - technical documentation shall include energy consumption"
+
+      - id: "ENV-002"
+        item: "Inference-time energy consumption projected for production scale"
+        description: >
+          Project the energy cost of running the model at expected production
+          volumes. Include edge vs. cloud deployment trade-offs.
+        priority: "recommended"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU Corporate Sustainability Reporting Directive (CSRD)"
+
+      - id: "ENV-003"
+        item: "Proportionality check: is the environmental cost justified by the value delivered?"
+        description: >
+          Compare the environmental cost against the value delivered. A
+          marginal improvement in fraud detection that requires massive GPU
+          clusters may fail proportionality.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Recital 27 - proportionality principle"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 4: BIAS RISK
+  # ---------------------------------------------------------------------------
+  - id: "bias_risk"
+    name: "Bias & Fairness Risk Assessment"
+    description: >
+      Identify sources of bias at every stage: problem framing, data
+      collection, feature selection, model training, deployment, and
+      feedback loops. FinTech-specific: disparate impact on protected
+      classes in lending, insurance, and trading.
+    cross_reference: "../../02-development-governance/checklists/bias-testing-checklist.yaml"
+    items:
+
+      - id: "BIAS-001"
+        item: "Protected characteristics identified for the jurisdiction and use case"
+        description: >
+          List all legally protected characteristics (race, gender, age,
+          disability, religion, etc.) relevant to the jurisdiction. Map
+          proxies that could encode these characteristics (zip code as
+          proxy for race, name as proxy for ethnicity).
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA; EU AI Act Art. 10(2)(f); UK Equality Act 2010"
+
+      - id: "BIAS-002"
+        item: "Historical bias in training data identified and documented"
+        description: >
+          Review training data for historical biases (e.g., past lending
+          discrimination reflected in approval/denial patterns). Document
+          known biases and proposed mitigations.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10 - data governance; ECOA fair lending"
+
+      - id: "BIAS-003"
+        item: "Proxy discrimination pathways mapped"
+        description: >
+          Identify features that could serve as proxies for protected
+          characteristics. In FinTech, zip code, university, employer name,
+          and transaction patterns can encode race, gender, or socioeconomic
+          status.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ECOA / Reg B; CFPB guidance on fair lending analytics"
+
+      - id: "BIAS-004"
+        item: "Fairness metrics selected and justified for the use case"
+        description: >
+          Choose appropriate fairness metrics (demographic parity, equalized
+          odds, predictive parity, etc.) and justify the choice. Document
+          known trade-offs between metrics.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10(2)(f)"
+
+      - id: "BIAS-005"
+        item: "Feedback loop bias risks identified (does deployment amplify existing bias?)"
+        description: >
+          Assess whether the AI system creates feedback loops that amplify
+          bias over time. In lending, denying credit based on biased
+          historical data prevents affected groups from building credit
+          history, reinforcing the bias.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "CFPB Circular 2022-03 - adverse action notification"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 5: DATA ETHICS
+  # ---------------------------------------------------------------------------
+  - id: "data_ethics"
+    name: "Data Ethics & Privacy"
+    description: >
+      Evaluate the ethical sourcing, handling, and use of data. Covers
+      consent, minimization, purpose limitation, and the rights of data
+      subjects in the context of AI training and inference.
+    items:
+
+      - id: "DATA-001"
+        item: "Data sources inventoried with provenance and consent documentation"
+        description: >
+          List every data source. For each, document: origin, collection
+          method, consent mechanism, data controller, lawful basis for
+          processing, and any restrictions on use.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 6 (lawful basis); EU AI Act Art. 10(2)"
+
+      - id: "DATA-002"
+        item: "Data minimization verified (only necessary data collected)"
+        description: >
+          Confirm that only data necessary for the stated purpose is
+          collected and used. Challenge every feature: is it needed for
+          the AI to function, or is it nice-to-have?
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 5(1)(c) - data minimisation"
+
+      - id: "DATA-003"
+        item: "Third-party data ethics verified (vendor due diligence completed)"
+        description: >
+          For third-party data, verify the vendor's data collection
+          practices, consent frameworks, and compliance posture. Document
+          findings in vendor risk assessment.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 28 - processor obligations; OCC third-party risk guidance"
+
+      - id: "DATA-004"
+        item: "Right to erasure and its impact on model accuracy assessed"
+        description: >
+          Evaluate how GDPR/CCPA deletion requests affect the AI system.
+          Document the process for removing individual data from training
+          sets and the impact on model performance (machine unlearning).
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 17 - right to erasure"
+
+      - id: "DATA-005"
+        item: "Synthetic and augmented data use documented with quality controls"
+        description: >
+          If synthetic data is used for training or testing, document
+          generation methods, quality metrics, and limitations.
+          Ensure synthetic data does not mask real-world distribution issues.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10(2)(b) - data governance practices"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 6: TRANSPARENCY
+  # ---------------------------------------------------------------------------
+  - id: "transparency"
+    name: "Transparency & Explainability"
+    description: >
+      Ensure the AI system's purpose, capabilities, limitations, and
+      decision-making process can be communicated clearly to all
+      stakeholders, proportionate to risk.
+    cross_reference: "../checklists/user-agency-assessment.yaml"
+    items:
+
+      - id: "TRANS-001"
+        item: "AI disclosure plan documented (users will know AI is involved)"
+        description: >
+          Document how and when users will be informed that AI is involved
+          in decisions affecting them. In FinTech, this includes credit
+          decisions, investment recommendations, and fraud alerts.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 52 - transparency obligations"
+
+      - id: "TRANS-002"
+        item: "Explainability approach selected (global vs. local, technical vs. lay)"
+        description: >
+          Choose the explainability approach for each stakeholder group.
+          Regulators may need SHAP values; customers need plain-language
+          reasons. Document the approach for each audience.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13 - transparency; ECOA adverse action reasons"
+
+      - id: "TRANS-003"
+        item: "Limitations and known failure modes documented for end users"
+        description: >
+          Create user-facing documentation of what the AI cannot do and
+          where it is known to perform poorly. Avoid over-promising
+          capabilities.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)(ii) - known limitations"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 7: USER AGENCY
+  # ---------------------------------------------------------------------------
+  - id: "user_agency"
+    name: "User Agency & Human Oversight"
+    description: >
+      Ensure humans retain meaningful control over AI decisions,
+      especially for high-stakes outcomes. Covers HITL, HOTL, and
+      HOTA oversight models.
+    cross_reference: "../checklists/user-agency-assessment.yaml"
+    items:
+
+      - id: "UA-001"
+        item: "Human oversight model selected (HITL/HOTL/HOTA) and justified"
+        description: >
+          Select the appropriate human oversight model based on risk level.
+          HITL (Human-in-the-Loop) for high-risk decisions like credit
+          approval. HOTL (Human-on-the-Loop) for medium-risk like fraud
+          alerts. HOTA (Human-over-the-Loop) for low-risk like chatbot
+          responses.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14 - human oversight"
+
+      - id: "UA-002"
+        item: "User override mechanism designed for every consequential AI decision"
+        description: >
+          For every decision that materially affects a user, design a
+          mechanism for the user to challenge, override, or request human
+          review. Document escalation paths and SLAs.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(4); GDPR Art. 22 - automated decision-making"
+
+      - id: "UA-003"
+        item: "Automation complacency risk assessed and mitigated"
+        description: >
+          Evaluate the risk that human overseers will rubber-stamp AI
+          decisions due to automation bias. Design interventions such as
+          requiring explicit justification for agreement with AI, periodic
+          calibration exercises, and alert fatigue monitoring.
+        priority: "important"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(4)(b) - human oversight effectiveness"
+
+  # ---------------------------------------------------------------------------
+  # CATEGORY 8: ACCOUNTABILITY
+  # ---------------------------------------------------------------------------
+  - id: "accountability"
+    name: "Accountability & Governance Structure"
+    description: >
+      Establish clear lines of responsibility for the AI system's
+      outcomes across its lifecycle, from discovery through retirement.
+    items:
+
+      - id: "ACC-001"
+        item: "Accountable owner identified for AI system outcomes"
+        description: >
+          Designate a named individual (not a committee) who is accountable
+          for the AI system's outcomes. This person has authority to halt
+          deployment and bears responsibility for failures.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 9(9) - overall responsibility; FCA SMCR"
+
+      - id: "ACC-002"
+        item: "Incident response plan drafted for AI-specific failures"
+        description: >
+          Draft a response plan for AI-specific incidents: model drift,
+          bias discovery, data breach affecting training data, adversarial
+          attacks, and hallucinated outputs causing financial harm.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 62 - reporting of serious incidents"
+
+      - id: "ACC-003"
+        item: "Audit trail requirements defined (what decisions must be logged?)"
+        description: >
+          Define which AI decisions require immutable audit logs. In
+          FinTech, this typically includes all credit decisions, trade
+          executions, KYC/AML determinations, and customer advice.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 12 - record-keeping; MiFID II Art. 16(6)"
+
+      - id: "ACC-004"
+        item: "Redress mechanism designed for individuals harmed by AI decisions"
+        description: >
+          Design a clear, accessible process for individuals to seek
+          redress when harmed by AI decisions. Include compensation
+          framework, appeals process, and maximum response times.
+        priority: "critical"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "FCA Consumer Duty; GDPR Art. 22(3) - right to contest"
+
+      - id: "ACC-005"
+        item: "Retirement and sunset plan outlined for when the AI system is decommissioned"
+        description: >
+          Outline what happens when the AI system is retired: data
+          retention and deletion, model archival for audit, transition
+          plan for dependent systems, and communication to affected users.
+        priority: "recommended"
+        status: "not_started"
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "GDPR Art. 5(1)(e) - storage limitation"
+
+# =============================================================================
+# COMPLETION SUMMARY
+# =============================================================================
+completion_summary:
+  total_items: 28
+  critical_items: 18
+  important_items: 7
+  recommended_items: 3
+  pass_count: 0
+  fail_count: 0
+  not_started_count: 28
+  completion_percentage: 0
+  gate_status: "NOT READY - critical items unresolved"
+
+sign_off:
+  ethics_board:
+    name: ""
+    date: ""
+    decision: ""
+    conditions: ""
+  product_owner:
+    name: ""
+    date: ""
+    acknowledgement: ""
+  compliance_officer:
+    name: ""
+    date: ""
+    regulatory_clearance: ""

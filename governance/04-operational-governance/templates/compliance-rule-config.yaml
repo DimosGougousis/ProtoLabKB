@@ -1,0 +1,336 @@
+# ===========================================================================
+# Compliance Rule Configuration Template
+# ===========================================================================
+#
+# Purpose:
+#   YAML template for individual compliance rules to be evaluated by OPA/Cedar
+#   policy engines at runtime. Each rule maps a specific regulatory requirement
+#   to executable policy logic with jurisdictional scope and enforcement level.
+#
+# When to Use:
+#   - When creating a new compliance rule for AI governance
+#   - When mapping regulatory requirements to executable policy
+#   - When configuring jurisdiction-specific compliance requirements
+#   - When updating rules for regulatory changes
+#   - When testing compliance rule effectiveness
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Compliance Engineer           | Accountable | Defines rule logic and regulatory mapping           |
+#   | Legal Counsel                 | Reviewer    | Validates regulatory interpretation                 |
+#   | Policy Engine Administrator   | Responsible | Deploys rule to OPA/Cedar                           |
+#   | Security Engineer             | Consulted   | Reviews enforcement mechanisms                      |
+#
+# Regulatory Basis:
+#   - EU AI Act Articles 9, 12, 14, 15, 16
+#   - GDPR Articles 25, 32
+#   - DORA Article 9
+#   - SOC 2 CC6.1, CC7.2
+#
+# Cross-References:
+#   - Compliance-as-Configuration: compliance-as-configuration.md
+#   - Governance Enforcement Pipeline: ../../03-runtime-governance/agentic-workflows/governance-enforcement-pipeline.md
+#
+# Last updated: 2026-03-26 / Version: 1.0 / Classification: Internal
+# ===========================================================================
+
+# --- Rule Identity ---
+rule_id: "<REGULATION>-[CATEGORY]-[NUMBER]"
+rule_version: "<semver, e.g., 1.0.0>"
+rule_name: "<Human-readable rule name>"
+description: "<Clear description of what this rule enforces>"
+
+# --- Regulatory Mapping ---
+regulatory_basis:
+  regulation: "<EU_AI_ACT | GDPR | DORA | SOC2 | HIPAA | PCI_DSS | COLORADO_AI_ACT | NIST_AI_RMF>"
+  framework: "<framework_name>"                     # e.g., "EU AI Act"
+  article: "<Article_X>"                            # Specific article number
+  section: "<section_reference>"                    # Section or paragraph
+  requirement: "<text_of_requirement>"              # Verbatim requirement text
+  
+  # Jurisdictional applicability
+  jurisdiction:
+    applies_to: ["<jurisdiction_code1>", "<jurisdiction_code2>"]
+    effective_date: "<YYYY-MM-DD>"
+    enforcement_date: "<YYYY-MM-DD>"
+    
+  # Related regulations
+  related_regulations:
+    - regulation: "<related_reg>"
+      article: "<article>"
+      relationship: "<complements | supersedes | conflicts>"
+
+# --- Rule Metadata ---
+metadata:
+  created_by: "<author_name>"
+  created_at: "<YYYY-MM-DD>"
+  last_modified: "<YYYY-MM-DD>"
+  modified_by: "<modifier_name>"
+  review_date: "<YYYY-MM-DD>"
+  status: "<draft | active | deprecated | superseded>"
+  priority: "<critical | high | medium | low>"
+  
+  # Categorization
+  category: "<oversight | safety | data_protection | security | fairness | transparency>"
+  risk_domain: "<operational | legal | reputational | financial>"
+  
+  # Version control
+  supersedes: "<previous_rule_id>"                  # If this replaces another rule
+  superseded_by: "<newer_rule_id>"                  # If this rule is deprecated
+
+# --- Policy Logic ---
+policy:
+  # Policy engine selection
+  engine: "<opa | cedar | custom>"
+  
+  # OPA Rego policy
+  rego_policy: |
+    package agent.compliance.<rule_category>
+    
+    import future.keywords.if
+    import future.keywords.in
+    
+    # Default deny
+    default allow := false
+    
+    # Rule logic
+    allow if {
+        # Condition 1
+        input.agent.<attribute> == "<value>"
+        
+        # Condition 2
+        input.context.<condition> == true
+        
+        # Additional conditions...
+    }
+    
+    # Deny conditions (explicit denies override allows)
+    deny if {
+        input.agent.<attribute> == "<prohibited_value>"
+    }
+    
+    # Final decision
+    decision := {
+        "allow": allow,
+        "reason": "<explanation>",
+        "rule_id": "<rule_id>"
+    }
+  
+  # Cedar policy (alternative to Rego)
+  cedar_policy: |
+    permit (
+        principal == Agent::"<agent_type>",
+        action == Action::"<action_type>",
+        resource == Resource::"<resource_type>"
+    )
+    when {
+        context.<attribute> == "<value>" &&
+        context.<condition> == true
+    }
+    unless {
+        context.<prohibited_condition> == true
+    };
+
+# --- Conditions ---
+conditions:
+  # Agent attributes to check
+  agent_conditions:
+    - attribute: "<risk_tier>"
+      operator: "<equals | in | not_in | greater_than | less_than | regex_match>"
+      value: "<value_or_list>"
+    
+    - attribute: "<oversight_model>"
+      operator: "<in>"
+      value: ["<value1>", "<value2>"]
+  
+  # Context conditions
+  context_conditions:
+    - attribute: "<jurisdiction>"
+      operator: "<in>"
+      value: ["<jurisdiction1>", "<jurisdiction2>"]
+    
+    - attribute: "<data_classification>"
+      operator: "<equals>"
+      value: "<classification>"
+  
+  # Action conditions
+  action_conditions:
+    - attribute: "<action_type>"
+      operator: "<in>"
+      value: ["<action1>", "<action2>"]
+    
+    - attribute: "<financial_impact>"
+      operator: "<greater_than>"
+      value: <numeric>
+      currency: "<USD | EUR | GBP>"
+
+# --- Enforcement ---
+enforcement:
+  # Enforcement level
+  level: "<block | warn | audit | log>"
+    # block    -- Prevent execution
+    # warn     -- Allow with warning notification
+    # audit    -- Allow but log for review
+    # log      -- Silent logging only
+  
+  # Auto-remediation
+  auto_remediation:
+    enabled: <true | false>
+    action: "<remediation_action>"
+    notification: <true | false>
+  
+  # Escalation
+  escalation:
+    required: <true | false>
+    escalation_path: "<path>"
+    sla_minutes: <integer>
+  
+  # Fallback behavior
+  fallback:
+    on_policy_error: "<block | allow | degrade>"
+    on_engine_unavailable: "<block | allow>"
+
+# --- Exceptions ---
+exceptions:
+  # Pre-approved exceptions
+  approved_exceptions:
+    - exception_id: "<exception_id>"
+      description: "<reason_for_exception>"
+      approved_by: "<approver_name>"
+      approval_date: "<YYYY-MM-DD>"
+      expiry_date: "<YYYY-MM-DD>"
+      scope:
+        agents: ["<agent_id1>", "<agent_id2>"]
+        time_range:
+          start: "<ISO8601_timestamp>"
+          end: "<ISO8601_timestamp>"
+        conditions:
+          - "<specific_condition>"
+  
+  # Exception request process
+  exception_process:
+    requires_approval_from: ["<role1>", "<role2>"]
+    max_duration_days: <integer>
+    review_required: <true | false>
+
+# --- Audit ---
+audit:
+  # Logging configuration
+  log_decision: <true | false>
+  log_context: <true | false>
+  log_input_output: <true | false>
+  
+  # Evidence requirements
+  evidence_required:
+    - "<evidence_type1>"
+    - "<evidence_type2>"
+  
+  # Retention
+  retention_days: <integer>
+  
+  # Alerting
+  alert_on:
+    - "<violation>"
+    - "<exception_used>"
+
+# --- Testing ---
+testing:
+  # Test cases
+  test_cases:
+    - name: "<test_name>"
+      description: "<what_this_test_validates>"
+      input:
+        agent:
+          <attribute>: "<value>"
+        context:
+          <attribute>: "<value>"
+      expected_result: <true | false>
+      expected_violations: ["<violation_id>"]
+    
+    - name: "<test_name_2>"
+      # ... additional test cases
+  
+  # Test coverage requirements
+  coverage:
+    min_tests: <integer>
+    scenarios: ["<scenario1>", "<scenario2>"]
+
+# --- Related Rules ---
+related_rules:
+  - rule_id: "<related_rule_id>"
+    relationship: "<depends_on | conflicts_with | complements>"
+  
+  - rule_id: "<another_related_rule>"
+    relationship: "<relationship_type>"
+
+# ===========================================================================
+# EXAMPLE: EU AI Act High-Risk Human Oversight Rule
+# ===========================================================================
+# rule_id: "EU-AI-ACT-014-001"
+# rule_version: "1.0.0"
+# rule_name: "EU AI Act Article 14 Human Oversight"
+# description: "High-risk AI systems must have human oversight measures in place"
+# 
+# regulatory_basis:
+#   regulation: "EU_AI_ACT"
+#   framework: "EU AI Act"
+#   article: "14"
+#   section: "1"
+#   requirement: "High-risk AI systems shall be designed and developed in such a way, including with appropriate human-machine interface tools, that they can be effectively overseen by natural persons during the period in which the AI system is in use."
+#   jurisdiction:
+#     applies_to: ["EU", "EEA"]
+#     effective_date: "2026-08-02"
+# 
+# metadata:
+#   created_by: "Compliance Engineering"
+#   created_at: "2026-03-26"
+#   status: "active"
+#   priority: "critical"
+#   category: "oversight"
+# 
+# policy:
+#   engine: "opa"
+#   rego_policy: |
+#     package eu_ai_act.article14
+#     
+#     import future.keywords.if
+#     
+#     default allow := false
+#     
+#     allow if {
+#         input.agent.risk_classification != "high"
+#     }
+#     
+#     allow if {
+#         input.agent.risk_classification == "high"
+#         input.oversight_model == "HITL"
+#         input.human_oversight.measures_implemented == true
+#         input.human_oversight.training_completed == true
+#     }
+#     
+#     allow if {
+#         input.agent.risk_classification == "high"
+#         input.oversight_model == "HOTL"
+#         input.human_oversight.measures_implemented == true
+#         input.human_oversight.intervention_capability == "real_time"
+#     }
+# 
+# conditions:
+#   agent_conditions:
+#     - attribute: "risk_classification"
+#       operator: "equals"
+#       value: "high"
+# 
+# enforcement:
+#   level: "block"
+#   escalation:
+#     required: true
+#     escalation_path: "ai_governance_committee"
+#     sla_minutes: 60
+# 
+# audit:
+#   log_decision: true
+#   evidence_required: ["oversight_documentation", "training_records"]
+#   retention_days: 2555
+# ===========================================================================

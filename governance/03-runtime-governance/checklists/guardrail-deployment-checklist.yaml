@@ -1,0 +1,223 @@
+# =============================================================================
+# Guardrail Deployment Checklist
+# AI Governance Framework for Agentic Workflows in Regulated FinTech
+# =============================================================================
+# Version: 1.0.0
+# Last Updated: 2026-02-28
+# Owner: AI Governance Office
+# Scope: All production AI agents and model-serving endpoints
+# Cross-ref: ../templates/guardrail-specification.yaml
+# Cross-ref: ../templates/fallback-procedure.md
+# Cross-ref: ../agentic-workflows/delegation-chain-audit.md
+# =============================================================================
+
+metadata:
+  checklist_id: CL-RUN-GRD
+  title: "Guardrail Deployment Checklist"
+  description: >
+    Pre-deployment checklist ensuring all runtime guardrails are configured,
+    tested, and monitored before an AI agent or model endpoint enters
+    production. Aligned with the SAFEST framework (S-04, S-07, S-13) and
+    EU AI Act Article 14 (human oversight) and Article 9 (risk management).
+  applicable_to:
+    - standalone_model_endpoints
+    - single_agent_deployments
+    - multi_agent_orchestrations
+  approval_required_from:
+    - ai_governance_lead
+    - infosec_reviewer
+    - compliance_officer
+  revision_history:
+    - version: "1.0.0"
+      date: "2026-02-28"
+      author: "AI Governance Office"
+      change: "Initial release"
+
+# =============================================================================
+# Section 1 --- Framework and Infrastructure
+# =============================================================================
+framework_and_infrastructure:
+  - id: RUN-GRD-01
+    description: "Guardrail framework selected and approved (e.g., NeMo Guardrails, Guardrails AI, custom engine)"
+    priority: critical
+    status: pending
+    evidence_ref: "Link to architecture decision record (ADR)"
+    eu_ai_act_ref: "Article 9(2)(a) -- risk management system design"
+    notes: "Framework must support both input and output rails at sub-200ms p99 latency"
+
+  - id: RUN-GRD-02
+    description: "Guardrail runtime deployed in the same availability zone as model-serving infrastructure"
+    priority: high
+    status: pending
+    evidence_ref: "Infrastructure topology diagram"
+    notes: "Minimises network hop latency between inference and guardrail evaluation"
+
+  - id: RUN-GRD-03
+    description: "Guardrail configuration stored in version-controlled repository with branch protections"
+    priority: critical
+    status: pending
+    evidence_ref: "Repository URL and branch-protection screenshot"
+    notes: "All guardrail changes must pass peer review before merge"
+
+# =============================================================================
+# Section 2 --- Input Rails
+# =============================================================================
+input_rails:
+  - id: RUN-GRD-04
+    description: "Prompt injection detection enabled and tested against OWASP LLM Top-10 attack vectors"
+    priority: critical
+    status: pending
+    evidence_ref: "Pen-test report or red-team results"
+    eu_ai_act_ref: "Article 15 -- accuracy, robustness, cybersecurity"
+
+  - id: RUN-GRD-05
+    description: "Topical boundaries defined -- agent restricted to its approved domain (e.g., lending, KYC)"
+    priority: critical
+    status: pending
+    evidence_ref: "Topic-boundary specification in guardrail-specification.yaml"
+    notes: "Off-topic queries must return a safe refusal, not a hallucinated answer"
+
+  - id: RUN-GRD-06
+    description: "PII detection and masking enabled on all inbound user prompts"
+    priority: critical
+    status: pending
+    evidence_ref: "PII scan test results; list of detected entity types"
+    eu_ai_act_ref: "GDPR Article 5(1)(c) -- data minimisation"
+
+  - id: RUN-GRD-07
+    description: "Input length and token limits enforced to prevent resource-exhaustion attacks"
+    priority: high
+    status: pending
+    evidence_ref: "Load-test results showing rejection of oversized payloads"
+
+# =============================================================================
+# Section 3 --- Output Rails
+# =============================================================================
+output_rails:
+  - id: RUN-GRD-08
+    description: "Output content filtering active -- harmful, toxic, and discriminatory content blocked"
+    priority: critical
+    status: pending
+    evidence_ref: "Content-filter evaluation report with precision/recall metrics"
+    eu_ai_act_ref: "Article 9(2)(b) -- risk mitigation measures"
+
+  - id: RUN-GRD-09
+    description: "Hallucination mitigation active -- factual grounding checks or retrieval-augmented verification"
+    priority: high
+    status: pending
+    evidence_ref: "Hallucination benchmark scores (e.g., TruthfulQA, domain-specific suite)"
+
+  - id: RUN-GRD-10
+    description: "Compliance-sensitive output checks configured (financial advice disclaimers, regulatory disclosures)"
+    priority: critical
+    status: pending
+    evidence_ref: "Compliance review sign-off; sample output audit"
+    notes: "FinTech-specific: disclosures per MiFID II, Consumer Duty, TILA as applicable"
+
+  - id: RUN-GRD-11
+    description: "Fallback responses defined for every rail-trigger scenario"
+    priority: high
+    status: pending
+    evidence_ref: "Fallback response matrix in fallback-procedure.md"
+
+# =============================================================================
+# Section 4 --- Agent-Specific: Tool-Use and Delegation
+# =============================================================================
+agentic_guardrails:
+  - id: RUN-GRD-12
+    description: "Tool-use guardrails enforced -- agent can only invoke tools in its approved tool manifest"
+    priority: critical
+    status: pending
+    evidence_ref: "Tool manifest YAML; denied-tool invocation test logs"
+    cross_ref: "../agentic-workflows/delegation-chain-audit.md"
+
+  - id: RUN-GRD-13
+    description: "Permission boundary enforcement -- Agentic Tool Sovereignty layers verified (Configuration, Policy, Network)"
+    priority: critical
+    status: pending
+    evidence_ref: "Policy-as-code definitions; network segmentation diagram"
+    notes: >
+      Configuration Layer: tool allow-lists per agent role.
+      Policy Layer: OPA/Cedar policies evaluating runtime context.
+      Network Layer: service-mesh rules restricting egress.
+
+  - id: RUN-GRD-14
+    description: "Escalation triggers configured -- conditions under which agent must escalate to human (HITL/HOTL/HOTA)"
+    priority: critical
+    status: pending
+    evidence_ref: "Escalation policy document; trigger threshold matrix"
+    eu_ai_act_ref: "Article 14 -- human oversight"
+
+  - id: RUN-GRD-15
+    description: "Financial transaction limits enforced -- per-transaction and rolling-window caps"
+    priority: critical
+    status: pending
+    evidence_ref: "Transaction-limit policy; test evidence of cap enforcement"
+    notes: "Caps must align with internal risk appetite and regulatory thresholds"
+
+  - id: RUN-GRD-16
+    description: "Delegation depth limit configured -- maximum number of agent-to-agent hops"
+    priority: high
+    status: pending
+    evidence_ref: "Delegation policy; test showing rejection beyond max depth"
+    cross_ref: "../agentic-workflows/delegation-chain-audit.md"
+
+# =============================================================================
+# Section 5 --- Monitoring, Alerting, and Performance
+# =============================================================================
+monitoring_and_performance:
+  - id: RUN-GRD-17
+    description: "Monitoring dashboards set up -- guardrail trigger rates, latency percentiles, error rates"
+    priority: high
+    status: pending
+    evidence_ref: "Dashboard URL and screenshot"
+
+  - id: RUN-GRD-18
+    description: "Alerting configured -- PagerDuty / Opsgenie rules for anomalous guardrail trigger spikes"
+    priority: high
+    status: pending
+    evidence_ref: "Alert rule definitions; test-fire confirmation"
+
+  - id: RUN-GRD-19
+    description: "Load testing completed -- guardrails validated under expected peak traffic (2x headroom)"
+    priority: high
+    status: pending
+    evidence_ref: "Load-test report (tool, duration, RPS, error rate)"
+
+  - id: RUN-GRD-20
+    description: "Latency impact measured -- end-to-end p50/p95/p99 with guardrails enabled vs. disabled"
+    priority: high
+    status: pending
+    evidence_ref: "Latency comparison table; SLA compliance confirmation"
+    notes: "Guardrail overhead must not breach the agreed latency SLA"
+
+  - id: RUN-GRD-21
+    description: "Reasoning trace (Span) capture verified -- each guardrail decision logged with trace ID"
+    priority: high
+    status: pending
+    evidence_ref: "Sample trace showing guardrail spans in OpenTelemetry / Datadog"
+    notes: "Spans must include: rule_id, decision (allow/block), confidence, latency_ms"
+
+# =============================================================================
+# Section 6 --- Sign-Off
+# =============================================================================
+sign_off:
+  - role: ai_governance_lead
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: infosec_reviewer
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: compliance_officer
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: engineering_lead
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false

@@ -1,0 +1,337 @@
+# ===========================================================================
+# Budget Cap Configuration Template
+# ===========================================================================
+#
+# Purpose:
+#   YAML template for configuring hierarchical budget caps across the
+#   Organization → Team → Agent → Skill → Run hierarchy. Defines tenant,
+#   user, agent, skill, and run-level caps with alert thresholds and
+#   enforcement actions.
+#
+# When to Use:
+#   - When setting up budget controls for new AI agents
+#   - When configuring hierarchical cost limits
+#   - When defining alert thresholds for budget consumption
+#   - When implementing automatic enforcement actions
+#   - When allocating AI budgets across teams
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Finance Controller            | Accountable | Approves budget allocations and caps                |
+#   | CAIO                          | Responsible | Defines AI investment strategy and ROI targets        |
+#   | MLOps / Platform Engineer     | Responsible | Implements budget enforcement infrastructure          |
+#   | Team Lead                     | Responsible | Manages team-level budget consumption               |
+#   | Product Manager               | Consulted   | Provides business context for budget planning         |
+#
+# Regulatory Basis:
+#   - DORA Article 9 -- ICT risk management including cost controls
+#   - SOX -- Financial controls for material expenditures
+#   - SAFEST S-10 -- Cost management and budget controls
+#   - SAFEST S-11 -- Resource utilization monitoring
+#
+# Cross-References:
+#   - Cost Attribution Dashboard: ../../06-executive/financial-governance/cost-attribution-dashboard.md
+#   - Token Usage Forecast: ../../06-executive/financial-governance/token-usage-forecast.md
+#   - Governance Enforcement Pipeline: ../../03-runtime-governance/agentic-workflows/governance-enforcement-pipeline.md
+#
+# Last updated: 2026-03-26 / Version: 1.0 / Classification: Internal
+# ===========================================================================
+
+# --- Configuration Identity ---
+config_id: "<budget:[org/team/agent]:[name]:v[version]>"
+config_version: "<semver, e.g., 1.0.0>"
+name: "<Human-readable Budget Config Name>"
+effective_date: "<YYYY-MM-DD>"
+review_date: "<YYYY-MM-DD>"
+
+# --- Organization Level ---
+org_budget:
+  enabled: <true | false>
+  
+  annual_budget:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>
+    fiscal_year: "<YYYY>"
+    
+  alert_thresholds:
+    warning: <0.0-1.0>        # Alert at % of budget (e.g., 0.50 for 50%)
+    elevated: <0.0-1.0>       # Elevated alert (e.g., 0.75)
+    critical: <0.0-1.0>       # Critical alert (e.g., 0.90)
+    
+  enforcement:
+    at_threshold: <0.0-1.0>    # Hard stop at % of budget (e.g., 1.0)
+    action: "<block | warn | notify>"
+    escalation_required: <true | false>
+
+# --- Tenant Level (Multi-tenancy) ---
+tenant_cap:
+  enabled: <true | false>
+  
+  tenant_id: "<tenant_identifier>"
+  
+  budget:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>
+    period: "<monthly | quarterly | annual>"
+    
+  alert_thresholds:
+    warning: <0.0-1.0>
+    elevated: <0.0-1.0>
+    critical: <0.0-1.0>
+    
+  enforcement:
+    at_threshold: <0.0-1.0>
+    action: "<block | warn | notify | downgrade_model>"
+    downgrade_model_to: "<cheaper_model_id>"
+    
+  # Data residency enforcement
+  data_residency:
+    allowed_regions: ["<region1>", "<region2>"]
+    budget_zone: "<budget_zone_identifier>"
+
+# --- User Level ---
+user_cap:
+  enabled: <true | false>
+  
+  budget:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>
+    period: "<daily | weekly | monthly>"
+    
+  alert_thresholds:
+    warning: <0.0-1.0>
+    critical: <0.0-1.0>
+    
+  enforcement:
+    at_threshold: <0.0-1.0>
+    action: "<block | warn | notify>"
+    
+  # Per-user rate limiting
+  rate_limits:
+    requests_per_minute: <integer>
+    tokens_per_hour: <integer>
+
+# --- Agent Level ---
+agent_cap:
+  enabled: <true | false>
+  
+  agent_id: "<agent_identifier>"
+  
+  budget:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>
+    period: "<monthly | quarterly>"
+    
+  alert_thresholds:
+    warning: <0.0-1.0>        # Notify team lead
+    elevated: <0.0-1.0>       # Notify manager + CAIO
+    critical: <0.0-1.0>        # Page on-call
+    
+  enforcement:
+    at_threshold: <0.0-1.0>
+    action: "<throttle | block | notify>"
+    throttle_capacity_percent: <0-100>
+    
+  # Auto-scaling limits
+  scaling_limits:
+    max_replicas: <integer>
+    min_replicas: <integer>
+    cost_per_replica_hour: <numeric>
+
+# --- Skill Level ---
+skill_cap:
+  enabled: <true | false>
+  
+  skills:
+    - skill_id: "<skill_identifier>"
+      budget:
+        currency: "<USD | EUR | GBP>"
+        amount: <numeric>
+        period: "<weekly | monthly>"
+      
+      alert_thresholds:
+        warning: <0.0-1.0>
+        critical: <0.0-1.0>
+      
+      enforcement:
+        at_threshold: <0.0-1.0>
+        action: "<block | downgrade_model | notify>"
+        downgrade_model_to: "<cheaper_model_id>"
+      
+      # Per-skill model routing by budget
+      model_routing:
+        budget_available:
+          model: "<premium_model>"
+        budget_low:
+          threshold: <0.0-1.0>
+          model: "<efficient_model>"
+    
+    - skill_id: "<skill_identifier_2>"
+      # ... additional skills
+
+# --- Run Level ---
+run_cap:
+  enabled: <true | false>
+  
+  per_run_limits:
+    max_tokens_input: <integer>
+    max_tokens_output: <integer>
+    max_cost: <numeric>
+    max_duration_seconds: <integer>
+    
+  alert_on_threshold: <true | false>
+  
+  enforcement:
+    at_threshold: <0.0-1.0>
+    action: "<block | truncate | notify>"
+    truncate_to_tokens: <integer>
+
+# --- Hierarchical Inheritance ---
+inheritance_rules:
+  # Child budgets cannot exceed parent
+  enforce_hierarchy: <true | false>
+  
+  # Sum of child budgets must be <= parent budget
+  validate_sum: <true | false>
+  
+  # Overflow handling
+  overflow_policy: "<reject | borrow_from_parent | alert>"
+  overflow_limit_percent: <numeric>  # Max % of parent that can be borrowed
+
+# --- Model-Specific Caps ---
+model_specific_caps:
+  - model_id: "<premium_model>"
+    budget_allocation_percent: <0.0-1.0>
+    max_calls_per_hour: <integer>
+    
+  - model_id: "<efficient_model>"
+    budget_allocation_percent: <0.0-1.0>
+    # No hourly limit for efficient model
+    
+  - model_id: "<experimental_model>"
+    budget_allocation_percent: <0.0-1.0>
+    requires_approval_above: <numeric>
+
+# --- Alert Configuration ---
+alerts:
+  channels:
+    - type: "slack"
+      target: "<#channel>"
+      severity_levels: ["warning", "elevated", "critical"]
+    
+    - type: "pagerduty"
+      service_key: "<key>"
+      severity_levels: ["critical"]
+    
+    - type: "email"
+      recipients: ["<email1>", "<email2>"]
+      severity_levels: ["elevated", "critical"]
+    
+    - type: "webhook"
+      url: "<webhook_url>"
+      severity_levels: ["warning", "elevated", "critical"]
+  
+  # Alert throttling
+  throttle:
+    min_interval_minutes: <integer>
+    max_alerts_per_hour: <integer>
+
+# --- Forecasting Integration ---
+forecasting:
+  enabled: <true | false>
+  
+  # Variance thresholds
+  variance_alert_threshold: <0.0-1.0>  # Alert if actual > forecast × threshold
+  
+  # Auto-adjustment
+  auto_adjust_caps: <true | false>
+  adjustment_policy: "<conservative | aggressive>"
+
+# --- Audit ---
+audit:
+  log_all_checks: <true | false>
+  log_denials: <true | false>
+  retention_days: <integer>
+  
+  # Audit fields
+  include_context: <true | false>
+  include_forecast_variance: <true | false>
+
+# --- Metadata ---
+metadata:
+  created_by: "<author>"
+  created_at: "<YYYY-MM-DD>"
+  last_modified: "<YYYY-MM-DD>"
+  approved_by: "<approver>"
+  
+# ===========================================================================
+# EXAMPLE: High-Risk Payment Agent Budget Configuration
+# ===========================================================================
+# config_id: "budget:agent:payments-agent-prod:v1.0.0"
+# config_version: "1.0.0"
+# name: "Payments Agent Production Budget"
+# effective_date: "2026-03-01"
+# 
+# org_budget:
+#   enabled: true
+#   annual_budget:
+#     currency: "EUR"
+#     amount: 500000
+#     fiscal_year: "2026"
+#   alert_thresholds:
+#     warning: 0.50
+#     elevated: 0.75
+#     critical: 0.90
+# 
+# tenant_cap:
+#   enabled: true
+#   tenant_id: "tenant-acme-corp"
+#   budget:
+#     currency: "EUR"
+#     amount: 50000
+#     period: "monthly"
+#   alert_thresholds:
+#     warning: 0.75
+#     critical: 0.95
+#   enforcement:
+#     at_threshold: 1.0
+#     action: "block"
+# 
+# agent_cap:
+#   enabled: true
+#   agent_id: "agent:payments-agent-prod-01"
+#   budget:
+#     currency: "EUR"
+#     amount: 10000
+#     period: "monthly"
+#   alert_thresholds:
+#     warning: 0.75
+#     elevated: 0.90
+#     critical: 0.95
+#   enforcement:
+#     at_threshold: 1.0
+#     action: "throttle"
+#     throttle_capacity_percent: 50
+# 
+# skill_cap:
+#   enabled: true
+#   skills:
+#     - skill_id: "skill:payments-agent:process-payment:v1"
+#       budget:
+#         currency: "EUR"
+#         amount: 5000
+#         period: "monthly"
+#       enforcement:
+#         at_threshold: 0.95
+#         action: "downgrade_model"
+#         downgrade_model_to: "gpt-4o-mini"
+# 
+# run_cap:
+#   enabled: true
+#   per_run_limits:
+#     max_tokens_input: 4000
+#     max_tokens_output: 1000
+#     max_cost: 0.50
+#     max_duration_seconds: 30
+# ===========================================================================

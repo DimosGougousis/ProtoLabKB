@@ -1,0 +1,275 @@
+# =============================================================================
+# AI Monitoring Setup Checklist
+# Master AI Governance Framework — Regulated FinTech
+# =============================================================================
+# Scope: Comprehensive monitoring and alerting configuration for AI models,
+#         agents, safety systems, and supporting infrastructure in production.
+# Related: ../templates/model-monitoring-dashboard.md
+#          ../evaluations/eval-reporting-dashboard.md
+#          ./incident-response-checklist.yaml
+# =============================================================================
+
+metadata:
+  id: OPS-MON
+  title: AI Monitoring Setup Checklist
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  owner: MLOps & Platform Engineering
+  review_cadence: quarterly
+  alert_severity:
+    P1_PAGE: "Immediate page to on-call — production impact"
+    P2_URGENT: "Slack alert + ticket — degraded but operational"
+    P3_WARNING: "Ticket created — needs attention within 24h"
+    P4_INFO: "Logged for trend analysis — no immediate action"
+
+categories:
+
+  # ---------------------------------------------------------------------------
+  # 1. Model Performance Metrics
+  # ---------------------------------------------------------------------------
+  - category: model_performance
+    description: Core metrics that track whether the model is producing correct and useful outputs.
+    items:
+      - id: OPS-MON-01
+        description: Track primary evaluation metric per model (e.g., AUC-ROC for fraud detection, F1 for classification, BLEU/ROUGE for generation)
+        alert_threshold: ">5% degradation from baseline over 1-hour rolling window"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-02
+        description: Track prediction confidence distribution — monitor for shifts in mean, variance, and tail behaviour
+        alert_threshold: "KL-divergence > 0.1 from reference distribution"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-03
+        description: Track per-class/per-segment accuracy breakdown — detect silent failures in minority segments
+        alert_threshold: ">10% accuracy drop in any segment with >100 daily predictions"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-04
+        description: Monitor calibration — compare predicted probabilities against observed frequencies
+        alert_threshold: "Expected calibration error (ECE) > 0.05"
+        alert_severity: P3_WARNING
+        status: pending
+
+      - id: OPS-MON-05
+        description: Track prediction volume by model version — detect unexpected traffic shifts or routing errors
+        alert_threshold: ">30% change in volume vs same hour previous week"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-06
+        description: Monitor inference latency — p50, p95, p99 — per model endpoint
+        alert_threshold: "p99 > 2x SLA target or p50 > 1.5x baseline"
+        alert_severity: P1_PAGE
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # 2. Data Drift Indicators
+  # ---------------------------------------------------------------------------
+  - category: data_drift
+    description: Detect when production data diverges from the training or reference distribution.
+    items:
+      - id: OPS-MON-07
+        description: Monitor feature-level distribution drift using Population Stability Index (PSI)
+        alert_threshold: "PSI > 0.2 for any feature in top-20 importance"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-08
+        description: Track missing-value rates per feature — detect upstream data pipeline failures
+        alert_threshold: ">5x baseline null rate for any feature"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-09
+        description: Monitor input schema conformance — detect unexpected columns, types, or value ranges
+        alert_threshold: "Any schema violation"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-10
+        description: Track concept drift via delayed ground truth comparison (where labels become available)
+        alert_threshold: ">3% accuracy drop on labelled holdout from last 7 days"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-11
+        description: Monitor embedding drift for LLM-based systems using cosine similarity of centroid embeddings
+        alert_threshold: "Cosine similarity < 0.90 vs reference corpus centroid"
+        alert_severity: P3_WARNING
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # 3. Safety & Guardrail Metrics
+  # ---------------------------------------------------------------------------
+  - category: safety_metrics
+    description: Track safety system effectiveness and policy compliance.
+    items:
+      - id: OPS-MON-12
+        description: Monitor guardrail trigger rate — ratio of blocked or modified outputs to total predictions
+        alert_threshold: ">2x baseline rate over 30-min window (indicates attack or drift)"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-13
+        description: Track content policy violation rate — outputs flagged by secondary safety classifier
+        alert_threshold: "Any SEV1 violation; >0.1% rate for SEV2+"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-14
+        description: Monitor fairness metrics across protected attributes (gender, age, ethnicity where legally collected)
+        alert_threshold: "Demographic parity difference > 0.05 or equalised odds difference > 0.05"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-15
+        description: Track adversarial input detection rate — inputs flagged by input validation or anomaly detection
+        alert_threshold: ">5x baseline anomaly rate from single source"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-16
+        description: Monitor PII leakage detection — outputs scanned for SSN, IBAN, credit card patterns
+        alert_threshold: "Any confirmed PII in output"
+        alert_severity: P1_PAGE
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # 4. Agent-Specific Metrics
+  # ---------------------------------------------------------------------------
+  - category: agent_metrics
+    description: Metrics specific to autonomous AI agents and agentic workflows.
+    items:
+      - id: OPS-MON-17
+        description: Track escalation rate — percentage of tasks escalated from agent to human
+        alert_threshold: ">2x baseline escalation rate (agent may be failing silently or over-escalating)"
+        alert_severity: P2_URGENT
+        status: pending
+        agent_specific: true
+
+      - id: OPS-MON-18
+        description: Monitor permission boundary hits — count of denied tool invocations or scope violations
+        alert_threshold: "Any boundary hit from a production agent; >3 in 1 hour"
+        alert_severity: P1_PAGE
+        status: pending
+        agent_specific: true
+
+      - id: OPS-MON-19
+        description: Track tool-use patterns — frequency, sequence, and success rate of tool invocations per agent
+        alert_threshold: "New tool never used before; >50% failure rate on any tool"
+        alert_severity: P2_URGENT
+        status: pending
+        agent_specific: true
+
+      - id: OPS-MON-20
+        description: Monitor delegation chain depth — number of sub-agent calls per top-level request
+        alert_threshold: "Chain depth > configured max (default 3); loop detection"
+        alert_severity: P1_PAGE
+        status: pending
+        agent_specific: true
+
+      - id: OPS-MON-21
+        description: Track agent autonomy level distribution — percentage of decisions made without human confirmation
+        alert_threshold: "Autonomy ratio exceeds policy-defined maximum for risk tier"
+        alert_severity: P2_URGENT
+        status: pending
+        agent_specific: true
+
+      - id: OPS-MON-22
+        description: Monitor agent cost per task — total LLM token spend and tool-call costs per completed task
+        alert_threshold: ">3x median cost for same task type"
+        alert_severity: P3_WARNING
+        status: pending
+        agent_specific: true
+
+  # ---------------------------------------------------------------------------
+  # 5. Business Metrics
+  # ---------------------------------------------------------------------------
+  - category: business_metrics
+    description: User-facing and business-outcome metrics that indicate real-world impact.
+    items:
+      - id: OPS-MON-23
+        description: Track user satisfaction scores (CSAT, thumbs up/down) per AI-powered feature
+        alert_threshold: ">10% drop in positive feedback rate over 24h"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-24
+        description: Monitor task completion rate — percentage of user-initiated tasks successfully completed by AI
+        alert_threshold: ">15% drop from 7-day rolling average"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-25
+        description: Track human override rate — how often users reject or modify AI recommendations
+        alert_threshold: ">2x baseline override rate"
+        alert_severity: P3_WARNING
+        status: pending
+
+      - id: OPS-MON-26
+        description: Monitor financial impact metrics — false positive cost (unnecessary blocks), false negative cost (missed fraud)
+        alert_threshold: "Estimated daily cost exceeds risk appetite threshold"
+        alert_severity: P1_PAGE
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # 6. Infrastructure Metrics
+  # ---------------------------------------------------------------------------
+  - category: infrastructure
+    description: Platform and infrastructure health supporting AI workloads.
+    items:
+      - id: OPS-MON-27
+        description: Monitor GPU/CPU utilisation per inference server — detect capacity constraints
+        alert_threshold: ">85% sustained utilisation over 15 min"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-28
+        description: Track API error rates per endpoint — 4xx and 5xx responses
+        alert_threshold: ">1% 5xx rate; >5% 4xx rate"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-29
+        description: Monitor model serving uptime per endpoint — target 99.9% monthly
+        alert_threshold: "Any downtime > 1 min for SEV1 models"
+        alert_severity: P1_PAGE
+        status: pending
+
+      - id: OPS-MON-30
+        description: Track model artefact storage usage and versioning — ensure rollback artefacts are available
+        alert_threshold: "Rollback artefact missing for any production model"
+        alert_severity: P2_URGENT
+        status: pending
+
+      - id: OPS-MON-31
+        description: Monitor third-party AI provider SLA compliance (API availability, latency, rate limits)
+        alert_threshold: "Provider SLA breach or >3 rate-limit events per hour"
+        alert_severity: P2_URGENT
+        status: pending
+
+  # ---------------------------------------------------------------------------
+  # Escalation Paths
+  # ---------------------------------------------------------------------------
+escalation:
+  P1_PAGE:
+    initial: on_call_ml_engineer
+    escalate_after: 15_minutes
+    escalate_to: engineering_manager
+    further_escalation: head_of_ai
+    regulatory_check: true
+  P2_URGENT:
+    initial: on_call_ml_engineer
+    escalate_after: 2_hours
+    escalate_to: engineering_manager
+  P3_WARNING:
+    initial: ml_engineering_team_queue
+    escalate_after: 24_hours
+    escalate_to: on_call_ml_engineer
+  P4_INFO:
+    initial: automated_log
+    review: weekly_ops_review

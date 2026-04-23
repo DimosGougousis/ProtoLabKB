@@ -1,0 +1,872 @@
+# SAFEST Framework — Four Governance Pillars Mapping
+# Purpose: Cross-reference all 112 SAFEST items to their primary governance pillar
+# Usage: Use this to navigate between SAFEST compliance tracking and lifecycle-based governance
+#
+# Governance Pillars:
+#   discovery    = Pillar 1: Discovery Governance (What should we build? Is it ethical?)
+#   development  = Pillar 2: Development Governance (How do we test it? Is it biased?)
+#   runtime      = Pillar 3: Runtime Governance (How do we control it in real-time?)
+#   operational  = Pillar 4: Operational Governance (How do we secure and monitor it?)
+
+metadata:
+  version: "1.0"
+  last_updated: "2026-02-28"
+  total_items: 112
+  source: "04-operational-governance/regulatory/safest-compliance-tracker.yaml"
+
+# =============================================================================
+# SOUNDNESS (S) — Primarily Development + Operational
+# =============================================================================
+soundness:
+  - id: "S-01"
+    item: "AI system inventory with risk classification"
+    primary_pillar: "discovery"
+    secondary_pillar: "operational"
+    rationale: "Risk classification happens during discovery; inventory maintained operationally"
+    related_files:
+      - "01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml"
+      - "07-enterprise-implementation/risk-based-adoption/risk-tiering-model.md"
+
+  - id: "S-02"
+    item: "Algorithm selection rationale (proportionality)"
+    primary_pillar: "discovery"
+    secondary_pillar: "development"
+    rationale: "Algorithm choice is a discovery/design decision validated during development"
+    related_files:
+      - "01-discovery-governance/templates/responsible-product-brief.md"
+
+  - id: "S-03"
+    item: "Model performance metrics with acceptance thresholds"
+    primary_pillar: "development"
+    secondary_pillar: "discovery"
+    rationale: "Thresholds defined during discovery, measured during development"
+    related_files:
+      - "01-discovery-governance/evaluations/defining-acceptance-criteria.md"
+      - "02-development-governance/evaluations/acceptance-criteria-automation.yaml"
+
+  - id: "S-04"
+    item: "Edge case analysis and out-of-distribution behavior"
+    primary_pillar: "development"
+    rationale: "Testing activity during development"
+    related_files:
+      - "02-development-governance/checklists/pre-deployment-gate.yaml"
+
+  - id: "S-05"
+    item: "Stress testing results (economic, data quality, volume)"
+    primary_pillar: "development"
+    rationale: "Testing activity during development"
+    related_files:
+      - "02-development-governance/checklists/pre-deployment-gate.yaml"
+
+  - id: "S-06"
+    item: "Adversarial robustness testing"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Initial testing in development, ongoing red-teaming in operations"
+    related_files:
+      - "04-operational-governance/guides/red-teaming-ai-systems.md"
+
+  - id: "S-07"
+    item: "Confidence/uncertainty quantification and fallback logic"
+    primary_pillar: "runtime"
+    rationale: "Fallback logic operates at runtime"
+    related_files:
+      - "03-runtime-governance/templates/fallback-procedure.md"
+
+  - id: "S-08"
+    item: "Training data documentation (datasheets)"
+    primary_pillar: "development"
+    rationale: "Data documentation is a development governance artifact"
+    related_files:
+      - "02-development-governance/templates/data-sheet.md"
+
+  - id: "S-09"
+    item: "Data quality framework with measurement methodology"
+    primary_pillar: "development"
+    rationale: "Data quality is assessed during development"
+    related_files:
+      - "02-development-governance/checklists/data-quality-checklist.yaml"
+
+  - id: "S-10"
+    item: "Data lineage and provenance tracking"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Established in development, maintained operationally"
+    related_files:
+      - "02-development-governance/templates/data-sheet.md"
+
+  - id: "S-11"
+    item: "Feature engineering documentation with justification"
+    primary_pillar: "development"
+    rationale: "Development documentation artifact"
+    related_files:
+      - "02-development-governance/templates/model-card.md"
+
+  - id: "S-12"
+    item: "Data drift detection mechanisms and thresholds"
+    primary_pillar: "operational"
+    rationale: "Drift detection is an operational monitoring activity"
+    related_files:
+      - "04-operational-governance/evaluations/drift-detection-evals.md"
+
+  - id: "S-13"
+    item: "Fallback procedures for every AI system"
+    primary_pillar: "runtime"
+    rationale: "Fallback is a runtime control mechanism"
+    related_files:
+      - "03-runtime-governance/templates/fallback-procedure.md"
+
+  - id: "S-14"
+    item: "Recovery Time Objectives (RTO) with tested recovery"
+    primary_pillar: "operational"
+    rationale: "RTO is an operational resilience metric"
+    related_files:
+      - "04-operational-governance/templates/drift-detection-runbook.md"
+
+  - id: "S-15"
+    item: "Payment chain impact analysis for AI failure scenarios"
+    primary_pillar: "discovery"
+    secondary_pillar: "operational"
+    rationale: "Impact analysis starts at discovery, monitored operationally"
+    related_files:
+      - "01-discovery-governance/templates/ai-ethics-impact-assessment.md"
+
+  - id: "S-16"
+    item: "Model rollback capability (tested)"
+    primary_pillar: "operational"
+    rationale: "Rollback is an operational procedure"
+    related_files:
+      - "04-operational-governance/checklists/incident-response-checklist.yaml"
+
+  - id: "S-17"
+    item: "Graceful degradation design"
+    primary_pillar: "runtime"
+    rationale: "Degradation behavior is a runtime concern"
+    related_files:
+      - "03-runtime-governance/templates/fallback-procedure.md"
+
+  - id: "S-18"
+    item: "DORA ICT risk management framework alignment"
+    primary_pillar: "operational"
+    rationale: "ICT risk management is an operational governance framework"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "S-19a"
+    item: "DORA Register of Information (Art. 28(3))"
+    primary_pillar: "operational"
+    rationale: "Register maintenance is an operational compliance activity"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "S-19b"
+    item: "Register passes all 116 DNB validation rules"
+    primary_pillar: "operational"
+    rationale: "Validation is an operational compliance activity"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "S-19c"
+    item: "AI-specific entries in Register"
+    primary_pillar: "operational"
+    rationale: "Register maintenance is operational"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "S-19d"
+    item: "Register in machine-readable submission format"
+    primary_pillar: "operational"
+    rationale: "Submission readiness is operational"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "S-19"
+    item: "Independent model validation (2nd line)"
+    primary_pillar: "development"
+    rationale: "Validation is a development quality gate"
+    related_files:
+      - "02-development-governance/checklists/model-validation-checklist.yaml"
+
+  - id: "S-20"
+    item: "Revalidation schedule (min annual for high-risk)"
+    primary_pillar: "operational"
+    rationale: "Periodic revalidation is an operational cadence"
+    related_files:
+      - "04-operational-governance/evaluations/periodic-revalidation-schedule.yaml"
+
+  - id: "S-21"
+    item: "Backtesting results over meaningful time period"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Initial backtesting in development, ongoing in operations"
+    related_files:
+      - "02-development-governance/checklists/pre-deployment-gate.yaml"
+
+  - id: "S-22"
+    item: "Champion-challenger comparison framework"
+    primary_pillar: "development"
+    rationale: "Model comparison is a development methodology"
+    related_files:
+      - "02-development-governance/quality-gates/definition-of-done-ai.md"
+
+# =============================================================================
+# ACCOUNTABILITY (A) — Primarily Operational + Runtime
+# =============================================================================
+accountability:
+  - id: "A-01"
+    item: "Board-level AI accountability (named member)"
+    primary_pillar: "operational"
+    rationale: "Organizational governance is an operational foundation"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "A-02"
+    item: "Three-lines-of-defense model for AI"
+    primary_pillar: "operational"
+    rationale: "Organizational structure is operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/three-lines-of-defense-for-ai.md"
+
+  - id: "A-03"
+    item: "AI Governance Committee with ToR"
+    primary_pillar: "operational"
+    rationale: "Committee governance is operational"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/ai-governance-committee-charter.md"
+
+  - id: "A-04"
+    item: "RACI matrix for AI lifecycle"
+    primary_pillar: "operational"
+    rationale: "Role assignment spans all pillars but is governed operationally"
+    related_files:
+      - "05-cross-cutting/governance-roles-raci.md"
+
+  - id: "A-05"
+    item: "Named model owner per AI system"
+    primary_pillar: "operational"
+    rationale: "Ownership assignment is operational governance"
+    related_files:
+      - "05-cross-cutting/governance-roles-raci.md"
+
+  - id: "A-06"
+    item: "Human-in-the-loop design for high-risk decisions"
+    primary_pillar: "runtime"
+    rationale: "HITL operates at runtime"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/human-in-the-loop-patterns.md"
+
+  - id: "A-07"
+    item: "Override capability (logged and tracked)"
+    primary_pillar: "runtime"
+    rationale: "Override is a runtime control"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/human-in-the-loop-patterns.md"
+
+  - id: "A-08"
+    item: "Automation bias mitigation measures"
+    primary_pillar: "runtime"
+    secondary_pillar: "discovery"
+    rationale: "UX design in discovery, enforcement at runtime"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/human-in-the-loop-patterns.md"
+
+  - id: "A-09"
+    item: "Kill switch / circuit breaker (tested)"
+    primary_pillar: "runtime"
+    rationale: "Kill switch is a runtime safety mechanism"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/agent-permission-boundaries.md"
+
+  - id: "A-10"
+    item: "Escalation procedures for AI concerns"
+    primary_pillar: "operational"
+    rationale: "Escalation procedures are operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/three-lines-of-defense-for-ai.md"
+
+  - id: "A-11"
+    item: "Decision audit trail (input, model version, output, human action)"
+    primary_pillar: "runtime"
+    secondary_pillar: "operational"
+    rationale: "Trail captured at runtime, retained and audited operationally"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/delegation-chain-audit.md"
+      - "04-operational-governance/guides/traceability-with-langchain.md"
+
+  - id: "A-12"
+    item: "Model change log with approval records"
+    primary_pillar: "operational"
+    rationale: "Change management is operational"
+    related_files:
+      - "07-enterprise-implementation/process-integration/change-management-for-ai.md"
+
+  - id: "A-13"
+    item: "Retention policy (5yr Wwft / 10yr EU AI Act)"
+    primary_pillar: "operational"
+    rationale: "Data retention is operational compliance"
+    related_files:
+      - "04-operational-governance/regulatory/safest-checklist-detailed.md"
+
+  - id: "A-14"
+    item: "Regulatory access capability for DNB"
+    primary_pillar: "operational"
+    rationale: "Regulatory access is operational compliance"
+    related_files:
+      - "04-operational-governance/regulatory/safest-checklist-detailed.md"
+
+  - id: "A-15"
+    item: "AI incident response plan"
+    primary_pillar: "operational"
+    rationale: "Incident response is operational"
+    related_files:
+      - "04-operational-governance/checklists/incident-response-checklist.yaml"
+      - "04-operational-governance/templates/ai-incident-report.md"
+
+  - id: "A-16"
+    item: "DORA incident reporting readiness (4h/72h/1mo)"
+    primary_pillar: "operational"
+    rationale: "Incident reporting is operational compliance"
+    related_files:
+      - "04-operational-governance/regulatory/dora-ai-requirements.md"
+
+  - id: "A-17"
+    item: "EU AI Act serious incident reporting (15 days)"
+    primary_pillar: "operational"
+    rationale: "Incident reporting is operational compliance"
+    related_files:
+      - "04-operational-governance/regulatory/eu-ai-act-compliance-mapping.md"
+
+  - id: "A-18"
+    item: "Root cause analysis methodology"
+    primary_pillar: "operational"
+    rationale: "RCA is an operational procedure"
+    related_files:
+      - "04-operational-governance/templates/ai-incident-report.md"
+
+# =============================================================================
+# FAIRNESS (F) — Primarily Development + Operational
+# =============================================================================
+fairness:
+  - id: "F-01"
+    item: "Protected characteristics mapping"
+    primary_pillar: "discovery"
+    rationale: "Identifying protected groups is a discovery activity"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "F-02"
+    item: "Proxy variable analysis and mitigation"
+    primary_pillar: "development"
+    rationale: "Proxy analysis is a development testing activity"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-03"
+    item: "Pre-deployment bias testing results"
+    primary_pillar: "development"
+    rationale: "Bias testing is a development quality gate"
+    related_files:
+      - "02-development-governance/checklists/bias-testing-checklist.yaml"
+
+  - id: "F-04"
+    item: "Fairness metrics selection and justification"
+    primary_pillar: "discovery"
+    secondary_pillar: "development"
+    rationale: "Metric selection in discovery, measurement in development"
+    related_files:
+      - "01-discovery-governance/evaluations/ai-quality-metrics-catalog.md"
+
+  - id: "F-05"
+    item: "Disparate impact analysis (four-fifths rule)"
+    primary_pillar: "development"
+    rationale: "Statistical analysis during development"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-06"
+    item: "Intersectional bias analysis"
+    primary_pillar: "development"
+    rationale: "Bias analysis during development"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-07"
+    item: "Historical bias assessment in training data"
+    primary_pillar: "development"
+    rationale: "Data bias assessment during development"
+    related_files:
+      - "02-development-governance/checklists/data-quality-checklist.yaml"
+
+  - id: "F-08"
+    item: "Training data representativeness analysis"
+    primary_pillar: "development"
+    rationale: "Data analysis during development"
+    related_files:
+      - "02-development-governance/templates/data-sheet.md"
+
+  - id: "F-09"
+    item: "Label bias review"
+    primary_pillar: "development"
+    rationale: "Label review during development"
+    related_files:
+      - "02-development-governance/checklists/data-quality-checklist.yaml"
+
+  - id: "F-10"
+    item: "Bias mitigation techniques (documented)"
+    primary_pillar: "development"
+    rationale: "Mitigation applied during development"
+    related_files:
+      - "02-development-governance/guides/integrating-giskard.md"
+
+  - id: "F-11"
+    item: "Production fairness monitoring (continuous)"
+    primary_pillar: "operational"
+    rationale: "Ongoing monitoring is operational"
+    related_files:
+      - "04-operational-governance/evaluations/drift-detection-evals.md"
+
+  - id: "F-12"
+    item: "Outcome tracking by demographic group"
+    primary_pillar: "operational"
+    rationale: "Outcome tracking is operational monitoring"
+    related_files:
+      - "04-operational-governance/evaluations/eval-reporting-dashboard.md"
+
+  - id: "F-13"
+    item: "Consumer complaints analysis for bias patterns"
+    primary_pillar: "operational"
+    rationale: "Complaints analysis is operational"
+    related_files:
+      - "04-operational-governance/templates/ai-incident-report.md"
+
+  - id: "F-14"
+    item: "Bias remediation procedures"
+    primary_pillar: "operational"
+    secondary_pillar: "development"
+    rationale: "Remediation triggered operationally, implemented in development"
+    related_files:
+      - "04-operational-governance/checklists/incident-response-checklist.yaml"
+
+  - id: "F-15"
+    item: "Payment processing fairness (equitable false positives)"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Tested in development, monitored in operations"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-16"
+    item: "Credit/lending fairness (EBA GL compliance)"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Tested in development, monitored in operations"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-17"
+    item: "Onboarding/KYC fairness (equitable acceptance)"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Tested in development, monitored in operations"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+  - id: "F-18"
+    item: "AML monitoring fairness (equitable flagging)"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Tested in development, monitored in operations"
+    related_files:
+      - "02-development-governance/evaluations/bias-and-fairness-evals.md"
+
+# =============================================================================
+# ETHICS (E) — Primarily Discovery
+# =============================================================================
+ethics:
+  - id: "E-01"
+    item: "Board-approved AI ethics principles"
+    primary_pillar: "discovery"
+    rationale: "Ethics principles guide discovery decisions"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "E-02"
+    item: "Ethical use case review process"
+    primary_pillar: "discovery"
+    rationale: "Use case review happens during discovery"
+    related_files:
+      - "01-discovery-governance/templates/ai-ethics-impact-assessment.md"
+
+  - id: "E-03"
+    item: "Prohibited AI uses list (EU AI Act Art. 5 aligned)"
+    primary_pillar: "discovery"
+    rationale: "Prohibition screening is a discovery gate"
+    related_files:
+      - "01-discovery-governance/checklists/eu-ai-act-risk-classification.yaml"
+
+  - id: "E-04"
+    item: "Ethical dilemma escalation with whistleblower protection"
+    primary_pillar: "operational"
+    rationale: "Escalation procedures are operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/three-lines-of-defense-for-ai.md"
+
+  - id: "E-05"
+    item: "Vulnerable customer identification and protection"
+    primary_pillar: "discovery"
+    secondary_pillar: "runtime"
+    rationale: "Identified in discovery, protected at runtime"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+      - "03-runtime-governance/agentic-workflows/customer-facing-agent-safety.md"
+
+  - id: "E-06"
+    item: "No-exploitation safeguards"
+    primary_pillar: "runtime"
+    rationale: "Safeguards enforce at runtime"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/customer-facing-agent-safety.md"
+
+  - id: "E-07"
+    item: "Accessibility (WCAG compliance)"
+    primary_pillar: "discovery"
+    secondary_pillar: "development"
+    rationale: "Accessibility designed in discovery, implemented in development"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "E-08"
+    item: "Dark pattern prohibition in AI-driven UX"
+    primary_pillar: "discovery"
+    secondary_pillar: "runtime"
+    rationale: "Designed out in discovery, enforced at runtime"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "E-09"
+    item: "Broader impact assessment (financial system, market)"
+    primary_pillar: "discovery"
+    rationale: "Impact assessment is a discovery activity"
+    related_files:
+      - "01-discovery-governance/templates/ai-ethics-impact-assessment.md"
+
+  - id: "E-10"
+    item: "Financial inclusion impact analysis"
+    primary_pillar: "discovery"
+    rationale: "Inclusion analysis is a discovery activity"
+    related_files:
+      - "01-discovery-governance/templates/stakeholder-value-map.md"
+
+  - id: "E-11"
+    item: "Environmental sustainability awareness"
+    primary_pillar: "discovery"
+    rationale: "Sustainability considered during discovery"
+    related_files:
+      - "01-discovery-governance/templates/ai-ethics-impact-assessment.md"
+
+  - id: "E-12"
+    item: "Fundamental Rights Impact Assessment"
+    primary_pillar: "discovery"
+    rationale: "FRIA is a discovery/pre-build activity"
+    related_files:
+      - "01-discovery-governance/templates/ai-ethics-impact-assessment.md"
+
+# =============================================================================
+# SKILLS (K) — Primarily Operational
+# =============================================================================
+skills:
+  - id: "K-00a"
+    item: "Two-person rule (vierogenbeginsel)"
+    primary_pillar: "operational"
+    rationale: "Organizational governance is operational"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-00b"
+    item: "Fitness assessment preparation for policymakers"
+    primary_pillar: "operational"
+    rationale: "Board readiness is operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-00c"
+    item: "Propriety screening for policymakers"
+    primary_pillar: "operational"
+    rationale: "Screening is operational compliance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-00d"
+    item: "AI competency distribution across policymakers"
+    primary_pillar: "operational"
+    rationale: "Competency governance is operational"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-00e"
+    item: "Supervisory board AI awareness"
+    primary_pillar: "operational"
+    rationale: "Board governance is operational"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-01"
+    item: "Board AI competency (demonstrable understanding)"
+    primary_pillar: "operational"
+    rationale: "Board competency is operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-02"
+    item: "Board AI risk reporting (regular cadence)"
+    primary_pillar: "operational"
+    rationale: "Reporting is operational governance"
+    related_files:
+      - "06-executive/quarterly-governance-report.md"
+
+  - id: "K-03"
+    item: "Suitability assessment interview preparation"
+    primary_pillar: "operational"
+    rationale: "Regulatory preparation is operational"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-04"
+    item: "Senior management AI articulation capability"
+    primary_pillar: "operational"
+    rationale: "Management capability is operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/board-level-ai-accountability.md"
+
+  - id: "K-05"
+    item: "AI/ML team qualifications and experience"
+    primary_pillar: "operational"
+    rationale: "Team qualification is operational governance"
+    related_files:
+      - "05-cross-cutting/governance-roles-raci.md"
+
+  - id: "K-06"
+    item: "Independent model validation team qualifications"
+    primary_pillar: "operational"
+    secondary_pillar: "development"
+    rationale: "Team governance is operational, validation activity is development"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/three-lines-of-defense-for-ai.md"
+
+  - id: "K-07"
+    item: "Compliance team AI regulatory knowledge"
+    primary_pillar: "operational"
+    rationale: "Team competency is operational governance"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/three-lines-of-defense-for-ai.md"
+
+  - id: "K-08"
+    item: "Key-person risk and succession planning"
+    primary_pillar: "operational"
+    rationale: "Succession planning is operational risk management"
+    related_files:
+      - "07-enterprise-implementation/organizational-model/ai-center-of-excellence.md"
+
+  - id: "K-09"
+    item: "Organization-wide AI literacy program (EU AI Act Art. 4)"
+    primary_pillar: "operational"
+    rationale: "Training programs are operational"
+    related_files:
+      - "07-enterprise-implementation/risk-based-adoption/adoption-playbook.md"
+
+  - id: "K-10"
+    item: "Role-specific AI training programs"
+    primary_pillar: "operational"
+    rationale: "Training is operational"
+    related_files:
+      - "07-enterprise-implementation/risk-based-adoption/adoption-playbook.md"
+
+  - id: "K-11"
+    item: "Training completion records and assessments"
+    primary_pillar: "operational"
+    rationale: "Record-keeping is operational"
+    related_files:
+      - "04-operational-governance/regulatory/safest-checklist-detailed.md"
+
+  - id: "K-12"
+    item: "Continuous learning and development program"
+    primary_pillar: "operational"
+    rationale: "Learning programs are operational"
+    related_files:
+      - "07-enterprise-implementation/risk-based-adoption/adoption-playbook.md"
+
+  - id: "K-13"
+    item: "No black-box outsourcing (genuine understanding)"
+    primary_pillar: "discovery"
+    secondary_pillar: "operational"
+    rationale: "Vendor assessment starts at discovery, maintained operationally"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "K-14"
+    item: "Vendor AI technical documentation obtained"
+    primary_pillar: "development"
+    rationale: "Documentation review is a development activity"
+    related_files:
+      - "02-development-governance/checklists/pre-deployment-gate.yaml"
+
+  - id: "K-15"
+    item: "Internal challenge capability for third-party AI"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Challenge capability exercised during development validation and ongoing operations"
+    related_files:
+      - "02-development-governance/checklists/model-validation-checklist.yaml"
+
+# =============================================================================
+# TRANSPARENCY (T) — Spread across all pillars
+# =============================================================================
+transparency:
+  - id: "T-01"
+    item: "Explainability approach documented per model"
+    primary_pillar: "development"
+    rationale: "Explainability is designed and documented during development"
+    related_files:
+      - "02-development-governance/templates/model-card.md"
+
+  - id: "T-02"
+    item: "Global model explanations (feature drivers, interactions)"
+    primary_pillar: "development"
+    rationale: "Global explanations generated during development"
+    related_files:
+      - "02-development-governance/guides/integrating-microsoft-rai.md"
+
+  - id: "T-03"
+    item: "Local/individual decision explanations"
+    primary_pillar: "runtime"
+    rationale: "Individual explanations generated at runtime"
+    related_files:
+      - "03-runtime-governance/guides/output-validation-patterns.md"
+
+  - id: "T-04"
+    item: "Explanation fidelity validation"
+    primary_pillar: "development"
+    rationale: "Fidelity validation is a development testing activity"
+    related_files:
+      - "02-development-governance/checklists/pre-deployment-gate.yaml"
+
+  - id: "T-05"
+    item: "Audience-appropriate explanation formats"
+    primary_pillar: "discovery"
+    secondary_pillar: "runtime"
+    rationale: "Format design in discovery, delivery at runtime"
+    related_files:
+      - "01-discovery-governance/guides/pair-guide-for-pms.md"
+
+  - id: "T-06"
+    item: "AI disclosure to customers"
+    primary_pillar: "runtime"
+    rationale: "Disclosure happens at runtime interaction"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/customer-facing-agent-safety.md"
+
+  - id: "T-07"
+    item: "Adverse decision explanations to customers"
+    primary_pillar: "runtime"
+    rationale: "Explanations delivered at runtime"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/customer-facing-agent-safety.md"
+
+  - id: "T-08"
+    item: "Right to human review process (GDPR Art. 22)"
+    primary_pillar: "runtime"
+    rationale: "Human review is a runtime process"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/human-in-the-loop-patterns.md"
+
+  - id: "T-09"
+    item: "Appeal/redress mechanism with timeframes"
+    primary_pillar: "operational"
+    rationale: "Appeal process is operational governance"
+    related_files:
+      - "04-operational-governance/checklists/incident-response-checklist.yaml"
+
+  - id: "T-10"
+    item: "Privacy transparency (data use, purpose, legal basis)"
+    primary_pillar: "discovery"
+    rationale: "Privacy design is a discovery activity"
+    related_files:
+      - "01-discovery-governance/checklists/ethical-product-discovery.yaml"
+
+  - id: "T-11"
+    item: "EU AI Act Annex IV technical documentation"
+    primary_pillar: "development"
+    secondary_pillar: "operational"
+    rationale: "Created during development, maintained operationally"
+    related_files:
+      - "04-operational-governance/regulatory/eu-ai-act-compliance-mapping.md"
+
+  - id: "T-12"
+    item: "Model Cards per AI system"
+    primary_pillar: "development"
+    rationale: "Model cards are development documentation"
+    related_files:
+      - "02-development-governance/templates/model-card.md"
+
+  - id: "T-13"
+    item: "Source code accessibility for DNB inspection"
+    primary_pillar: "operational"
+    rationale: "Regulatory access is operational"
+    related_files:
+      - "04-operational-governance/regulatory/safest-checklist-detailed.md"
+
+  - id: "T-14"
+    item: "Regulatory AI reporting process"
+    primary_pillar: "operational"
+    rationale: "Regulatory reporting is operational"
+    related_files:
+      - "07-enterprise-implementation/process-integration/supervisory-reporting-calendar.md"
+
+  - id: "T-15"
+    item: "Internal model documentation (comprehensive)"
+    primary_pillar: "development"
+    rationale: "Documentation created during development"
+    related_files:
+      - "02-development-governance/templates/model-card.md"
+
+  - id: "T-16"
+    item: "Decision traceability (full reconstruction capability)"
+    primary_pillar: "runtime"
+    secondary_pillar: "operational"
+    rationale: "Traceability captured at runtime, audited operationally"
+    related_files:
+      - "03-runtime-governance/agentic-workflows/delegation-chain-audit.md"
+      - "04-operational-governance/guides/traceability-with-langchain.md"
+
+  - id: "T-17"
+    item: "Real-time monitoring dashboards"
+    primary_pillar: "operational"
+    rationale: "Dashboards are operational monitoring"
+    related_files:
+      - "04-operational-governance/evaluations/eval-reporting-dashboard.md"
+
+  - id: "T-18"
+    item: "Internal change communication process"
+    primary_pillar: "operational"
+    rationale: "Communication processes are operational"
+    related_files:
+      - "07-enterprise-implementation/process-integration/change-management-for-ai.md"
+
+# =============================================================================
+# SUMMARY: Distribution of SAFEST items across governance pillars
+# =============================================================================
+summary:
+  discovery:
+    count: 22
+    description: "Ethics principles, risk classification, impact assessments, acceptance criteria definition, user agency, fairness metric selection"
+  development:
+    count: 35
+    description: "Model testing, bias evaluation, data quality, validation, documentation, explainability, quality gates"
+  runtime:
+    count: 20
+    description: "Fallback logic, human oversight, agent safety, disclosure, guardrails, real-time explanations, decision tracing"
+  operational:
+    count: 47
+    description: "Board accountability, organizational structure, incident management, monitoring, reporting, regulatory compliance, training"
+  # Note: Some items have both primary and secondary pillars; counts reflect primary pillar only.
+  # Total: 124 assignments (112 primary + 12 secondary pillar assignments)

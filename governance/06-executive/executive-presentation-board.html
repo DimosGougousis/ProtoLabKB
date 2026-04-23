@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Governance &amp; DNB Licensing — Board Presentation</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --surface: #181b23;
+    --surface-2: #1e2230;
+    --surface-3: #252a38;
+    --border: #2a2f3e;
+    --text: #e4e6ed;
+    --text-muted: #8b90a0;
+    --text-dim: #5f6475;
+    --accent: #6c8cff;
+    --accent-glow: #6c8cff33;
+    --critical: #ff5c5c;
+    --critical-bg: #ff5c5c15;
+    --important: #ffb84d;
+    --important-bg: #ffb84d15;
+    --recommended: #4ddc7b;
+    --recommended-bg: #4ddc7b15;
+    --phase1: #ff6b6b;
+    --phase2: #ffa94d;
+    --phase3: #ffd43b;
+    --phase4: #69db7c;
+    --phase5: #6c8cff;
+    --phase6: #cc5de8;
+    --nav-w: 280px;
+    --header-h: 64px;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  html { scroll-behavior: smooth; font-size: 15px; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Header ───────────────────────────────────────────────────────── */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 24px;
+    backdrop-filter: blur(12px);
+  }
+  .header-brand {
+    display: flex; align-items: center; gap: 14px;
+    font-weight: 700; font-size: 1.1rem;
+    color: var(--text);
+  }
+  .header-brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .header-meta {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 20px;
+    font-size: 0.8rem; color: var(--text-muted);
+  }
+  .header-badge {
+    padding: 4px 12px; border-radius: 20px;
+    background: var(--accent); color: #fff;
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .hamburger {
+    display: none; background: none; border: none; color: var(--text);
+    font-size: 1.5rem; cursor: pointer; margin-right: 14px;
+  }
+
+  /* ── Sidebar Nav ──────────────────────────────────────────────────── */
+  .sidebar {
+    position: fixed; top: var(--header-h); left: 0; bottom: 0;
+    width: var(--nav-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 0;
+    z-index: 90;
+    transition: transform 0.3s ease;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .nav-section { padding: 0 16px; margin-bottom: 6px; }
+  .nav-section-title {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--text-dim); margin-bottom: 6px; padding: 8px 0 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-size: 0.82rem; cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+  .nav-item.active { background: var(--accent-glow); color: var(--accent); font-weight: 600; }
+  .nav-icon { width: 18px; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
+  .nav-phase-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .nav-divider { height: 1px; background: var(--border); margin: 10px 16px; }
+
+  /* ── Main Content ─────────────────────────────────────────────────── */
+  .main {
+    margin-left: var(--nav-w);
+    margin-top: var(--header-h);
+    padding: 40px 48px 120px;
+    max-width: 1100px;
+  }
+
+  /* ── Section Headers ──────────────────────────────────────────────── */
+  .section { margin-bottom: 64px; scroll-margin-top: calc(var(--header-h) + 24px); }
+  .section-label {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--accent); margin-bottom: 8px;
+  }
+  .section-title { font-size: 2rem; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+  .section-subtitle { font-size: 1rem; color: var(--text-muted); margin-bottom: 32px; max-width: 700px; }
+
+  /* ── Cards ────────────────────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 1.05rem; font-weight: 700; }
+  .card-badge {
+    padding: 3px 10px; border-radius: 12px;
+    font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+    flex-shrink: 0;
+  }
+  .badge-primary { background: var(--critical-bg); color: var(--critical); border: 1px solid var(--critical); }
+  .badge-secondary { background: var(--important-bg); color: var(--important); border: 1px solid var(--important); }
+  .badge-tertiary { background: var(--recommended-bg); color: var(--recommended); border: 1px solid var(--recommended); }
+  .badge-phase { color: #fff; border: none; }
+
+  /* ── Stat Grid ────────────────────────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+  }
+  .stat-number { font-size: 2.2rem; font-weight: 800; line-height: 1.1; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Requirement Rows ─────────────────────────────────────────────── */
+  .req-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .req-table th {
+    text-align: left; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-dim); padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  .req-table td {
+    padding: 14px; border-bottom: 1px solid var(--border);
+    font-size: 0.88rem; vertical-align: top;
+  }
+  .req-table tr:hover td { background: var(--surface-2); }
+  .req-law { font-weight: 600; color: var(--text); }
+  .req-article { color: var(--accent); font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.8rem; }
+  .req-arrow { color: var(--text-dim); font-size: 1.1rem; text-align: center; padding: 14px 8px !important; }
+
+  /* ── Phase Timeline ───────────────────────────────────────────────── */
+  .timeline { position: relative; padding-left: 36px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 14px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 40px;
+  }
+  .timeline-dot {
+    position: absolute; left: -36px; top: 4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 3px solid var(--bg);
+    z-index: 1;
+  }
+  .timeline-phase-label {
+    font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .timeline-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+  .timeline-duration { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
+  .timeline-content { font-size: 0.88rem; color: var(--text-muted); }
+
+  /* ── Collapsible ──────────────────────────────────────────────────── */
+  .collapse-trigger {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; padding: 14px 0;
+    border: none; background: none; color: var(--text);
+    font-size: 1rem; font-weight: 600; width: 100%; text-align: left;
+  }
+  .collapse-trigger::before {
+    content: '▸'; font-size: 0.85rem; color: var(--accent);
+    transition: transform 0.2s; display: inline-block; width: 16px;
+  }
+  .collapse-trigger.open::before { transform: rotate(90deg); }
+  .collapse-body { display: none; padding: 0 0 16px 26px; }
+  .collapse-body.open { display: block; }
+
+  /* ── Progress Bar ─────────────────────────────────────────────────── */
+  .progress-bar-wrap { background: var(--surface-3); border-radius: 6px; height: 10px; overflow: hidden; margin: 8px 0; }
+  .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+
+  /* ── JTBD Cards ───────────────────────────────────────────────────── */
+  .jtbd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .jtbd-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .jtbd-card .jtbd-when { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .jtbd-card .jtbd-statement { font-size: 0.92rem; font-weight: 600; margin-bottom: 10px; }
+  .jtbd-card .jtbd-outcome { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* ── Tags / Chips ─────────────────────────────────────────────────── */
+  .chip {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 0.7rem; font-weight: 600; margin: 2px 2px;
+    border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .chip-law { border-color: var(--critical); color: var(--critical); }
+  .chip-safest { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Callout ──────────────────────────────────────────────────────── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--surface-2);
+    padding: 16px 20px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 20px 0;
+    font-size: 0.9rem;
+  }
+  .callout-critical { border-left-color: var(--critical); }
+  .callout-warn { border-left-color: var(--important); }
+  .callout strong { color: var(--text); }
+
+  /* ── Responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; padding: 24px 20px 100px; }
+    .hamburger { display: block; }
+    .jtbd-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── Print ────────────────────────────────────────────────────────── */
+  @media print {
+    .sidebar, .header { display: none; }
+    .main { margin: 0; padding: 20px; }
+    .section { page-break-inside: avoid; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .card { border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════════════════ -->
+<header class="header">
+  <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
+  <div class="header-brand">
+    <span class="dot"></span>
+    AI Governance — DNB Licensing Programme
+  </div>
+  <div class="header-meta">
+    <span>Board Presentation</span>
+    <span>v1.1</span>
+    <span class="header-badge">Confidential</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════ SIDEBAR ══════════════════════════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-title">Overview</div>
+    <a href="#executive-summary" class="nav-item active"><span class="nav-icon">◉</span> Executive Summary</a>
+    <a href="#readiness" class="nav-item"><span class="nav-icon">◈</span> Readiness Dashboard</a>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">
+    <div class="nav-section-title">Regulatory Landscape</div>
+    <a href="#primary-statutes" class="nav-item"><span class="nav-icon">§</span> Primary Statutes</a>
+    <a href="#secondary-requirements" class="nav-item"><span class="nav-icon">§</span> Secondary Requirements</a>
+    <a href="#supervisory-expectations" class="nav-item"><span class="nav-icon">§</span> Supervisory Expectations</a>
+    <a href="#micar-psd2" class="nav-item"><span class="nav-icon">⚡</span> MiCAR / PSD2 Overlap</a>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">
+    <div class="nav-section-title">SAFEST Pillars</div>
+    <a href="#safest-soundness" class="nav-item"><span class="nav-icon">🔧</span> Soundness</a>
+    <a href="#safest-accountability" class="nav-item"><span class="nav-icon">👤</span> Accountability</a>
+    <a href="#safest-fairness" class="nav-item"><span class="nav-icon">⚖️</span> Fairness</a>
+    <a href="#safest-ethics" class="nav-item"><span class="nav-icon">💡</span> Ethics</a>
+    <a href="#safest-skills" class="nav-item"><span class="nav-icon">🎓</span> Skills</a>
+    <a href="#safest-transparency" class="nav-item"><span class="nav-icon">🔍</span> Transparency</a>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">
+    <div class="nav-section-title">Implementation</div>
+    <a href="#phase-1" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase1)"></span> Phase 1 — Foundations</a>
+    <a href="#phase-2" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase2)"></span> Phase 2 — Core Policies</a>
+    <a href="#phase-3" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase3)"></span> Phase 3 — Build &amp; Test</a>
+    <a href="#phase-4" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase4)"></span> Phase 4 — Evidence Pack</a>
+    <a href="#phase-5" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase5)"></span> Phase 5 — Pre-Application</a>
+    <a href="#phase-6" class="nav-item"><span class="nav-phase-dot" style="background:var(--phase6)"></span> Phase 6 — Sustain</a>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">
+    <div class="nav-section-title">Product Management</div>
+    <a href="#pm-jtbd" class="nav-item"><span class="nav-icon">✦</span> PM Jobs-to-be-Done</a>
+    <a href="#deliverable-map" class="nav-item"><span class="nav-icon">📋</span> Deliverable Map</a>
+    <a href="#risk-register" class="nav-item"><span class="nav-icon">⚠</span> Key Risks</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN CONTENT ════════════════════════════ -->
+<main class="main">
+
+<!-- ─── EXECUTIVE SUMMARY ───────────────────────────────────────── -->
+<section class="section" id="executive-summary">
+  <div class="section-label">Board Presentation</div>
+  <div class="section-title">AI Governance &amp; DNB Licensing Programme</div>
+  <div class="section-subtitle">
+    A structured programme to obtain DNB authorization (PSP / EMI / CASP) for an AI-powered FinTech,
+    ensuring full compliance with Dutch and EU regulatory requirements across all six SAFEST pillars.
+  </div>
+
+  <div class="callout">
+    <strong>The core logic of every requirement in this programme:</strong><br>
+    <span style="color:var(--critical)">① What the law requires</span> →
+    <span style="color:var(--important)">② How we plan to meet it</span> →
+    <span style="color:var(--recommended)">③ Where the proof is</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--accent)">7</div>
+      <div class="stat-label">Primary Statutes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--important)">112</div>
+      <div class="stat-label">Compliance Items</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--critical)">73</div>
+      <div class="stat-label">Critical Items</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--recommended)">6</div>
+      <div class="stat-label">Impl. Phases</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--phase5)">6</div>
+      <div class="stat-label">SAFEST Pillars</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Why This Programme Exists</div></div>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:14px;">
+      To obtain a DNB license (PSP, EMI, or CASP), any FinTech deploying AI must demonstrate — before its first customer transaction — that its AI systems are sound, accountable, fair, ethical, operated by skilled people, and transparent. DNB evaluates this through the <strong>SAFEST</strong> framework, which is layered on top of binding statutory requirements from Dutch and EU law.
+    </p>
+    <p style="color:var(--text-muted); font-size:0.9rem;">
+      This programme maps every statutory obligation to a concrete deliverable and assigns it to an implementation phase. The Board's role is to approve the programme, ensure adequate resourcing, and demonstrate — during the DNB fitness interview — that governance starts at the top.
+    </p>
+  </div>
+</section>
+
+<!-- ─── READINESS DASHBOARD ─────────────────────────────────────── -->
+<section class="section" id="readiness">
+  <div class="section-label">Current State</div>
+  <div class="section-title">Programme Readiness</div>
+  <div class="section-subtitle">Tracking 112 compliance items across 6 SAFEST pillars. DNB pre-application meeting requires ≥80% of critical items complete.</div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--critical)">73</div>
+      <div class="stat-label">Critical 🔴</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--important)">36</div>
+      <div class="stat-label">Important 🟡</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--recommended)">3</div>
+      <div class="stat-label">Recommended 🟢</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:var(--text-dim)">0%</div>
+      <div class="stat-label">Overall Readiness</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">Items by SAFEST Pillar</div>
+    <!-- Soundness -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Soundness</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">26 items (17 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase1)"></div></div>
+    <div style="height:14px"></div>
+    <!-- Accountability -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Accountability</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">18 items (13 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase2)"></div></div>
+    <div style="height:14px"></div>
+    <!-- Fairness -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Fairness</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">18 items (11 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase3)"></div></div>
+    <div style="height:14px"></div>
+    <!-- Ethics -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Ethics</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">12 items (6 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase4)"></div></div>
+    <div style="height:14px"></div>
+    <!-- Skills -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Skills</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">20 items (15 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase5)"></div></div>
+    <div style="height:14px"></div>
+    <!-- Transparency -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px">
+      <span style="font-size:0.85rem; font-weight:600">Transparency</span>
+      <span style="font-size:0.78rem; color:var(--text-muted)">18 items (11 critical)</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%; background:var(--phase6)"></div></div>
+  </div>
+
+  <div class="callout callout-critical" style="margin-top:24px">
+    <strong>Board Decision Required:</strong> DNB pre-application meeting should only be scheduled when ≥80% of 🔴 critical items (≥59 of 73) are complete with substantive evidence. This programme defines the path to reach that threshold.
+  </div>
+</section>
+
+<!-- ═══════════════════════ REGULATORY LANDSCAPE ════════════════════ -->
+<!-- ─── PRIMARY STATUTES ────────────────────────────────────────── -->
+<section class="section" id="primary-statutes">
+  <div class="section-label">Regulatory Landscape</div>
+  <div class="section-title">Primary Statutory Requirements</div>
+  <div class="section-subtitle">These are binding laws. Non-compliance means license denial or revocation. Ranked by licensing impact.</div>
+
+  <!-- Wft -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">1. Wet op het financieel toezicht (Wft)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Dutch Financial Supervision Act — the primary licensing statute</div>
+      </div>
+      <div class="card-badge badge-primary">License Gate</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">Two-person rule</span><br><span class="req-article">§3:15</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Min. 2 natural persons as day-to-day policymakers</span></td>
+          <td class="req-arrow">→</td>
+          <td>Appoint ≥2 policymakers; one with AI/technology expertise, one with financial services/compliance expertise. Prepare both for DNB fitness interview.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">K-00a</span> Board appointment letters, CVs, competency matrix, mock interview records</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Fitness assessment</span><br><span class="req-article">§3:8 (geschiktheid)</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Each policymaker assessed individually by DNB</span></td>
+          <td class="req-arrow">→</td>
+          <td>Structured preparation programme: AI risk knowledge, regulatory framework understanding, business model articulation. Mock geschiktheidstoets sessions.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">K-00b</span><span class="chip chip-safest">K-03</span> Training records, board papers demonstrating AI challenge, Q&amp;A preparation documents</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Propriety assessment</span><br><span class="req-article">§3:9 (betrouwbaarheid)</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Criminal, financial, and supervisory antecedent checks</span></td>
+          <td class="req-arrow">→</td>
+          <td>Pre-screening of all policymakers and supervisory board members. VOG applications submitted in advance.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">K-00c</span> VOG certificates, integrity declarations, antecedent check results</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Sound business operations</span><br><span class="req-article">§3:17</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Adequate governance, risk management, internal controls for all operations including AI</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI Governance Framework covering all 6 SAFEST pillars. Three-lines-of-defense model. Board-level accountability. Incident management.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">A-01..A-18</span> AI Governance Framework document, 3LoD mapping, incident response plan, audit trail specifications</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Consumer protection</span><br><span class="req-article">§4:24a</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Fair treatment of customers, including in AI-driven decisions</span></td>
+          <td class="req-arrow">→</td>
+          <td>Fairness testing framework, vulnerable customer protections, complaint handling for AI decisions, no dark patterns.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">F-01..F-18</span><span class="chip chip-safest">E-05..E-08</span> Bias test results, fairness metrics, complaint analysis, UX audit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- DORA -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">2. Digital Operational Resilience Act (DORA)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Regulation (EU) 2022/2554 — applicable since 17 January 2025</div>
+      </div>
+      <div class="card-badge badge-primary">Mandatory</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">ICT risk management framework</span><br><span class="req-article">Art. 5-16</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Comprehensive framework covering identification, protection, detection, response, recovery</span></td>
+          <td class="req-arrow">→</td>
+          <td>Integrate AI systems into enterprise ICT risk framework. AI-specific risk scenarios. Stress testing. Fallback procedures per AI system.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-13..S-18</span> ICT risk management policy, AI risk register, stress test results, BCP/DR plans</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Incident reporting</span><br><span class="req-article">Art. 17-23</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Report major ICT-related incidents within 4h/72h/1mo</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI incident classification. DORA-compliant reporting templates. Escalation procedures. 24/7 on-call capability.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">A-15..A-18</span> Incident response plan, reporting templates, tabletop exercise records</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Digital operational resilience testing</span><br><span class="req-article">Art. 25-27</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Periodic testing of ICT systems including AI components</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI-specific testing programme: adversarial robustness, stress tests, model validation. Annual cycle minimum.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-05..S-06</span><span class="chip chip-safest">S-19..S-22</span> Test results, validation reports, remediation tracking</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Third-party ICT risk + Register of Information</span><br><span class="req-article">Art. 28-44</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Register of all third-party ICT arrangements; 116 DNB validation rules; concentration risk monitoring</span></td>
+          <td class="req-arrow">→</td>
+          <td>Complete Register per EBA ITS template. All AI/ML vendors separately registered. Criticality assessment. Exit strategies. 116-rule internal validation.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-19a..S-19d</span> Register of Information (XBRL/XML), vendor contracts, exit plans, validation report</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EU AI Act -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">3. EU AI Act</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Regulation (EU) 2024/1689 — phased entry: Feb 2025 (prohibitions) → Aug 2026 (high-risk) → Aug 2027 (all)</div>
+      </div>
+      <div class="card-badge badge-primary">Phased</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">Prohibited practices</span><br><span class="req-article">Art. 5</span><br><span style="font-size:0.8rem; color:var(--text-muted)">In force since Feb 2025. Social scoring, subliminal manipulation, exploitation of vulnerabilities</span></td>
+          <td class="req-arrow">→</td>
+          <td>Explicit prohibited-use list. All AI use cases screened. Board-approved ethics principles.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">E-01..E-03</span> Ethics policy, prohibited uses register, use case approval records</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">AI literacy</span><br><span class="req-article">Art. 4</span><br><span style="font-size:0.8rem; color:var(--text-muted)">In force since Feb 2025. All staff interacting with AI must have sufficient literacy</span></td>
+          <td class="req-arrow">→</td>
+          <td>Organization-wide AI literacy programme. Role-specific modules. Tracked completion with assessments.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">K-09..K-12</span> Training programme, completion records, assessment results</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">High-risk AI requirements</span><br><span class="req-article">Art. 6-15, Annex III</span><br><span style="font-size:0.8rem; color:var(--text-muted)">From Aug 2026. Credit scoring (Annex III 5(b)), potentially AML. Risk management, data governance, human oversight, accuracy, robustness</span></td>
+          <td class="req-arrow">→</td>
+          <td>Risk classification of all AI systems. Annex IV technical documentation roadmap. Conformity assessment preparation. FRIA for high-risk systems.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-01</span><span class="chip chip-safest">T-11..T-12</span><span class="chip chip-safest">E-12</span> AI inventory with risk classes, model cards, FRIA, tech documentation</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Transparency &amp; disclosure</span><br><span class="req-article">Art. 13, 50</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Inform users when AI is used; explainable outputs</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI disclosure in customer-facing interfaces. Explainability approach per model (SHAP, LIME, etc.). Decision explanation capability.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">T-01..T-10</span> Explainability documentation, customer disclosure templates, appeal/redress process</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PSD2 -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">4. Payment Services Directive 2 (PSD2)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Directive (EU) 2015/2366 — implemented via Wft §2:3a-2:3e</div>
+      </div>
+      <div class="card-badge badge-primary">PSP / EMI</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">ICT security for payment services</span><br><span class="req-article">Art. 5(1)(e-f)</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Security of payment transactions, including AI components in the payment chain</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI systems integrated into payment security framework. Fallback for AI failure. Payment chain impact analysis.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-13..S-15</span> Payment chain analysis, fallback procedures, security test results</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Incident reporting</span><br><span class="req-article">Art. 96</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Report major operational/security incidents without undue delay</span></td>
+          <td class="req-arrow">→</td>
+          <td>Aligned with DORA reporting (DORA now primary basis). AI-specific incident categories defined.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">A-15..A-16</span> Incident response plan with PSD2-specific classification</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GDPR -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">5. General Data Protection Regulation (GDPR)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Regulation (EU) 2016/679 + Dutch UAVG implementation</div>
+      </div>
+      <div class="card-badge badge-primary">Mandatory</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">Automated decision-making rights</span><br><span class="req-article">Art. 22</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Right not to be subject to solely automated decisions; right to human review</span></td>
+          <td class="req-arrow">→</td>
+          <td>Human-in-the-loop for all high-impact AI decisions. Customer right-to-review process. Meaningful explanation capability.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">A-06..A-07</span><span class="chip chip-safest">T-08</span> HITL design docs, review process SOP, customer-facing explanation templates</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Transparency &amp; data subject rights</span><br><span class="req-article">Art. 13-14</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Inform data subjects about AI processing, purpose, legal basis</span></td>
+          <td class="req-arrow">→</td>
+          <td>Privacy notices updated for AI processing. DPIA for each high-risk AI system. Purpose limitation enforcement.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">T-06</span><span class="chip chip-safest">T-10</span> Privacy notices, DPIAs, Records of Processing Activities (RoPA)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Wwft -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">6. Wet ter voorkoming van witwassen en financieren van terrorisme (Wwft)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Dutch Anti-Money Laundering and Counter-Terrorist Financing Act</div>
+      </div>
+      <div class="card-badge badge-primary">Mandatory</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">Transaction monitoring &amp; CDD</span><br><span class="req-article">Art. 3-5, 16</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Ongoing monitoring of business relationships and transactions; report unusual transactions (UTRs)</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI-powered transaction monitoring with documented methodology, threshold calibration, and human review of alerts. KYC/CDD process with AI-assisted onboarding.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">F-17..F-18</span><span class="chip chip-safest">A-11</span> AML policy, transaction monitoring rules, alert review logs, UTR filing records</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Record retention</span><br><span class="req-article">Art. 33</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Retain CDD and transaction records for 5 years</span></td>
+          <td class="req-arrow">→</td>
+          <td>Data retention policy covering all AI decision logs. 5-year minimum for Wwft records; 10-year for EU AI Act technical documentation.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">A-13</span> Retention policy, storage architecture documentation, deletion schedule</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MiCAR -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">7. Markets in Crypto-Assets Regulation (MiCAR)</div>
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px">Regulation (EU) 2023/1114 — applicable since 30 Dec 2024 (CASP provisions)</div>
+      </div>
+      <div class="card-badge badge-primary">CASP / EMT</div>
+    </div>
+    <table class="req-table">
+      <thead><tr><th style="width:26%">What the Law Requires</th><th class="req-arrow" style="width:3%"></th><th style="width:35%">How We Plan to Meet It</th><th class="req-arrow" style="width:3%"></th><th style="width:33%">Where the Proof Is</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">CASP authorization</span><br><span class="req-article">Art. 59-63</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Authorization requirements for crypto-asset service providers including governance, prudential, conduct</span></td>
+          <td class="req-arrow">→</td>
+          <td>CASP application prepared with SAFEST-aligned AI governance. Licensing boundary analysis if dual PSD2/MiCAR scope.</td>
+          <td class="req-arrow">→</td>
+          <td>License application package, licensing boundary document, SAFEST checklist (this programme)</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">EMT issuer requirements</span><br><span class="req-article">Art. 48</span><br><span style="font-size:0.8rem; color:var(--text-muted)">EMT issuers must hold EMI license under EMD2 first</span></td>
+          <td class="req-arrow">→</td>
+          <td>If issuing EMTs: secure EMI license first. Single AI governance framework covering both license scopes.</td>
+          <td class="req-arrow">→</td>
+          <td>EMI license (or application), dual-scope governance framework</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Prudential and conduct obligations</span><br><span class="req-article">Art. 68-76</span><br><span style="font-size:0.8rem; color:var(--text-muted)">Organisational requirements, conflicts of interest, market abuse prevention</span></td>
+          <td class="req-arrow">→</td>
+          <td>AI governance integrated with MiCAR conduct requirements. AI market surveillance if operating trading platform.</td>
+          <td class="req-arrow">→</td>
+          <td><span class="chip chip-safest">S-01</span> AI inventory mapping systems to MiCAR obligations, conduct policy</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── SECONDARY REQUIREMENTS ──────────────────────────────────── -->
+<section class="section" id="secondary-requirements">
+  <div class="section-label">Regulatory Landscape</div>
+  <div class="section-title">Secondary Compliance Requirements</div>
+  <div class="section-subtitle">Binding delegated/implementing regulations and supervisory guidelines that specify how to comply with primary statutes.</div>
+
+  <div class="card">
+    <table class="req-table">
+      <thead><tr><th>Instrument</th><th>Scope</th><th>Status</th><th>Key Impact on AI Governance</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">DORA RTS/ITS Package</span><br><span class="req-article">Commission Delegated Reg. 2024/…</span></td>
+          <td>ICT risk, incident reporting, third-party oversight</td>
+          <td><span class="chip chip-law">In force</span></td>
+          <td>Specifies detailed requirements for ICT risk framework, incident classification taxonomy, and Register of Information template</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Register of Information ITS</span><br><span class="req-article">Commission Impl. Reg. (EU) 2025/302</span></td>
+          <td>Template for DORA Art. 28(3) register</td>
+          <td><span class="chip chip-law">In force</span></td>
+          <td>Defines exact XBRL/XML template structure. DNB applies 116 validation rules on submission</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">EBA GL on outsourcing</span><br><span class="req-article">EBA/GL/2019/02</span></td>
+          <td>Third-party risk management</td>
+          <td><span class="chip chip-law">Active alongside DORA Ch. V</span></td>
+          <td>Applies to AI vendor management. No "black box" outsourcing — must genuinely understand third-party AI</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">EBA GL on ICT (revised for PSD2)</span><br><span class="req-article">EBA/GL/2017/17 (revised)</span></td>
+          <td>Payment service user relationship management</td>
+          <td><span class="chip chip-law" style="border-color:var(--important);color:var(--important)">Narrowed post-DORA</span></td>
+          <td>EBA/GL/2019/04 largely superseded by DORA Ch. II. Residual scope: PSP-customer relationship ICT risks</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">EBA GL on loan origination</span><br><span class="req-article">EBA/GL/2020/06</span></td>
+          <td>Credit/lending AI models</td>
+          <td><span class="chip chip-law">In force</span></td>
+          <td>Non-discrimination in credit scoring AI. Data quality for creditworthiness models. Model validation requirements</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">EU AI Act delegated acts</span><br><span class="req-article">High-risk system criteria (Art. 6)</span></td>
+          <td>Classification of AI systems</td>
+          <td><span class="chip chip-law" style="border-color:var(--important);color:var(--important)">Pending (2026)</span></td>
+          <td>Will determine which FinTech AI systems are classified as high-risk (credit scoring: confirmed Annex III 5(b))</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">DNB Policy Rule on Fitness</span><br><span class="req-article">Beleidsregel geschiktheid</span></td>
+          <td>Board member suitability assessment</td>
+          <td><span class="chip chip-law">In force</span></td>
+          <td>DNB interview methodology for policymakers. AI-intensive FinTechs face specific technology competency questions</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">Dutch Equal Treatment Act</span><br><span class="req-article">Algemene wet gelijke behandeling</span></td>
+          <td>Non-discrimination</td>
+          <td><span class="chip chip-law">In force</span></td>
+          <td>AI systems must not discriminate on protected grounds. Applies to KYC, credit, transaction monitoring</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── SUPERVISORY EXPECTATIONS ────────────────────────────────── -->
+<section class="section" id="supervisory-expectations">
+  <div class="section-label">Regulatory Landscape</div>
+  <div class="section-title">Supervisory Expectations &amp; Standards</div>
+  <div class="section-subtitle">Non-binding but practically expected by DNB in license assessment. Deviating requires strong justification.</div>
+
+  <div class="card">
+    <table class="req-table">
+      <thead><tr><th>Instrument</th><th>Authority</th><th>Why It Matters</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="req-law">DNB SAFEST Principles</span><br><span style="font-size:0.8rem;color:var(--text-muted)">Good Practice for AI in the Financial Sector</span></td>
+          <td>DNB</td>
+          <td>The framework DNB uses to assess AI governance during licensing. 6 pillars, 112 items in our checklist. Practical standard of care.</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">ISO/IEC 42001:2023</span><br><span style="font-size:0.8rem;color:var(--text-muted)">AI Management System</span></td>
+          <td>ISO/IEC</td>
+          <td>International standard for AI management systems. DNB views certification as strong evidence of governance maturity.</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">ECB Guide on Internal Models</span><br><span style="font-size:0.8rem;color:var(--text-muted)">+ ECB TRIM methodology</span></td>
+          <td>ECB</td>
+          <td>Model validation gold standard. DNB applies similar expectations to AI models in licensed financial institutions.</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">OECD AI Principles</span></td>
+          <td>OECD</td>
+          <td>Foundation of EU AI Act values. DNB expects alignment with OECD principles in ethics framework.</td>
+        </tr>
+        <tr>
+          <td><span class="req-law">ISO 27001</span><br><span style="font-size:0.8rem;color:var(--text-muted)">Information Security Management</span></td>
+          <td>ISO/IEC</td>
+          <td>DNB strongly expects ISO 27001 certification (or credible roadmap) for information security underpinning AI systems.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── MiCAR/PSD2 OVERLAP ──────────────────────────────────────── -->
+<section class="section" id="micar-psd2">
+  <div class="section-label">Regulatory Landscape</div>
+  <div class="section-title">MiCAR / PSD2 Licensing Boundary</div>
+  <div class="section-subtitle">Critical for FinTechs operating across crypto and traditional payment services. Getting the licensing boundary wrong means applying for the wrong license.</div>
+
+  <div class="callout callout-critical">
+    <strong>Board awareness required:</strong> If our business model spans both crypto-asset services and payment services (especially involving e-money tokens), we must clearly articulate to DNB which activities fall under which license and demonstrate that AI governance covers both scopes consistently.
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:16px">Licensing Boundary by Activity</div>
+    <table class="req-table">
+      <thead><tr><th>Activity</th><th>Primary License</th><th>Secondary License</th><th>Statutory Basis</th></tr></thead>
+      <tbody>
+        <tr><td>Crypto exchange / custody only</td><td>MiCAR CASP</td><td>—</td><td><span class="req-article">MiCAR Art. 59</span></td></tr>
+        <tr><td>Issuing e-money tokens (EMTs)</td><td>EMI (EMD2 / Wft §2:10a)</td><td>MiCAR Art. 48 (layered)</td><td><span class="req-article">MiCAR Art. 48(1); EMD2 Art. 2</span></td></tr>
+        <tr><td>Payment initiation using crypto (not EMTs)</td><td>MiCAR CASP</td><td>PSD2 PSP if fiat leg involved</td><td><span class="req-article">MiCAR Art. 3(1)(16); PSD2 Art. 4(3)</span></td></tr>
+        <tr><td>Payment initiation using EMTs</td><td>PSD2 PSP / EMI</td><td>MiCAR CASP (if other crypto services)</td><td><span class="req-article">MiCAR Art. 48; PSD2 Annex I</span></td></tr>
+        <tr><td>Fiat-to-crypto on-ramp + payment</td><td>PSD2 PSP (fiat leg)</td><td>MiCAR CASP (crypto leg)</td><td><span class="req-article">PSD2 Art. 4(3); MiCAR Art. 59</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">NL Transitional Arrangements</div>
+    <div style="font-size:0.88rem; color:var(--text-muted)">
+      <p style="margin-bottom:8px"><strong style="color:var(--text)">Pre-existing Wwft-registered CASPs</strong> — may continue until <strong style="color:var(--important)">July 1, 2026</strong> under transitional provisions (MiCAR Art. 143).</p>
+      <p style="margin-bottom:8px"><strong style="color:var(--text)">New CASPs from 30 Dec 2024</strong> — must apply for MiCAR authorization directly from DNB.</p>
+      <p><strong style="color:var(--text)">EMT issuers</strong> — must hold EMI license from application date. No transitional exemption.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SAFEST PILLARS OVERVIEW ═════════════════ -->
+<section class="section" id="safest-soundness">
+  <div class="section-label">SAFEST Pillars</div>
+  <div class="section-title">How We Meet Each SAFEST Pillar</div>
+  <div class="section-subtitle">Each pillar maps directly to statutory requirements. Click to expand the full requirement chain.</div>
+
+  <!-- SOUNDNESS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">S — Soundness <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Deugdelijkheid)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">17 Critical</span><span class="card-badge badge-secondary">8 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">The AI must be technically robust, validated, and resilient. It cannot introduce systemic risk into the payment infrastructure.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">DORA Art. 5-16, 25-27, 28(3)</span>
+      <span class="chip chip-law">EU AI Act Art. 9-10, 15</span>
+      <span class="chip chip-law">Wft §3:17</span>
+      <span class="chip chip-law">PSD2 Art. 5(1)(e)</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> AI system inventory, model validation reports, stress test results, DORA Register of Information (116 validation rules), fallback procedures, data quality framework, RTO documentation.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safest-accountability">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">A — Accountability <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Verantwoordelijkheid)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">13 Critical</span><span class="card-badge badge-secondary">5 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">A human must remain in the loop. Individuals — not algorithms — are accountable for regulatory compliance.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">EU AI Act Art. 14, 72-73</span>
+      <span class="chip chip-law">GDPR Art. 22</span>
+      <span class="chip chip-law">DORA Art. 17-23</span>
+      <span class="chip chip-law">Wft §3:17</span>
+      <span class="chip chip-law">Wwft Art. 2d</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> AI Governance Framework, 3LoD model, RACI matrix, human-in-the-loop design, kill switches, decision audit trail, incident response plan, DORA incident reporting templates.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safest-fairness">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">F — Fairness <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Eerlijkheid)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">11 Critical</span><span class="card-badge badge-secondary">7 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">AI must not discriminate. Proactive testing and continuous monitoring across all protected characteristics.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">EU AI Act Art. 10</span>
+      <span class="chip chip-law">GDPR Art. 22</span>
+      <span class="chip chip-law">Wft §4:24a</span>
+      <span class="chip chip-law">Dutch Equal Treatment Act</span>
+      <span class="chip chip-law">EBA GL/2020/06</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> Bias test results, fairness metrics, proxy variable analysis, training data representativeness, production fairness monitoring, use-case-specific fairness assessments (payments, credit, KYC, AML).
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safest-ethics">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">E — Ethics <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Ethiek)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">6 Critical</span><span class="card-badge badge-secondary">5 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">AI should align with societal values and not exploit vulnerable consumers.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">EU AI Act Art. 5 (prohibitions)</span>
+      <span class="chip chip-law">Wft §4:24a</span>
+      <span class="chip chip-law">EU Accessibility Act</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> Board-approved ethics principles, prohibited AI uses list, vulnerable consumer safeguards, dark pattern audit, FRIA (for high-risk AI from Aug 2026).
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safest-skills">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">S — Skills <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Vaardigheden)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">15 Critical</span><span class="card-badge badge-secondary">4 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">Board and staff must genuinely understand the AI. You cannot outsource the understanding. Most common area where FinTech applicants fall short.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">Wft §3:15 (two-person rule)</span>
+      <span class="chip chip-law">Wft §3:8 (fitness)</span>
+      <span class="chip chip-law">Wft §3:9 (propriety)</span>
+      <span class="chip chip-law">EU AI Act Art. 4 (AI literacy)</span>
+      <span class="chip chip-law">EBA GL/2019/02</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> Policymaker CVs + interview preparation, geschiktheidstoets mock sessions, AI literacy programme, training records, team qualifications, vendor understanding documentation, succession plans.
+    </div>
+  </div>
+</section>
+
+<section class="section" id="safest-transparency">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" style="font-size:1.15rem">T — Transparency <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted)">(Transparantie)</span></div>
+      <div><span class="card-badge badge-primary" style="margin-right:6px">11 Critical</span><span class="card-badge badge-secondary">7 Important</span></div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:16px">You must explain how the AI reached every decision — to DNB, to customers, and internally.</p>
+    <div style="font-size:0.82rem; margin-bottom:12px">
+      <strong>Primary statutes:</strong>
+      <span class="chip chip-law">EU AI Act Art. 13, 50, Annex IV</span>
+      <span class="chip chip-law">GDPR Art. 13-14, 22</span>
+      <span class="chip chip-law">DORA Art. 6(5)</span>
+      <span class="chip chip-law">Wwft Art. 16</span>
+    </div>
+    <div style="font-size:0.82rem">
+      <strong>Key deliverables:</strong> Explainability documentation (SHAP/LIME), model cards, customer disclosure templates, adverse decision explanations, appeal/redress mechanism, decision traceability system, monitoring dashboards.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ IMPLEMENTATION PHASES ═══════════════════ -->
+<section class="section" id="phase-1">
+  <div class="section-label">Implementation Roadmap</div>
+  <div class="section-title">6 Phases to DNB Readiness</div>
+  <div class="section-subtitle">Each phase has clear deliverables, a Product Manager owner, and maps directly to statutory requirements.</div>
+
+  <div class="timeline">
+
+    <!-- PHASE 1 -->
+    <div class="timeline-item" id="phase-1-detail">
+      <div class="timeline-dot" style="background:var(--phase1)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase1)">Phase 1 — Foundations</div>
+      <div class="timeline-title">Governance Architecture &amp; Legal Mapping</div>
+      <div class="timeline-duration">Weeks 1-4 · <span style="color:var(--text-muted)">Prerequisite for all other phases</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>Policymaker appointments (≥2 persons, Wft §3:15)</td><td><span class="req-article">Wft §3:15, §3:8, §3:9</span></td><td><span class="chip chip-safest">K-00a..K-00e</span></td></tr>
+              <tr><td>AI Governance Framework (board-approved)</td><td><span class="req-article">Wft §3:17; DNB SAFEST</span></td><td><span class="chip chip-safest">A-01..A-05</span></td></tr>
+              <tr><td>AI system inventory with risk classification</td><td><span class="req-article">EU AI Act Art. 6, 9; ISO 42001</span></td><td><span class="chip chip-safest">S-01</span></td></tr>
+              <tr><td>Board-approved AI ethics principles</td><td><span class="req-article">EU AI Act Art. 5; DNB SAFEST</span></td><td><span class="chip chip-safest">E-01..E-03</span></td></tr>
+              <tr><td>Licensing boundary analysis (PSD2/MiCAR)</td><td><span class="req-article">MiCAR Art. 48, 59; PSD2</span></td><td>Cross-cutting</td></tr>
+              <tr><td>Statutory obligation register</td><td>All primary statutes</td><td>Cross-cutting</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="timeline-item" id="phase-2">
+      <div class="timeline-dot" style="background:var(--phase2)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase2)">Phase 2 — Core Policies &amp; Procedures</div>
+      <div class="timeline-title">Compliance Backbone</div>
+      <div class="timeline-duration">Weeks 3-8 · <span style="color:var(--text-muted)">Overlaps with Phase 1 completion</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>DORA ICT risk management policy</td><td><span class="req-article">DORA Art. 5-16</span></td><td><span class="chip chip-safest">S-13..S-18</span></td></tr>
+              <tr><td>Human oversight &amp; override procedures</td><td><span class="req-article">EU AI Act Art. 14; GDPR Art. 22</span></td><td><span class="chip chip-safest">A-06..A-10</span></td></tr>
+              <tr><td>Incident response plan (DORA-aligned)</td><td><span class="req-article">DORA Art. 17-23; PSD2 Art. 96</span></td><td><span class="chip chip-safest">A-15..A-18</span></td></tr>
+              <tr><td>Data governance &amp; quality framework</td><td><span class="req-article">EU AI Act Art. 10; GDPR Art. 5</span></td><td><span class="chip chip-safest">S-08..S-12</span></td></tr>
+              <tr><td>Third-party AI risk management policy</td><td><span class="req-article">DORA Art. 28-44; EBA GL/2019/02</span></td><td><span class="chip chip-safest">K-13..K-15</span></td></tr>
+              <tr><td>Data retention policy (5yr Wwft / 10yr EU AI Act)</td><td><span class="req-article">Wwft Art. 33; EU AI Act Art. 18</span></td><td><span class="chip chip-safest">A-13</span></td></tr>
+              <tr><td>AI literacy programme design</td><td><span class="req-article">EU AI Act Art. 4</span></td><td><span class="chip chip-safest">K-09..K-12</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="timeline-item" id="phase-3">
+      <div class="timeline-dot" style="background:var(--phase3)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase3)">Phase 3 — Build, Test &amp; Validate</div>
+      <div class="timeline-title">Technical Evidence Generation</div>
+      <div class="timeline-duration">Weeks 6-14 · <span style="color:var(--text-muted)">Longest phase — core engineering work</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>Model documentation / Model Cards (per system)</td><td><span class="req-article">EU AI Act Art. 11, Annex IV; DNB SAFEST</span></td><td><span class="chip chip-safest">T-12, T-15</span></td></tr>
+              <tr><td>Independent model validation reports</td><td><span class="req-article">ECB Guide; EBA GL/2020/06; Wft §3:17</span></td><td><span class="chip chip-safest">S-19..S-22</span></td></tr>
+              <tr><td>Bias / fairness testing results</td><td><span class="req-article">EU AI Act Art. 10; Dutch Equal Treatment Act</span></td><td><span class="chip chip-safest">F-01..F-10</span></td></tr>
+              <tr><td>Stress testing &amp; adversarial robustness results</td><td><span class="req-article">DORA Art. 25-27; EU AI Act Art. 15</span></td><td><span class="chip chip-safest">S-03..S-07</span></td></tr>
+              <tr><td>Explainability implementation (SHAP/LIME/etc.)</td><td><span class="req-article">EU AI Act Art. 13; GDPR Art. 22</span></td><td><span class="chip chip-safest">T-01..T-05</span></td></tr>
+              <tr><td>Decision audit trail system</td><td><span class="req-article">EU AI Act Art. 12; Wwft Art. 33</span></td><td><span class="chip chip-safest">A-11..A-12</span></td></tr>
+              <tr><td>Production fairness monitoring</td><td><span class="req-article">EU AI Act Art. 72; DNB SAFEST</span></td><td><span class="chip chip-safest">F-11..F-14</span></td></tr>
+              <tr><td>Fallback &amp; rollback testing</td><td><span class="req-article">DORA Art. 11; PSD2 Art. 5(1)(f)</span></td><td><span class="chip chip-safest">S-13..S-17</span></td></tr>
+              <tr><td>DORA Register of Information</td><td><span class="req-article">DORA Art. 28(3); Impl. Reg. 2025/302</span></td><td><span class="chip chip-safest">S-19a..S-19d</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="timeline-item" id="phase-4">
+      <div class="timeline-dot" style="background:var(--phase4)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase4)">Phase 4 — Evidence Package Assembly</div>
+      <div class="timeline-title">DNB Application Documentation</div>
+      <div class="timeline-duration">Weeks 12-16 · <span style="color:var(--text-muted)">Consolidation and quality assurance</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>Customer transparency package (disclosures, explanations, appeals)</td><td><span class="req-article">EU AI Act Art. 50; GDPR Art. 13-14, 22</span></td><td><span class="chip chip-safest">T-06..T-10</span></td></tr>
+              <tr><td>Vulnerable customer protection evidence</td><td><span class="req-article">Wft §4:24a; EU AI Act Art. 5</span></td><td><span class="chip chip-safest">E-05..E-08</span></td></tr>
+              <tr><td>Board competency evidence package</td><td><span class="req-article">Wft §3:8, §3:15; DNB SAFEST</span></td><td><span class="chip chip-safest">K-01..K-04</span></td></tr>
+              <tr><td>Team qualifications dossier</td><td><span class="req-article">DNB SAFEST; ISO 42001 Clause 7</span></td><td><span class="chip chip-safest">K-05..K-08</span></td></tr>
+              <tr><td>AI literacy training completion records</td><td><span class="req-article">EU AI Act Art. 4</span></td><td><span class="chip chip-safest">K-09..K-11</span></td></tr>
+              <tr><td>SAFEST self-assessment (completed YAML checklist)</td><td>All statutes</td><td>All 112 items</td></tr>
+              <tr><td>Gap analysis and remediation tracker</td><td>All statutes</td><td>Cross-cutting</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="timeline-item" id="phase-5">
+      <div class="timeline-dot" style="background:var(--phase5)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase5)">Phase 5 — Pre-Application Meeting &amp; Submission</div>
+      <div class="timeline-title">DNB Engagement</div>
+      <div class="timeline-duration">Weeks 16-20 · <span style="color:var(--text-muted)">Board members must participate</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>DNB pre-application meeting brief (vooroverleg)</td><td>All — demonstrates readiness</td><td>All 73 critical items</td></tr>
+              <tr><td>Mock geschiktheidstoets for each policymaker</td><td><span class="req-article">Wft §3:8</span></td><td><span class="chip chip-safest">K-00b, K-03</span></td></tr>
+              <tr><td>Formal license application submission</td><td><span class="req-article">Wft §2:3a (PSP) / §2:10a (EMI) / MiCAR Art. 59 (CASP)</span></td><td>Cross-cutting</td></tr>
+              <tr><td>DNB Q&amp;A response preparation (11 common questions)</td><td>All statutes</td><td>Cross-cutting</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 6 -->
+    <div class="timeline-item" id="phase-6">
+      <div class="timeline-dot" style="background:var(--phase6)"></div>
+      <div class="timeline-phase-label" style="color:var(--phase6)">Phase 6 — Sustain &amp; Evolve</div>
+      <div class="timeline-title">Ongoing Compliance Operations</div>
+      <div class="timeline-duration">Post-licensing · <span style="color:var(--text-muted)">Continuous obligation</span></div>
+      <div class="timeline-content">
+        <div class="card" style="margin-top:12px">
+          <table class="req-table">
+            <thead><tr><th>Deliverable</th><th>Satisfies Statute</th><th>SAFEST Items</th></tr></thead>
+            <tbody>
+              <tr><td>Continuous fairness monitoring &amp; annual bias reviews</td><td><span class="req-article">EU AI Act Art. 72; DNB SAFEST</span></td><td><span class="chip chip-safest">F-11..F-14</span></td></tr>
+              <tr><td>Annual model revalidation cycle</td><td><span class="req-article">ECB Guide; DORA Art. 25</span></td><td><span class="chip chip-safest">S-20</span></td></tr>
+              <tr><td>DORA Register of Information maintenance</td><td><span class="req-article">DORA Art. 28(3)</span></td><td><span class="chip chip-safest">S-19a..S-19d</span></td></tr>
+              <tr><td>EU AI Act high-risk compliance (from Aug 2026)</td><td><span class="req-article">EU AI Act Art. 6-15, Annex IV</span></td><td><span class="chip chip-safest">T-11, E-12</span></td></tr>
+              <tr><td>Regulatory reporting &amp; DNB supervisory engagement</td><td><span class="req-article">Wft; DORA; EU AI Act</span></td><td><span class="chip chip-safest">T-14, A-14</span></td></tr>
+              <tr><td>AI literacy refresher &amp; continuous professional development</td><td><span class="req-article">EU AI Act Art. 4</span></td><td><span class="chip chip-safest">K-10, K-12</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</section>
+
+<!-- ═══════════════════════ PM JOBS-TO-BE-DONE ═════════════════════ -->
+<section class="section" id="pm-jtbd">
+  <div class="section-label">Product Management</div>
+  <div class="section-title">Product Manager — Jobs-to-be-Done</div>
+  <div class="section-subtitle">What the Head of Product must deliver in each phase. Framed as JTBD statements with measurable outcomes.</div>
+
+  <!-- Phase 1 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase1)">Phase 1 — Foundations (Weeks 1-4)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 1.1</div>
+      <div class="jtbd-statement">When we begin the licensing programme, I need to establish a complete AI system inventory so that every AI component is classified by risk level and mapped to statutory obligations.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Board-approved inventory exists with risk classification per EU AI Act Art. 6, and every system is linked to a SAFEST pillar owner.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 1.2</div>
+      <div class="jtbd-statement">When forming the governance structure, I need to secure board approval for the AI Governance Framework so that accountability is established from day one.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Board resolution passed, 3LoD model documented, named AI-accountable board member, AI committee ToR signed.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 1.3</div>
+      <div class="jtbd-statement">When assessing licensing scope, I need to produce a licensing boundary analysis so that DNB receives a clear, legally grounded explanation of which activities fall under which license.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Boundary document reviewed by legal counsel, covering PSD2/MiCAR/EMD2 scenarios with statutory references.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 1.4</div>
+      <div class="jtbd-statement">When confirming board composition, I need to verify the two-person rule is met so that the Wft §3:15 prerequisite cannot block our application.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> ≥2 policymakers appointed, CVs prepared, geschiktheidstoets preparation plan agreed.</div>
+    </div>
+  </div>
+
+  <!-- Phase 2 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase2)">Phase 2 — Core Policies (Weeks 3-8)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 2.1</div>
+      <div class="jtbd-statement">When building the compliance backbone, I need to deliver DORA-aligned ICT risk management policies so that all AI systems have documented fallback procedures, RTOs, and incident response plans.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> ICT risk policy covers all AI systems; incident response plan includes DORA 4h/72h/1mo timelines; tabletop exercise scheduled.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 2.2</div>
+      <div class="jtbd-statement">When designing human oversight, I need to ensure every high-risk AI decision has a documented human-in-the-loop design so that no AI system operates without override capability.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> HITL design doc per high-risk system, kill switch tested, automation bias training planned.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 2.3</div>
+      <div class="jtbd-statement">When managing third-party AI risk, I need to create a vendor management policy and begin populating the DORA Register of Information so that we can demonstrate control over the AI supply chain.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Vendor policy approved; Register template populated with ≥80% of current AI/ML vendors; exit strategies drafted for critical functions.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 2.4</div>
+      <div class="jtbd-statement">When rolling out AI literacy, I need to launch an organization-wide training programme so that EU AI Act Art. 4 obligations are met and training records exist for DNB.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Programme launched, ≥90% completion rate for mandatory modules, assessment pass records stored.</div>
+    </div>
+  </div>
+
+  <!-- Phase 3 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase3)">Phase 3 — Build &amp; Test (Weeks 6-14)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 3.1</div>
+      <div class="jtbd-statement">When generating technical evidence, I need to coordinate independent model validation for every AI system so that second-line validation reports exist before the DNB meeting.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Validation reports signed off by independent reviewer for each in-scope model. Findings tracked with remediation status.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 3.2</div>
+      <div class="jtbd-statement">When testing for fairness, I need to deliver bias testing results across all protected characteristics so that DNB receives quantified evidence of non-discrimination.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Bias test reports per model with fairness metrics, proxy analysis, and intersectional results. Remediation actions documented.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 3.3</div>
+      <div class="jtbd-statement">When building explainability, I need to implement and document XAI approaches per model so that any AI decision can be explained to DNB, customers, and internal stakeholders.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> SHAP/LIME/equivalent implemented; global + local explanations demonstrated; audience-appropriate formats created.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 3.4</div>
+      <div class="jtbd-statement">When completing the DORA Register, I need to finalize the Register of Information and run internal validation so that all 116 DNB validation rules pass.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Register in XBRL/XML format; internal dry-run passes completeness, consistency, format, and business logic checks.</div>
+    </div>
+  </div>
+
+  <!-- Phase 4 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase4)">Phase 4 — Evidence Package (Weeks 12-16)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 4.1</div>
+      <div class="jtbd-statement">When assembling the application, I need to compile the complete evidence package (20 documents) so that every critical SAFEST item has substantive proof attached.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> All 20 documents listed in "Documents to Bring to DNB" section are complete, reviewed, and cross-referenced to SAFEST items.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 4.2</div>
+      <div class="jtbd-statement">When assessing readiness, I need to run the SAFEST self-assessment using the YAML checklist so that we have an objective score to determine if we should schedule the DNB meeting.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> ≥80% of critical items (≥59 of 73) marked as complete with evidence references. Readiness level = "Ready".</div>
+    </div>
+  </div>
+
+  <!-- Phase 5 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase5)">Phase 5 — Pre-Application (Weeks 16-20)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 5.1</div>
+      <div class="jtbd-statement">When preparing policymakers for DNB, I need to coordinate mock geschiktheidstoets sessions so that each policymaker can articulate AI strategy, risks, and governance under interview conditions.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Each policymaker completes ≥2 mock interviews; performance documented; gaps addressed.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 5.2</div>
+      <div class="jtbd-statement">When engaging DNB, I need to prepare the pre-application meeting brief and anticipated Q&amp;A responses so that the meeting demonstrates governance maturity and statutory awareness.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Meeting brief delivered; responses prepared for all 11 common DNB questions; designated speakers assigned per topic.</div>
+    </div>
+  </div>
+
+  <!-- Phase 6 JTBD -->
+  <h3 style="font-size:0.95rem; margin-bottom:16px; color:var(--phase6)">Phase 6 — Sustain (Post-licensing)</h3>
+  <div class="jtbd-grid" style="margin-bottom:32px">
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 6.1</div>
+      <div class="jtbd-statement">When operating under license, I need to maintain continuous monitoring and annual revalidation cycles so that compliance evidence remains current and DNB supervisory expectations are met.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Annual model revalidation schedule operational; fairness monitoring live; DORA Register updated quarterly; regulatory reporting automated.</div>
+    </div>
+    <div class="jtbd-card">
+      <div class="jtbd-when">Job 6.2</div>
+      <div class="jtbd-statement">When EU AI Act high-risk obligations take effect (Aug 2026), I need to ensure conformity assessment readiness so that our high-risk AI systems comply from day one.</div>
+      <div class="jtbd-outcome"><strong>Done when:</strong> Annex IV technical documentation complete; FRIA conducted; conformity assessment process defined.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DELIVERABLE MAP ═════════════════════════ -->
+<section class="section" id="deliverable-map">
+  <div class="section-label">Product Management</div>
+  <div class="section-title">Deliverable Cross-Reference Map</div>
+  <div class="section-subtitle">Every deliverable traced from law → SAFEST → phase → evidence artifact.</div>
+
+  <div class="card">
+    <table class="req-table" style="font-size:0.82rem">
+      <thead><tr><th>Statute</th><th>Article</th><th>SAFEST Pillar</th><th>Checklist Items</th><th>Phase</th><th>Key Artifact</th></tr></thead>
+      <tbody>
+        <tr><td>Wft</td><td class="req-article">§3:15</td><td>Skills</td><td>K-00a..e</td><td><span class="card-badge badge-phase" style="background:var(--phase1);font-size:0.65rem">P1</span></td><td>Policymaker appointments</td></tr>
+        <tr><td>Wft</td><td class="req-article">§3:8, §3:9</td><td>Skills</td><td>K-00b, K-00c, K-03</td><td><span class="card-badge badge-phase" style="background:var(--phase5);font-size:0.65rem">P5</span></td><td>Geschiktheidstoets prep</td></tr>
+        <tr><td>Wft</td><td class="req-article">§3:17</td><td>Accountability</td><td>A-01..A-05</td><td><span class="card-badge badge-phase" style="background:var(--phase1);font-size:0.65rem">P1</span></td><td>AI Governance Framework</td></tr>
+        <tr><td>DORA</td><td class="req-article">Art. 5-16</td><td>Soundness</td><td>S-13..S-18</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>ICT risk management policy</td></tr>
+        <tr><td>DORA</td><td class="req-article">Art. 17-23</td><td>Accountability</td><td>A-15..A-18</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>Incident response plan</td></tr>
+        <tr><td>DORA</td><td class="req-article">Art. 25-27</td><td>Soundness</td><td>S-05, S-06, S-19..S-22</td><td><span class="card-badge badge-phase" style="background:var(--phase3);font-size:0.65rem">P3</span></td><td>Resilience test results</td></tr>
+        <tr><td>DORA</td><td class="req-article">Art. 28(3)</td><td>Soundness</td><td>S-19a..S-19d</td><td><span class="card-badge badge-phase" style="background:var(--phase3);font-size:0.65rem">P3</span></td><td>Register of Information</td></tr>
+        <tr><td>EU AI Act</td><td class="req-article">Art. 4</td><td>Skills</td><td>K-09..K-12</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>AI literacy programme</td></tr>
+        <tr><td>EU AI Act</td><td class="req-article">Art. 5</td><td>Ethics</td><td>E-01..E-03</td><td><span class="card-badge badge-phase" style="background:var(--phase1);font-size:0.65rem">P1</span></td><td>Prohibited uses list</td></tr>
+        <tr><td>EU AI Act</td><td class="req-article">Art. 9-10, 15</td><td>Soundness</td><td>S-01..S-12</td><td><span class="card-badge badge-phase" style="background:var(--phase3);font-size:0.65rem">P3</span></td><td>Model docs + validation</td></tr>
+        <tr><td>EU AI Act</td><td class="req-article">Art. 13, 50</td><td>Transparency</td><td>T-01..T-10</td><td><span class="card-badge badge-phase" style="background:var(--phase3);font-size:0.65rem">P3</span></td><td>XAI + disclosures</td></tr>
+        <tr><td>EU AI Act</td><td class="req-article">Art. 14</td><td>Accountability</td><td>A-06..A-10</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>Human oversight design</td></tr>
+        <tr><td>GDPR</td><td class="req-article">Art. 22</td><td>Accountability / Transp.</td><td>A-06, T-08</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>HITL + right to review</td></tr>
+        <tr><td>GDPR</td><td class="req-article">Art. 13-14</td><td>Transparency</td><td>T-06, T-10</td><td><span class="card-badge badge-phase" style="background:var(--phase4);font-size:0.65rem">P4</span></td><td>Privacy notices</td></tr>
+        <tr><td>Wwft</td><td class="req-article">Art. 3-5, 16</td><td>Fairness / Sound.</td><td>F-17, F-18, A-11</td><td><span class="card-badge badge-phase" style="background:var(--phase3);font-size:0.65rem">P3</span></td><td>AML monitoring docs</td></tr>
+        <tr><td>PSD2</td><td class="req-article">Art. 5(1)(e)</td><td>Soundness</td><td>S-13..S-15</td><td><span class="card-badge badge-phase" style="background:var(--phase2);font-size:0.65rem">P2</span></td><td>Payment chain analysis</td></tr>
+        <tr><td>MiCAR</td><td class="req-article">Art. 48, 59-63</td><td>Cross-cutting</td><td>—</td><td><span class="card-badge badge-phase" style="background:var(--phase1);font-size:0.65rem">P1</span></td><td>Licensing boundary doc</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════ KEY RISKS ═══════════════════════════════ -->
+<section class="section" id="risk-register">
+  <div class="section-label">Product Management</div>
+  <div class="section-title">Key Programme Risks</div>
+  <div class="section-subtitle">Risks that could delay DNB authorization or require Board intervention.</div>
+
+  <div class="card">
+    <table class="req-table">
+      <thead><tr><th style="width:5%">#</th><th style="width:28%">Risk</th><th style="width:10%">Impact</th><th style="width:10%">Likelihood</th><th style="width:47%">Mitigation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--critical)">R1</td>
+          <td><strong>Policymaker fitness interview failure</strong> — DNB rejects one or both policymakers</td>
+          <td><span class="card-badge badge-primary">Critical</span></td>
+          <td><span class="card-badge badge-secondary">Medium</span></td>
+          <td>Phase 1: early appointment. Phase 5: mock interviews. Contingency: identify reserve policymaker candidates.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--critical)">R2</td>
+          <td><strong>DORA Register of Information fails validation</strong> — 116 rules are complex; silent failures possible</td>
+          <td><span class="card-badge badge-primary">Critical</span></td>
+          <td><span class="card-badge badge-secondary">Medium</span></td>
+          <td>Phase 3: internal dry-run validation tool. Early engagement with DNB Portal test environment if available.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--critical)">R3</td>
+          <td><strong>EU AI Act classification uncertainty</strong> — delegated acts may change risk classification of our AI systems</td>
+          <td><span class="card-badge badge-secondary">High</span></td>
+          <td><span class="card-badge badge-secondary">Medium</span></td>
+          <td>Conservative approach: treat credit scoring and AML as high-risk now. Monitor delegated act developments.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--important)">R4</td>
+          <td><strong>Insufficient second-line validation capacity</strong> — independent model validation requires specialized expertise</td>
+          <td><span class="card-badge badge-secondary">High</span></td>
+          <td><span class="card-badge badge-secondary">Medium</span></td>
+          <td>Phase 2: identify and engage external validation partner early. Budget approved in Phase 1.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--important)">R5</td>
+          <td><strong>MiCAR/PSD2 boundary dispute</strong> — DNB interprets licensing scope differently than our analysis</td>
+          <td><span class="card-badge badge-secondary">High</span></td>
+          <td><span class="card-badge badge-tertiary">Low</span></td>
+          <td>Phase 1: clear boundary document. Phase 5: raise explicitly in pre-application meeting. Legal counsel engaged.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--important)">R6</td>
+          <td><strong>Bias discovered late in testing</strong> — fairness testing reveals material discrimination requiring model redesign</td>
+          <td><span class="card-badge badge-secondary">High</span></td>
+          <td><span class="card-badge badge-secondary">Medium</span></td>
+          <td>Phase 3: front-load fairness testing. Iterative testing cycle with remediation sprints built into timeline.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn" style="margin-top:24px">
+    <strong>Board Action Requested:</strong> Approve programme scope, confirm policymaker appointments (Wft §3:15), allocate budget for external model validation, and commit to geschiktheidstoets preparation sessions. The Board's visible engagement with AI governance is itself evidence that DNB will evaluate.
+  </div>
+</section>
+
+<!-- ─── FOOTER ──────────────────────────────────────────────────── -->
+<div style="text-align:center; padding:40px 0 20px; color:var(--text-dim); font-size:0.75rem; border-top:1px solid var(--border); margin-top:60px;">
+  AI Governance &amp; DNB Licensing Programme · v1.1 · Confidential — Board Use Only<br>
+  Generated from SAFEST Checklist v1.1 (112 items) · Last updated: Feb 2025
+</div>
+
+</main>
+
+<!-- ═══════════════════════ SCRIPTS ═════════════════════════════════ -->
+<script>
+// Active nav tracking
+const sections = document.querySelectorAll('.section');
+const navItems = document.querySelectorAll('.nav-item');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(item => item.classList.remove('active'));
+      const id = entry.target.id;
+      const activeNav = document.querySelector(`.nav-item[href="#${id}"]`);
+      if (activeNav) activeNav.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+sections.forEach(section => observer.observe(section));
+
+// Collapse toggles
+document.querySelectorAll('.collapse-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    trigger.classList.toggle('open');
+    const body = trigger.nextElementSibling;
+    body.classList.toggle('open');
+  });
+});
+
+// Close sidebar on mobile when clicking a link
+document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 900) {
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

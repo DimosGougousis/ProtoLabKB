@@ -1,0 +1,459 @@
+# Release Criteria for AI Systems
+#
+# Purpose: Machine-readable release gate requirements that define the minimum conditions
+#          for deploying an AI system to production. These criteria are enforced by CI/CD
+#          pipelines and governance review processes. A system that does not meet all
+#          applicable criteria for its risk tier CANNOT be deployed.
+#
+# When to Use:
+#   - As the automated gate configuration in CI/CD pipelines
+#   - As the reference for Model Owners assembling deployment packages
+#   - As the checklist for AI Governance Committee deployment reviews
+#   - When configuring release automation for AI systems
+#
+# Who Is Responsible:
+#   - AI/ML Engineer: ensures system meets criteria; provides evidence
+#   - Model Owner: accountable for all criteria being met before deployment
+#   - DevOps/MLOps: implements criteria as automated gates in CI/CD
+#   - Compliance Officer (2nd Line): reviews evidence for limited/high-risk
+#   - AI Governance Committee: approves release for limited/high-risk
+#
+# Regulatory Basis:
+#   - EU AI Act Articles 9, 11, 15, 16 -- testing, documentation, accuracy requirements
+#   - SAFEST S-03, S-04, S-05, S-06 -- model performance and robustness
+#   - SAFEST F-01, F-03, F-04 -- fairness assessment requirements
+#   - SAFEST T-01, T-06, T-12 -- transparency and documentation
+#   - SAFEST A-03, A-06, A-09 -- approval, oversight, kill switch
+#   - SAFEST S-13, S-14 -- fallback and recovery
+#   - SAFEST S-19, S-20 -- model validation
+#   - DORA Article 25 -- digital operational resilience testing
+#
+# Cross-References:
+#   - Definition of Done: quality-gates/definition-of-done-ai.md
+#   - Verification Before Deployment: guides/verification-before-deployment.md
+#   - Pre-Deployment Gate: checklists/pre-deployment-gate.yaml
+#   - Eval-Driven Development: evaluations/eval-driven-development.md
+#   - Continuous Online Evaluation: ../../03-runtime-governance/evaluations/continuous-online-evaluation.md
+#
+# How to read this file:
+#   - Each gate has an id, description, enforcement level, and applicability by risk tier
+#   - enforcement: "hard" = blocks deployment if not met; "soft" = warning, requires justification
+#   - risk_tiers: which EU AI Act risk tiers this gate applies to
+#   - evidence_type: what evidence must be provided to satisfy this gate
+#   - automated: whether this gate can be checked automatically in CI/CD
+
+metadata:
+  schema_version: "1.0"
+  last_updated: "2026-03-01"
+  framework: "Product Governance for Agentic AI Workflows"
+  classification: "Internal / Regulatory Preparation"
+
+# ============================================================================
+# GATE 1: MODEL PERFORMANCE
+# Verifies that the AI system meets its acceptance criteria.
+# ============================================================================
+
+model_performance:
+  - id: "REL-PERF-001"
+    description: "All blocking acceptance criteria pass their defined thresholds"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "eval_suite_results"
+    automated: true
+    details: "Eval suite must run against the exact version being deployed. Results must include model version hash, data version, and execution timestamp."
+    regulatory_ref: "SAFEST S-03; EU AI Act Art. 9(7)"
+
+  - id: "REL-PERF-002"
+    description: "Eval suite ran on a fresh execution (not cached or stale results)"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "pipeline_execution_log"
+    automated: true
+    details: "Eval results must have a timestamp within 24 hours of the deployment request. Stale results are not accepted."
+    regulatory_ref: "SAFEST S-03"
+
+  - id: "REL-PERF-003"
+    description: "No blocking regressions against the previously deployed version"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "regression_comparison_report"
+    automated: true
+    details: "Every metric must be compared against the baseline. No metric may decrease beyond the defined regression tolerance."
+    thresholds:
+      max_accuracy_decrease: 0.01       # 1% maximum accuracy drop
+      max_safety_decrease: 0.00         # Zero tolerance for safety regression
+      max_fairness_gap_increase: 0.005  # 0.5% maximum fairness gap widening
+    regulatory_ref: "SAFEST S-19"
+
+  - id: "REL-PERF-004"
+    description: "Edge case test suite passes (known edge cases handled correctly)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "edge_case_test_results"
+    automated: true
+    details: "All documented edge cases from the model card must have corresponding test cases, and all must pass."
+    regulatory_ref: "SAFEST S-04"
+
+  - id: "REL-PERF-005"
+    description: "Stress testing completed under adverse conditions"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "stress_test_results"
+    automated: true
+    details: "System tested under: 3x expected load, degraded input quality, out-of-distribution inputs. Performance must remain above minimum thresholds."
+    thresholds:
+      min_accuracy_under_stress: 0.75   # Minimum accuracy under adverse conditions
+      max_latency_under_stress_ms: 5000 # Maximum P95 latency under 3x load
+      max_error_rate_under_stress: 0.05 # Maximum error rate under stress
+    regulatory_ref: "SAFEST S-05; EU AI Act Art. 15(4)"
+
+# ============================================================================
+# GATE 2: SAFETY EVALUATION
+# Verifies that the AI system does not produce harmful outputs.
+# ============================================================================
+
+safety_evaluation:
+  - id: "REL-SAFE-001"
+    description: "Prompt injection defense rate meets threshold (LLM/agent systems)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "adversarial_test_results"
+    automated: true
+    thresholds:
+      min_injection_defense_rate: 0.95  # 95% minimum defense rate
+      test_suite_min_size: 100          # Minimum 100 injection test cases
+    regulatory_ref: "SAFEST S-06; EU AI Act Art. 15(4)"
+
+  - id: "REL-SAFE-002"
+    description: "Jailbreak resistance rate meets threshold (LLM/agent systems)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "adversarial_test_results"
+    automated: true
+    thresholds:
+      min_jailbreak_resistance_rate: 0.98  # 98% minimum resistance rate
+      test_suite_min_size: 50              # Minimum 50 jailbreak test cases
+    regulatory_ref: "SAFEST S-06"
+
+  - id: "REL-SAFE-003"
+    description: "Data leakage test passes: system does not expose training data, PII, or internal information"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "data_leakage_test_results"
+    automated: true
+    thresholds:
+      max_leakage_rate: 0.00  # Zero tolerance: no data leakage permitted
+    regulatory_ref: "GDPR Art. 5(1)(f); SAFEST S-06"
+
+  - id: "REL-SAFE-004"
+    description: "Scope adherence verified: agent stays within defined operational boundaries"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "scope_adherence_test_results"
+    automated: true
+    details: "Agent must refuse out-of-scope requests 100% of the time in the test suite."
+    thresholds:
+      min_scope_adherence_rate: 1.00  # 100% scope adherence required
+    regulatory_ref: "SAFEST A-06; EU AI Act Art. 14"
+
+  - id: "REL-SAFE-005"
+    description: "Toxicity and harmful content filter passes"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "content_safety_test_results"
+    automated: true
+    thresholds:
+      max_toxicity_rate: 0.00  # Zero tolerance for toxic/harmful outputs
+    regulatory_ref: "SAFEST E-09"
+
+# ============================================================================
+# GATE 3: BIAS AND FAIRNESS
+# Verifies that the AI system treats all groups fairly.
+# ============================================================================
+
+bias_and_fairness:
+  - id: "REL-FAIR-001"
+    description: "Protected characteristics identified and documented"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "fairness_assessment_document"
+    automated: false
+    details: "Document must list all protected characteristics relevant to the use case with justification."
+    regulatory_ref: "SAFEST F-01; EU AI Act Art. 10(2)(f)"
+
+  - id: "REL-FAIR-002"
+    description: "Demographic parity difference within threshold across all protected groups"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "fairness_metrics_report"
+    automated: true
+    thresholds:
+      high_risk_max_disparity: 0.02     # 2% for high-risk systems
+      limited_risk_max_disparity: 0.05  # 5% for limited-risk systems
+    regulatory_ref: "SAFEST F-03"
+
+  - id: "REL-FAIR-003"
+    description: "Equalized odds difference within threshold across all protected groups"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "fairness_metrics_report"
+    automated: true
+    thresholds:
+      max_equalized_odds_difference: 0.03  # 3% for high-risk systems
+    regulatory_ref: "SAFEST F-03"
+
+  - id: "REL-FAIR-004"
+    description: "No protected group has accuracy below minimum floor"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "per_group_performance_report"
+    automated: true
+    thresholds:
+      high_risk_min_group_accuracy: 0.80    # No group below 80% for high-risk
+      limited_risk_min_group_accuracy: 0.75 # No group below 75% for limited
+    regulatory_ref: "SAFEST F-03; EU AI Act Art. 15(1)"
+
+  - id: "REL-FAIR-005"
+    description: "Fairness metric selection documented with justification"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "fairness_methodology_document"
+    automated: false
+    details: "Document which fairness metrics were chosen, why, and what trade-offs were accepted."
+    regulatory_ref: "SAFEST F-04"
+
+  - id: "REL-FAIR-006"
+    description: "Proxy variable analysis completed (no unintended proxies for protected characteristics)"
+    enforcement: "soft"
+    risk_tiers: ["high"]
+    evidence_type: "proxy_analysis_report"
+    automated: false
+    details: "Analysis of feature correlations with protected characteristics. Features with correlation > 0.3 require documented justification."
+    regulatory_ref: "SAFEST F-02"
+
+# ============================================================================
+# GATE 4: DOCUMENTATION
+# Verifies that all required documentation is complete and current.
+# ============================================================================
+
+documentation:
+  - id: "REL-DOC-001"
+    description: "Model card is complete and current for the version being deployed"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "model_card_document"
+    automated: false
+    details: "Model card must include: intended use, training data summary, performance metrics, known limitations, ethical considerations, and version matching the deployment."
+    regulatory_ref: "SAFEST T-12; EU AI Act Art. 11"
+
+  - id: "REL-DOC-002"
+    description: "Data sheet is complete for training data (ML models)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "data_sheet_document"
+    automated: false
+    details: "Data sheet must document: data provenance, collection methodology, composition, preprocessing, and known limitations."
+    regulatory_ref: "SAFEST T-12; EU AI Act Art. 10"
+
+  - id: "REL-DOC-003"
+    description: "AI system is registered in the organizational AI inventory"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "inventory_registration_confirmation"
+    automated: true
+    regulatory_ref: "SAFEST S-01; EU AI Act Art. 49"
+
+  - id: "REL-DOC-004"
+    description: "Known limitations are documented and communicated to stakeholders"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "limitations_section_in_model_card"
+    automated: false
+    regulatory_ref: "SAFEST T-12"
+
+  - id: "REL-DOC-005"
+    description: "For high-risk: EU AI Act Annex IV technical documentation complete"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "annex_iv_documentation"
+    automated: false
+    regulatory_ref: "EU AI Act Art. 11, Annex IV"
+
+# ============================================================================
+# GATE 5: MONITORING AND OBSERVABILITY
+# Verifies that production monitoring infrastructure is ready.
+# ============================================================================
+
+monitoring:
+  - id: "REL-MON-001"
+    description: "Production monitoring is configured and receiving data"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "monitoring_dashboard_screenshot"
+    automated: true
+    details: "Monitoring endpoints must respond with live data. Dashboards must display key metrics."
+    regulatory_ref: "SAFEST S-12; EU AI Act Art. 72"
+
+  - id: "REL-MON-002"
+    description: "Alert thresholds are configured and test alert confirmed"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "alert_configuration_and_test_confirmation"
+    automated: true
+    details: "At minimum: accuracy degradation alert, latency spike alert, error rate alert, fairness drift alert (high-risk)."
+    regulatory_ref: "SAFEST S-12"
+
+  - id: "REL-MON-003"
+    description: "Observability platform receiving agent/model traces"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "trace_platform_confirmation"
+    automated: true
+    details: "LangSmith, Arize Phoenix, Opik, or Langfuse must be configured and receiving traces."
+    regulatory_ref: "SAFEST A-11; EU AI Act Art. 12"
+
+  - id: "REL-MON-004"
+    description: "Drift detection configured for input feature distributions"
+    enforcement: "soft"
+    risk_tiers: ["high"]
+    evidence_type: "drift_detection_configuration"
+    automated: true
+    details: "Baseline distributions stored; statistical tests configured to detect drift."
+    regulatory_ref: "SAFEST S-12"
+
+  - id: "REL-MON-005"
+    description: "Audit trail logging is active and queryable"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "audit_log_query_test"
+    automated: true
+    details: "All inputs, outputs, and decisions must be logged. Logs must be queryable for incident investigation."
+    regulatory_ref: "SAFEST A-11; EU AI Act Art. 12"
+
+# ============================================================================
+# GATE 6: FALLBACK AND RESILIENCE
+# Verifies that the system can fail safely.
+# ============================================================================
+
+fallback_and_resilience:
+  - id: "REL-FALL-001"
+    description: "Fallback procedure documented"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "fallback_procedure_document"
+    automated: false
+    details: "Document must describe: what triggers fallback, what manual process takes over, who is notified."
+    regulatory_ref: "SAFEST S-13"
+
+  - id: "REL-FALL-002"
+    description: "Fallback procedure tested and confirmed working"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "fallback_test_execution_record"
+    automated: false
+    details: "Test must be executed in staging or production-like environment. Record must include timestamp and outcome."
+    regulatory_ref: "SAFEST S-14"
+
+  - id: "REL-FALL-003"
+    description: "Rollback procedure tested and recovery time measured"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "rollback_test_execution_record"
+    automated: false
+    details: "Rollback must complete within the defined Recovery Time Objective."
+    thresholds:
+      max_recovery_time_minutes: 30  # Must rollback within 30 minutes
+    regulatory_ref: "SAFEST S-14; DORA Art. 8"
+
+  - id: "REL-FALL-004"
+    description: "Kill switch (circuit breaker) implemented and tested"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "kill_switch_test_record"
+    automated: true
+    details: "Kill switch must disable the AI system within 60 seconds of activation."
+    thresholds:
+      max_kill_time_seconds: 60  # System disabled within 60 seconds
+    regulatory_ref: "SAFEST A-09; EU AI Act Art. 14(4)"
+
+# ============================================================================
+# GATE 7: APPROVAL SIGN-OFFS
+# Verifies that all required approvals are obtained.
+# ============================================================================
+
+approvals:
+  - id: "REL-APPR-001"
+    description: "Model Owner sign-off recorded"
+    enforcement: "hard"
+    risk_tiers: ["minimal", "limited", "high"]
+    evidence_type: "sign_off_record"
+    automated: false
+    details: "Model Owner has reviewed all gate results and approved deployment."
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "REL-APPR-002"
+    description: "Ethics Lead review completed (limited/high-risk)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "ethics_review_record"
+    automated: false
+    regulatory_ref: "SAFEST E-01"
+
+  - id: "REL-APPR-003"
+    description: "Compliance Officer review completed (limited/high-risk)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "compliance_review_record"
+    automated: false
+    details: "2nd line review of all evidence for regulatory adequacy."
+    regulatory_ref: "SAFEST A-03; DNB Good Practice"
+
+  - id: "REL-APPR-004"
+    description: "AI Governance Committee approval recorded (limited/high-risk)"
+    enforcement: "hard"
+    risk_tiers: ["limited", "high"]
+    evidence_type: "committee_approval_record"
+    automated: false
+    details: "Committee meeting minutes or approval record with date, attendees, and decision."
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "REL-APPR-005"
+    description: "Board-level sponsor approval recorded (high-risk only)"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "board_sponsor_approval_record"
+    automated: false
+    regulatory_ref: "SAFEST A-03"
+
+  - id: "REL-APPR-006"
+    description: "For high-risk: independent 2nd line model validation completed"
+    enforcement: "hard"
+    risk_tiers: ["high"]
+    evidence_type: "independent_validation_report"
+    automated: false
+    details: "2nd line (risk/compliance) must independently validate model performance, not just review 1st line results."
+    regulatory_ref: "SAFEST S-19; DNB Good Practice"
+
+# ============================================================================
+# SUMMARY AND GATE COUNTS
+# ============================================================================
+
+summary:
+  total_gates: 33
+  hard_gates: 30
+  soft_gates: 3
+  gates_by_tier:
+    minimal:
+      applicable: 10
+      hard: 9
+      soft: 1
+    limited:
+      applicable: 27
+      hard: 25
+      soft: 2
+    high:
+      applicable: 33
+      hard: 30
+      soft: 3
+  automated_gates: 18
+  manual_gates: 15

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Runtime Governance Pillar — Agent permissions, delegation chains, guardrails, and human-in-the-loop patterns for controlling AI agents during production operations.">
+<title>Pillar 03 — Runtime Governance | AI Governance Framework</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  :root {
+    --dash-bg: linear-gradient(135deg, #1a1a2e, #16213e);
+    --dash-card: rgba(255,255,255,0.06); --dash-border: rgba(255,255,255,0.08);
+    --dash-text: #e0e0e0; --dash-muted: #8899aa;
+  }
+
+  .hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(180deg, #e6ffe6 0%, var(--bg) 100%); }
+  .hero .pillar-num { color: var(--accent); margin-bottom: 8px; }
+  .hero .headline-medium { margin-bottom: 12px; }
+  .hero .question { font-size: 1.15rem; color: var(--accent); font-weight: 500; margin-bottom: 20px; }
+  .hero .body-large { max-width: 640px; margin: 0 auto; }
+  .hero-summary { display: inline-flex; gap: 32px; margin-top: 32px; background: var(--bg); border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 32px; box-shadow: var(--card-shadow); }
+  .hero-summary .hs-item { text-align: center; }
+  .hero-summary .hs-val { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+  .hero-summary .hs-label { font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .subsection { border-bottom: 1px solid var(--border-light); }
+  .subsection:last-of-type { border-bottom: none; }
+  .sub-header { text-align: center; margin-bottom: 40px; }
+  .sub-header .label { margin-bottom: 8px; }
+  .sub-header .headline-small { margin-bottom: 8px; }
+  .sub-header .body { max-width: 600px; margin: 0 auto; }
+
+  .info-strip { display: flex; gap: 24px; margin-bottom: 32px; }
+  .info-card { flex: 1; padding: 20px 24px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--bg-alt); }
+  .info-card h4 { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); margin-bottom: 6px; }
+  .info-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
+  @media (max-width: 768px) { .info-strip { flex-direction: column; } }
+
+  .dash { background: var(--dash-bg); border-radius: 16px; padding: 32px; color: var(--dash-text); margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .dash h4 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dash-muted); margin-bottom: 16px; }
+  .dash-grid { display: grid; gap: 16px; }
+  .dash-grid-2 { grid-template-columns: 1fr 1fr; }
+  .dash-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .dash-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  @media (max-width: 768px) { .dash-grid-2, .dash-grid-3, .dash-grid-4 { grid-template-columns: 1fr; } .dash { padding: 24px 16px; } }
+  .dash-card { background: var(--dash-card); border: 1px solid var(--dash-border); border-radius: 12px; padding: 20px; }
+  .dash-card .dc-label { font-size: 0.7rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .dash-card .dc-value { font-size: 1.6rem; font-weight: 700; color: #fff; }
+  .dash-card .dc-sub { font-size: 0.72rem; color: var(--dash-muted); margin-top: 2px; }
+
+  /* Health indicator */
+  .health-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .h-healthy { background: #30d158; }
+  .h-degraded { background: #ff9f0a; }
+  .h-critical { background: #ff453a; }
+
+  .dc-badge { display: inline-block; font-size: 0.62rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .dc-c1 { background: rgba(175,82,222,0.2); color: #d4a0f5; }
+  .dc-c2 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .dc-c3 { background: rgba(10,132,255,0.2); color: #6cb4ff; }
+  .dc-c4 { background: rgba(255,159,10,0.2); color: #ffb84d; }
+  .dc-c6 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .dc-c7 { background: rgba(255,69,58,0.2); color: #ff8a80; }
+  .contracts-used { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dash-border); font-size: 0.7rem; color: var(--dash-muted); }
+
+  /* Delegation chain */
+  .chain { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+  .chain-node { text-align: center; padding: 12px 16px; background: var(--dash-card); border: 1px solid var(--dash-border); border-radius: 10px; min-width: 120px; }
+  .chain-node .cn-name { font-size: 0.82rem; font-weight: 600; color: #fff; }
+  .chain-node .cn-meta { font-size: 0.65rem; color: var(--dash-muted); }
+  .chain-arrow { font-size: 1.2rem; color: var(--dash-muted); padding: 0 8px; }
+
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
+  <div class="container">
+    <a class="nav-brand" href="../index.html">AI Governance Platform</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#pillars">All Pillars</a></li>
+      <li><a href="#fleet">Fleet Ops</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+      <li><a href="#oversight">Oversight</a></li>
+      <li><a href="#delegation">Delegation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<section class="hero">
+  <div class="container">
+    <p class="label pillar-num">Pillar 03</p>
+    <h2 class="headline-medium">Runtime Governance</h2>
+    <p class="question">How do we control it in production, right now?</p>
+    <p class="body-large">Always active from the moment an AI system enters production until decommissioned. Guardrails, permissions, oversight, and continuous evaluation — in real time.</p>
+    <div class="hero-summary">
+      <div class="hs-item"><div class="hs-val">23</div><div class="hs-label">Artifacts</div></div>
+      <div class="hs-item"><div class="hs-val">5</div><div class="hs-label">Control Layers</div></div>
+      <div class="hs-item"><div class="hs-val">3</div><div class="hs-label">Oversight Models</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 1: Fleet Operations -->
+<section class="subsection fade-in" id="fleet">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 1 of 4</p>
+      <h3 class="headline-small">Agent Fleet Operations</h3>
+      <p class="body">Fleet-wide visibility into every agent's health, KPIs, cost, and compliance status. The real-time command center for your agent portfolio.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Without fleet-level visibility, each agent is a black box. Fleet operations gives you a single pane of glass across all agents, teams, and risk tiers. Health state machines detect degradation before users notice.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C1 (registry) + C2 (health every 30-60s) + C4 (monthly cost). Health state machine: healthy &rarr; degraded (error &gt;5%) &rarr; critical (error &gt;15% or circuit breaker open). T3 dashboard refreshes every 30s + WebSocket for state transitions.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; FinTech Agent Fleet (4 Agents)</h4>
+
+      <div class="dash-card" style="overflow-x:auto;">
+        <table style="width:100%; font-size:0.75rem; border-collapse:collapse; min-width:650px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <th style="text-align:left; padding:8px; color:var(--dash-muted);">Agent</th>
+              <th style="text-align:left; padding:8px; color:var(--dash-muted);">Risk</th>
+              <th style="text-align:left; padding:8px; color:var(--dash-muted);">Health</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Latency P95</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Error Rate</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">Cost/mo</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">ARI</th>
+              <th style="text-align:center; padding:8px; color:var(--dash-muted);">MI9</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:#fff; font-weight:500;">Payments Agent</td>
+              <td style="padding:8px; color:#ff9f0a;">HIGH</td>
+              <td style="padding:8px;"><span class="health-dot h-healthy"></span>Healthy</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">340ms</td>
+              <td style="padding:8px; text-align:center; color:#30d158;">0.2%</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">$8,200</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a; font-weight:600;">0.72</td>
+              <td style="padding:8px; text-align:center;">L2</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:#fff; font-weight:500;">Cash Flow Forecaster</td>
+              <td style="padding:8px; color:#0a84ff;">LIMITED</td>
+              <td style="padding:8px;"><span class="health-dot h-degraded"></span>Degraded</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a;">1,200ms</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a;">6.1%</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">$3,100</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">0.44</td>
+              <td style="padding:8px; text-align:center;">L1</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:8px; color:#fff; font-weight:500;">Treasury Optimizer</td>
+              <td style="padding:8px; color:#ff9f0a;">HIGH</td>
+              <td style="padding:8px;"><span class="health-dot h-healthy"></span>Healthy</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">520ms</td>
+              <td style="padding:8px; text-align:center; color:#30d158;">0.4%</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">$12,400</td>
+              <td style="padding:8px; text-align:center; color:#ff453a; font-weight:600;">0.81</td>
+              <td style="padding:8px; text-align:center;">L3</td>
+            </tr>
+            <tr>
+              <td style="padding:8px; color:#fff; font-weight:500;">KYC Verification</td>
+              <td style="padding:8px; color:#ff9f0a;">HIGH</td>
+              <td style="padding:8px;"><span class="health-dot h-healthy"></span>Healthy</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">890ms</td>
+              <td style="padding:8px; text-align:center; color:#30d158;">0.1%</td>
+              <td style="padding:8px; text-align:center; color:var(--dash-text);">$5,600</td>
+              <td style="padding:8px; text-align:center; color:#ff9f0a; font-weight:600;">0.67</td>
+              <td style="padding:8px; text-align:center;">L2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:12px; padding:12px; background:rgba(255,159,10,0.1); border:1px solid rgba(255,159,10,0.2); border-radius:8px; font-size:0.75rem;">
+        <span style="color:#ff9f0a; font-weight:600;">ALERT:</span>
+        <span style="color:var(--dash-text);"> Cash Flow Forecaster degraded — error rate 6.1% exceeds 5% threshold. Auto-escalated to Team Lead. Last healthy: 14 min ago.</span>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span class="dc-badge dc-c2">C2 Health</span>
+        <span class="dc-badge dc-c4">C4 Cost</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: 30s + WebSocket (T3 Dashboard)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 2: Permission Boundaries -->
+<section class="subsection fade-in" id="permissions" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 2 of 4</p>
+      <h3 class="headline-small">Permission Boundaries</h3>
+      <p class="body">Three-layer tool sovereignty model: Configuration, Policy, and Network. Agents are first-class IAM citizens with Non-Human Identity, least-privilege scopes, and credential rotation.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>An agent with unlimited access is a breach waiting to happen. Permission boundaries define exactly what each agent can do, what data it can access, and what tools it can call. Violations are caught by guardrails (C6) and decision logs (C7).</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C1 defines boundaries (functions, outOfScope, permission_boundary_ref). C6 captures every enforcement event. C7 logs when agents exercise authority levels. NHI credentials tracked in nhi_credentials table with rotation policies.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Tool-Use Permission Matrix</h4>
+
+      <div class="dash-card" style="overflow-x:auto;">
+        <div class="dc-label">Agent &times; Tool Permission Matrix</div>
+        <table style="width:100%; font-size:0.72rem; border-collapse:collapse; margin-top:12px; min-width:550px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <th style="text-align:left; padding:6px; color:var(--dash-muted);"></th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">DB Read</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">DB Write</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">API Call</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Email</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Payment</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">PII Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:#fff; font-weight:500;">Payments</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Conditional</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Conditional</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:#fff; font-weight:500;">Cash Flow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:#fff; font-weight:500;">Treasury</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Conditional</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Conditional</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+            </tr>
+            <tr>
+              <td style="padding:6px; color:#fff; font-weight:500;">KYC</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Allow</td>
+              <td style="padding:6px; text-align:center; color:#ff453a;">Deny</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Conditional</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px; font-size:0.68rem; color:var(--dash-muted);">
+          <span style="color:#30d158;">Allow</span> = always permitted &emsp;
+          <span style="color:#ff9f0a;">Conditional</span> = requires escalation or context check &emsp;
+          <span style="color:#ff453a;">Deny</span> = blocked by policy
+        </div>
+      </div>
+
+      <div style="margin-top:12px; padding:12px; background:rgba(255,69,58,0.1); border:1px solid rgba(255,69,58,0.2); border-radius:8px; font-size:0.75rem;">
+        <span style="color:#ff453a; font-weight:600;">VIOLATION DETECTED:</span>
+        <span style="color:var(--dash-text);"> Payments Agent attempted PII access (customer SSN) at 14:23:07. Blocked by C6 guardrail. Incident auto-created. Trace ID: tr-8f2a1b.</span>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span class="dc-badge dc-c6">C6 Guardrails</span>
+        <span class="dc-badge dc-c7">C7 Decisions</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: Real-time via OTLP (T4 Dashboard)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 3: Human Oversight Models -->
+<section class="subsection fade-in" id="oversight">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 3 of 4</p>
+      <h3 class="headline-small">Human Oversight Models</h3>
+      <p class="body">Three patterns scaled by risk: Human-in-the-Loop (HITL), Human-on-the-Loop (HOTL), Human-out-of-the-Loop Autonomy (HOTA). Each has different approval, latency, and cost characteristics.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>EU AI Act mandates human oversight proportional to risk. HITL for every decision doesn't scale. HOTA without guardrails is reckless. The framework matches oversight model to risk tier and tracks actual human involvement via C7 decision logs.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C1 declares oversight model. C7 tracks each decision's authority level (A1-A5) showing actual human involvement. C3 traces show reasoning chains and where human checkpoints were hit or bypassed. Aggregated hourly for T2 CAIO dashboard.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Oversight Model Comparison (Last 24h)</h4>
+
+      <div class="dash-grid dash-grid-3">
+        <div class="dash-card" style="border-top:3px solid #ff453a;">
+          <div style="text-align:center;">
+            <div style="font-size:1rem; font-weight:700; color:#fff; margin-bottom:4px;">HITL</div>
+            <div style="font-size:0.7rem; color:var(--dash-muted);">Human-in-the-Loop</div>
+          </div>
+          <div style="margin-top:16px; font-size:0.75rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Decisions</span><span style="color:#fff;">142</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Human Approved</span><span style="color:#30d158;">100%</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Avg Latency</span><span style="color:#ff9f0a;">12.4 min</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Override Rate</span><span style="color:#fff;">8.5%</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--dash-muted);">Agent</span><span style="color:#fff;">KYC</span></div>
+          </div>
+        </div>
+
+        <div class="dash-card" style="border-top:3px solid #ff9f0a;">
+          <div style="text-align:center;">
+            <div style="font-size:1rem; font-weight:700; color:#fff; margin-bottom:4px;">HOTL</div>
+            <div style="font-size:0.7rem; color:var(--dash-muted);">Human-on-the-Loop</div>
+          </div>
+          <div style="margin-top:16px; font-size:0.75rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Decisions</span><span style="color:#fff;">1,847</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Human Reviewed</span><span style="color:#fff;">23%</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Avg Latency</span><span style="color:#30d158;">1.2s</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Escalation Rate</span><span style="color:#fff;">4.2%</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--dash-muted);">Agent</span><span style="color:#fff;">Payments</span></div>
+          </div>
+        </div>
+
+        <div class="dash-card" style="border-top:3px solid #30d158;">
+          <div style="text-align:center;">
+            <div style="font-size:1rem; font-weight:700; color:#fff; margin-bottom:4px;">HOTA</div>
+            <div style="font-size:0.7rem; color:var(--dash-muted);">Human-out-of-the-Loop Autonomy</div>
+          </div>
+          <div style="margin-top:16px; font-size:0.75rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Decisions</span><span style="color:#fff;">24,315</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Fully Autonomous</span><span style="color:#fff;">99.7%</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Avg Latency</span><span style="color:#30d158;">180ms</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span style="color:var(--dash-muted);">Circuit Breaks</span><span style="color:#fff;">0.3%</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="color:var(--dash-muted);">Agent</span><span style="color:#fff;">Cash Flow</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c7">C7 Decisions</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: Hourly aggregation (T2 Dashboard)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 4: Delegation Chain Audit -->
+<section class="subsection fade-in" id="delegation" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 4 of 4</p>
+      <h3 class="headline-small">Delegation Chain Audit</h3>
+      <p class="body">When Agent A delegates to Agent B, which calls Tool C — who is accountable? Trace the full chain of authority, confidence, and monetary impact.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Multi-agent systems create accountability gaps. If a payment fails because Agent A delegated to Agent B who called an unreliable API, the delegation chain traces the full path. Every decision has an owner.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C7's delegatedTo field traces agent-to-agent delegations. C3 spans with parentSpanId reconstruct the call graph. Stored in delegation_chains + swarm_topology tables. Real-time via webhook on each delegation event.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Payment Processing Delegation Chain</h4>
+
+      <div class="dash-card">
+        <div class="dc-label">Delegation Path &mdash; Transaction #TX-4821</div>
+        <div class="chain">
+          <div class="chain-node" style="border-color:rgba(175,82,222,0.4);">
+            <div class="cn-name">Customer Service</div>
+            <div class="cn-meta">Authority: A2</div>
+            <div class="cn-meta">Confidence: 0.94</div>
+          </div>
+          <div class="chain-arrow">&rarr;</div>
+          <div class="chain-node" style="border-color:rgba(10,132,255,0.4);">
+            <div class="cn-name">Payments Agent</div>
+            <div class="cn-meta">Authority: A3</div>
+            <div class="cn-meta">Confidence: 0.89</div>
+          </div>
+          <div class="chain-arrow">&rarr;</div>
+          <div class="chain-node" style="border-color:rgba(255,159,10,0.4);">
+            <div class="cn-name">Fraud Check Agent</div>
+            <div class="cn-meta">Authority: A4</div>
+            <div class="cn-meta">Confidence: 0.97</div>
+          </div>
+          <div class="chain-arrow">&rarr;</div>
+          <div class="chain-node" style="border-color:rgba(48,209,88,0.4);">
+            <div class="cn-name">Payment Gateway</div>
+            <div class="cn-meta">Tool (external API)</div>
+            <div class="cn-meta">Reversibility: Partial</div>
+          </div>
+        </div>
+        <div style="margin-top:12px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; font-size:0.75rem;">
+          <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.04); border-radius:8px;">
+            <div style="color:var(--dash-muted); font-size:0.68rem;">Total Monetary Impact</div>
+            <div style="color:#fff; font-weight:600; font-size:1rem;">$4,250.00</div>
+          </div>
+          <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.04); border-radius:8px;">
+            <div style="color:var(--dash-muted); font-size:0.68rem;">Chain Depth</div>
+            <div style="color:#fff; font-weight:600; font-size:1rem;">3 agents + 1 tool</div>
+          </div>
+          <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.04); border-radius:8px;">
+            <div style="color:var(--dash-muted); font-size:0.68rem;">Accountability Owner</div>
+            <div style="color:#fff; font-weight:600; font-size:1rem;">Payments Team</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c7">C7 Decisions</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: Real-time via webhook (T4 Dashboard)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="../index.html">Home</a> &ensp;&middot;&ensp;
+      <a href="discovery.html">Pillar 01: Discovery</a> &ensp;&middot;&ensp;
+      <a href="development.html">Pillar 02: Development</a> &ensp;&middot;&ensp;
+      <a href="operational.html">Pillar 04: Operational</a>
+    </p>
+    <p><em>Product Governance for Agentic AI Workflows</em></p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+# ===========================================================================
+# Circuit Breaker Configuration Template
+# ===========================================================================
+#
+# Purpose:
+#   YAML template for configuring circuit breaker thresholds, time windows,
+#   escalation levels, and recovery conditions per agent or skill. Circuit
+#   breakers prevent cascade failures by automatically stopping requests to
+#   failing components, allowing them time to recover.
+#
+# When to Use:
+#   - When deploying an agent to production with circuit breaker protection
+#   - When configuring automated safety responses to failure patterns
+#   - When defining escalation from THROTTLE to PAUSE to FULL STOP
+#   - When tuning circuit breaker sensitivity based on operational data
+#   - When integrating with MI9 containment levels
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Model Owner                   | Accountable | Approves circuit breaker thresholds                 |
+#   | MLOps / Platform Engineer     | Responsible | Implements and configures circuit breakers          |
+#   | AI/ML Engineer                | Responsible | Defines failure patterns and recovery logic         |
+#   | On-Call Engineer              | Consulted   | Provides input on practical thresholds              |
+#   | Compliance Officer (2nd Line) | Reviewer    | Validates safety implications                       |
+#
+# Regulatory Basis:
+#   - EU AI Act Article 15 -- Accuracy, robustness, and cybersecurity
+#   - DORA Article 11 -- ICT-related incident management
+#   - SAFEST A-09 -- Kill switch and safety mechanisms
+#   - SAFEST S-13 -- Fallback procedures
+#
+# Cross-References:
+#   - Kill Switch Specification: kill-switch-specification.md
+#   - Governance Enforcement Pipeline: ../agentic-workflows/governance-enforcement-pipeline.md
+#   - Fallback Procedure: fallback-procedure.md
+#
+# Last updated: 2026-03-26 / Version: 1.0 / Classification: Internal
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# TEMPLATE: Replace all placeholder values (in angle brackets) with actuals
+# ---------------------------------------------------------------------------
+
+# --- Identity ---
+circuit_breaker_id: "<cb:[agent-or-skill-id]:v[version]>"
+name: "<Human-readable Circuit Breaker Name>"
+target: "<agent_id or skill_id>"  # What this circuit breaker protects
+target_type: "<agent | skill | service>"
+version: "<semver, e.g., 1.0.0>"
+
+# --- State Machine Configuration ---
+states:
+  CLOSED:
+    description: "Normal operation - requests pass through"
+    behavior: "allow_all"
+    monitoring: "standard"
+  
+  OPEN:
+    description: "Failure threshold exceeded - block requests"
+    behavior: "block_all"
+    fallback: "return_cached_or_error"
+    entry_action: "notify_on_call"
+  
+  HALF_OPEN:
+    description: "Testing recovery - limited requests allowed"
+    behavior: "allow_limited"
+    test_request_count: <integer>  # Number of test requests to allow
+    success_threshold: <integer>   # Successes needed to close
+
+# --- Failure Detection ---
+failure_detection:
+  # Error rate thresholds
+  error_rate:
+    threshold_percentage: <0.0-1.0>     # e.g., 0.50 for 50%
+    time_window: "<duration>"           # e.g., "1m", "5m", "15m"
+    minimum_requests: <integer>         # Min requests before evaluating
+    
+    # State transitions based on error rate
+    transitions:
+      - from: "CLOSED"
+        to: "OPEN"
+        condition: "error_rate > threshold"
+      
+      - from: "HALF_OPEN"
+        to: "OPEN"
+        condition: "any_test_request_fails"
+      
+      - from: "HALF_OPEN"
+        to: "CLOSED"
+        condition: "success_count >= success_threshold"
+  
+  # Latency thresholds
+  latency:
+    p95_threshold_ms: <integer>         # P95 latency threshold
+    p99_threshold_ms: <integer>         # P99 latency threshold
+    time_window: "<duration>"
+    
+    transitions:
+      - from: "CLOSED"
+        to: "OPEN"
+        condition: "p99 > threshold_for_duration"
+  
+  # Exception types that count as failures
+  failure_exceptions:
+    - "<ExceptionType1>"               # e.g., "ModelTimeoutError"
+    - "<ExceptionType2>"               # e.g., "SafetyViolationError"
+    - "<ExceptionType3>"               # e.g., "ToolInvocationError"
+  
+  # HTTP status codes that count as failures (for API-based agents)
+  failure_status_codes:
+    - 500
+    - 502
+    - 503
+    - 504
+    - 429  # Rate limited
+
+# --- MI9 Escalation Mapping ---
+mi9_escalation:
+  # Map circuit breaker states to MI9 containment levels
+  state_to_mi9:
+    CLOSED: "L0"                        # Normal operation
+    HALF_OPEN: "L1"                     # Reduced capacity (THROTTLE)
+    OPEN: "L2"                          # Suspended (PAUSE)
+  
+  # Automatic escalation to kill switch
+  kill_switch_escalation:
+    enabled: <true | false>
+    
+    # Escalate to FULL STOP if OPEN for too long
+    open_duration_threshold: "<duration>"  # e.g., "30m"
+    escalation_action: "FULL_STOP"
+    
+    # Or escalate on specific failure patterns
+    critical_failures:
+      - type: "<safety_violation>"
+        immediate_escalation: true
+        action: "FULL_STOP"
+      
+      - type: "<security_breach>"
+        immediate_escalation: true
+        action: "FULL_STOP"
+
+# --- Recovery Configuration ---
+recovery:
+  # Automatic recovery attempt
+  auto_recovery:
+    enabled: <true | false>
+    
+    # Time before attempting HALF_OPEN
+    open_duration: "<duration>"         # e.g., "5m", "10m"
+    
+    # Exponential backoff settings
+    backoff:
+      initial_duration: "<duration>"    # e.g., "30s"
+      max_duration: "<duration>"        # e.g., "10m"
+      multiplier: <float>               # e.g., 2.0
+      
+  # Manual recovery option
+  manual_recovery:
+    enabled: <true | false>
+    authorized_roles:
+      - "<role_1>"                     # e.g., "platform_engineer"
+      - "<role_2>"                     # e.g., "on_call_engineer"
+
+# --- Notification Configuration ---
+notifications:
+  on_open:
+    channels:
+      - type: "slack"
+        target: "<#channel>"
+        message_template: "Circuit breaker OPEN for {target}"
+      
+      - type: "pagerduty"
+        severity: "<critical | warning>"
+        service_key: "<service_key>"
+      
+      - type: "webhook"
+        url: "<webhook_url>"
+        payload_template: "<json_template>"
+  
+  on_half_open:
+    channels:
+      - type: "slack"
+        target: "<#channel>"
+        message_template: "Circuit breaker testing recovery for {target}"
+  
+  on_close:
+    channels:
+      - type: "slack"
+        target: "<#channel>"
+        message_template: "Circuit breaker CLOSED for {target} - recovery successful"
+
+# --- Metrics and Observability ---
+metrics:
+  # OpenTelemetry metrics to emit
+  enabled: <true | false>
+  
+  metric_names:
+    state_changes: "circuit_breaker.state_changes"
+    failure_rate: "circuit_breaker.failure_rate"
+    latency: "circuit_breaker.latency"
+    requests_blocked: "circuit_breaker.requests_blocked"
+    requests_allowed: "circuit_breaker.requests_allowed"
+  
+  # Labels to attach
+  labels:
+    - "circuit_breaker_id"
+    - "target"
+    - "state"
+    - "mi9_level"
+
+# --- Integration with Kill Switch ---
+kill_switch_integration:
+  # Reference to kill switch specification
+  kill_switch_ref: "<path/to/kill-switch-spec.md>"
+  
+  # Circuit breaker can trigger kill switch levels
+  trigger_mapping:
+    THROTTLE:
+      condition: "error_rate > warning_threshold"
+      kill_switch_level: "THROTTLE"
+    
+    PAUSE:
+      condition: "state == OPEN"
+      kill_switch_level: "PAUSE"
+    
+    FULL_STOP:
+      condition: "open_duration > max_duration OR critical_failure"
+      kill_switch_level: "FULL_STOP"
+
+# --- Bulkhead Pattern ---
+bulkhead:
+  # Isolate this circuit breaker from others
+  isolated: <true | false>
+  
+  # Resource limits
+  max_concurrent_calls: <integer>
+  max_wait_queue_size: <integer>
+  
+  # Timeout for queued requests
+  queue_wait_timeout_ms: <integer>
+
+# --- Metadata ---
+metadata:
+  created_by: "<author>"
+  created_at: "<YYYY-MM-DD>"
+  last_modified: "<YYYY-MM-DD>"
+  review_date: "<YYYY-MM-DD>"
+  
+# ===========================================================================
+# EXAMPLE: High-Risk Payment Agent Circuit Breaker
+# ===========================================================================
+# circuit_breaker_id: "cb:payments-agent-prod:v1.0.0"
+# name: "Payments Agent Circuit Breaker"
+# target: "agent:payments-agent-prod-01"
+# target_type: "agent"
+# version: "1.0.0"
+# 
+# failure_detection:
+#   error_rate:
+#     threshold_percentage: 0.10
+#     time_window: "5m"
+#     minimum_requests: 20
+#   
+#   latency:
+#     p95_threshold_ms: 2000
+#     p99_threshold_ms: 5000
+#     time_window: "5m"
+#   
+#   failure_exceptions:
+#     - "PaymentProcessingError"
+#     - "FraudDetectionTimeout"
+#     - "InsufficientFundsError"
+# 
+# mi9_escalation:
+#   kill_switch_escalation:
+#     enabled: true
+#     open_duration_threshold: "30m"
+#     critical_failures:
+#       - type: "safety_violation"
+#         immediate_escalation: true
+# 
+# recovery:
+#   auto_recovery:
+#     enabled: true
+#     open_duration: "10m"
+#     backoff:
+#       initial_duration: "30s"
+#       max_duration: "10m"
+#       multiplier: 2.0
+# ===========================================================================

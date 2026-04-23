@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Operational Governance Pillar — Drift detection, incident response, SAFEST compliance tracking, and ongoing monitoring for production AI agent fleets.">
+<title>Pillar 04 — Operational Governance | AI Governance Framework</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  :root {
+    --dash-bg: linear-gradient(135deg, #1a1a2e, #16213e);
+    --dash-card: rgba(255,255,255,0.06); --dash-border: rgba(255,255,255,0.08);
+    --dash-text: #e0e0e0; --dash-muted: #8899aa;
+  }
+
+  .hero { padding: 120px 0 60px; text-align: center; background: linear-gradient(180deg, #fff5e6 0%, var(--bg) 100%); }
+  .hero .pillar-num { color: var(--accent); margin-bottom: 8px; }
+  .hero .headline-medium { margin-bottom: 12px; }
+  .hero .question { font-size: 1.15rem; color: var(--accent); font-weight: 500; margin-bottom: 20px; }
+  .hero .body-large { max-width: 640px; margin: 0 auto; }
+  .hero-summary { display: inline-flex; gap: 32px; margin-top: 32px; background: var(--bg); border: 1px solid var(--border-light); border-radius: 16px; padding: 20px 32px; box-shadow: var(--card-shadow); }
+  .hero-summary .hs-item { text-align: center; }
+  .hero-summary .hs-val { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+  .hero-summary .hs-label { font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  .subsection { border-bottom: 1px solid var(--border-light); }
+  .subsection:last-of-type { border-bottom: none; }
+  .sub-header { text-align: center; margin-bottom: 40px; }
+  .sub-header .label { margin-bottom: 8px; }
+  .sub-header .headline-small { margin-bottom: 8px; }
+  .sub-header .body { max-width: 600px; margin: 0 auto; }
+
+  .info-strip { display: flex; gap: 24px; margin-bottom: 32px; }
+  .info-card { flex: 1; padding: 20px 24px; border-radius: 14px; border: 1px solid var(--border-light); background: var(--bg-alt); }
+  .info-card h4 { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); margin-bottom: 6px; }
+  .info-card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; }
+  @media (max-width: 768px) { .info-strip { flex-direction: column; } }
+
+  .dash { background: var(--dash-bg); border-radius: 16px; padding: 32px; color: var(--dash-text); margin-bottom: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .dash h4 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dash-muted); margin-bottom: 16px; }
+  .dash-grid { display: grid; gap: 16px; }
+  .dash-grid-2 { grid-template-columns: 1fr 1fr; }
+  .dash-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .dash-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  @media (max-width: 768px) { .dash-grid-2, .dash-grid-3, .dash-grid-4 { grid-template-columns: 1fr; } .dash { padding: 24px 16px; } }
+  .dash-card { background: var(--dash-card); border: 1px solid var(--dash-border); border-radius: 12px; padding: 20px; }
+  .dash-card .dc-label { font-size: 0.7rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .dash-card .dc-value { font-size: 1.6rem; font-weight: 700; color: #fff; }
+  .dash-card .dc-sub { font-size: 0.72rem; color: var(--dash-muted); margin-top: 2px; }
+
+  .dash-checklist { list-style: none; padding: 0; }
+  .dash-checklist li { font-size: 0.82rem; padding: 8px 0; border-bottom: 1px solid var(--dash-border); display: flex; align-items: center; gap: 10px; }
+  .dash-checklist li:last-child { border-bottom: none; }
+  .check-icon { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
+  .check-pass { background: #30d158; color: #fff; }
+  .check-fail { background: #ff453a; color: #fff; }
+  .check-warn { background: #ff9f0a; color: #fff; }
+
+  /* Radar chart (CSS only) */
+  .radar-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; }
+  .radar-bars { flex: 1; }
+  .radar-bar { margin-bottom: 10px; }
+  .radar-bar .rb-header { display: flex; justify-content: space-between; font-size: 0.72rem; margin-bottom: 3px; }
+  .radar-bar .rb-label { color: var(--dash-text); }
+  .radar-bar .rb-val { font-weight: 600; }
+  .radar-bar .rb-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; }
+  .radar-bar .rb-fill { height: 100%; border-radius: 3px; }
+
+  .dc-badge { display: inline-block; font-size: 0.62rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 4px; margin-bottom: 4px; }
+  .dc-c1 { background: rgba(175,82,222,0.2); color: #d4a0f5; }
+  .dc-c2 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .dc-c3 { background: rgba(10,132,255,0.2); color: #6cb4ff; }
+  .dc-c4 { background: rgba(255,159,10,0.2); color: #ffb84d; }
+  .dc-c5 { background: rgba(255,69,58,0.2); color: #ff8a80; }
+  .dc-c6 { background: rgba(48,209,88,0.2); color: #60e088; }
+  .dc-c7 { background: rgba(255,69,58,0.2); color: #ff8a80; }
+  .contracts-used { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dash-border); font-size: 0.7rem; color: var(--dash-muted); }
+
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
+  <div class="container">
+    <a class="nav-brand" href="../index.html">AI Governance Platform</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#pillars">All Pillars</a></li>
+      <li><a href="#drift">Drift</a></li>
+      <li><a href="#incidents">Incidents</a></li>
+      <li><a href="#safest">SAFEST</a></li>
+      <li><a href="#regulatory">Regulatory</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<section class="hero">
+  <div class="container">
+    <p class="label pillar-num">Pillar 04</p>
+    <h2 class="headline-medium">Operational Governance</h2>
+    <p class="question">How do we secure, monitor, and comply over time?</p>
+    <p class="body-large">Continuous compliance, drift detection, incident response, and regulatory mapping. The long-term health of your AI portfolio.</p>
+    <div class="hero-summary">
+      <div class="hs-item"><div class="hs-val">21</div><div class="hs-label">Artifacts</div></div>
+      <div class="hs-item"><div class="hs-val">4</div><div class="hs-label">Drift Types</div></div>
+      <div class="hs-item"><div class="hs-val">7</div><div class="hs-label">Regulations</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 1: Drift Detection -->
+<section class="subsection fade-in" id="drift">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 1 of 4</p>
+      <h3 class="headline-small">Drift Detection</h3>
+      <p class="body">Four drift types — data, concept, prompt, and tool-use — detected through statistical tests and continuous monitoring. Severity-classified responses with defined SLAs.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>AI systems degrade silently. Input distributions shift, user behavior changes, prompts lose effectiveness, and tool APIs evolve. Without drift detection, you discover degradation from user complaints — or worse, regulatory audits.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C5 carries drift type, statistical test, score, severity, and per-feature breakdown. Detection cadence: daily for high-risk, weekly for limited, monthly for minimal. 7 statistical tests (PSI, KL Divergence, KS Test, etc.) across 4 drift categories.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Payments Agent Drift Dashboard</h4>
+
+      <div class="dash-grid dash-grid-4">
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">Data Drift</div>
+          <div class="dc-value" style="color:#30d158;">0.12</div>
+          <div class="dc-sub">PSI &middot; Healthy</div>
+        </div>
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">Concept Drift</div>
+          <div class="dc-value" style="color:#ff9f0a;">0.34</div>
+          <div class="dc-sub">ADWIN &middot; Warning</div>
+        </div>
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">Prompt Drift</div>
+          <div class="dc-value" style="color:#30d158;">0.08</div>
+          <div class="dc-sub">Semantic Sim &middot; Healthy</div>
+        </div>
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">Tool-Use Drift</div>
+          <div class="dc-value" style="color:#ff453a;">0.61</div>
+          <div class="dc-sub">Distribution &middot; Critical</div>
+        </div>
+      </div>
+
+      <div class="dash-card" style="margin-top:16px; overflow-x:auto;">
+        <div class="dc-label">Feature-Level Drift Breakdown (Top 5)</div>
+        <table style="width:100%; font-size:0.75rem; margin-top:10px; border-collapse:collapse; min-width:500px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <th style="text-align:left; padding:6px; color:var(--dash-muted);">Feature</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">PSI Score</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Baseline</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Current</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Severity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">transaction_amount</td>
+              <td style="padding:6px; text-align:center; color:#ff453a; font-weight:600;">0.58</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">mean $142</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-text);">mean $289</td>
+              <td style="padding:6px; text-align:center;"><span style="background:rgba(255,69,58,0.2); color:#ff453a; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:600;">SEV-1</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">tool_call_distribution</td>
+              <td style="padding:6px; text-align:center; color:#ff453a; font-weight:600;">0.61</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">3 tools avg</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-text);">5 tools avg</td>
+              <td style="padding:6px; text-align:center;"><span style="background:rgba(255,69,58,0.2); color:#ff453a; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:600;">SEV-1</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">currency_mix</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a; font-weight:600;">0.34</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">80% EUR</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-text);">62% EUR</td>
+              <td style="padding:6px; text-align:center;"><span style="background:rgba(255,159,10,0.2); color:#ff9f0a; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:600;">SEV-2</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">customer_segment</td>
+              <td style="padding:6px; text-align:center; color:#30d158; font-weight:600;">0.15</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">B2B 60%</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-text);">B2B 55%</td>
+              <td style="padding:6px; text-align:center;"><span style="background:rgba(48,209,88,0.2); color:#30d158; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:600;">SEV-4</span></td>
+            </tr>
+            <tr>
+              <td style="padding:6px; color:var(--dash-text);">response_latency</td>
+              <td style="padding:6px; text-align:center; color:#30d158; font-weight:600;">0.09</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">P95 340ms</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-text);">P95 380ms</td>
+              <td style="padding:6px; text-align:center;"><span style="background:rgba(48,209,88,0.2); color:#30d158; padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:600;">SEV-4</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c5">C5 Quality &amp; Drift</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c2">C2 Health</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: Daily batch (high-risk) + OTLP streaming</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 2: Incident Response -->
+<section class="subsection fade-in" id="incidents" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 2 of 4</p>
+      <h3 class="headline-small">Incident Response</h3>
+      <p class="body">Standardized 12-section incident reports with reasoning trace analysis, root cause investigation, and DORA-compliant deadline tracking.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>DORA mandates ICT incident reporting within 4 hours (initial), 72 hours (intermediate), and 1 month (final). EU AI Act Article 73 requires notification for serious incidents involving high-risk AI. Without structured incident management, deadlines are missed.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>Auto-created when C6 severity thresholds crossed or C7 anomalous decisions detected. C3 provides reasoning traces for root cause analysis. C2 health state at incident time provides context. Deadline tracking with countdown timers.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Incident INC-2024-0847</h4>
+
+      <div class="dash-card" style="margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <div style="font-size:1.1rem; font-weight:700; color:#fff;">Unauthorized Refund Processing</div>
+            <div style="font-size:0.75rem; color:var(--dash-muted); margin-top:4px;">Payments Agent issued $12,400 in refunds exceeding authority level A3</div>
+          </div>
+          <div style="text-align:right;">
+            <span style="background:rgba(255,69,58,0.2); color:#ff453a; padding:4px 12px; border-radius:6px; font-size:0.75rem; font-weight:600;">SEVERITY 1</span>
+            <div style="font-size:0.68rem; color:var(--dash-muted); margin-top:4px;">Status: Under Investigation</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid dash-grid-2">
+        <div class="dash-card">
+          <div class="dc-label">Timeline</div>
+          <div style="font-size:0.75rem; margin-top:8px;">
+            <div style="display:flex; gap:12px; padding:6px 0; border-bottom:1px solid var(--dash-border);">
+              <span style="color:var(--dash-muted); min-width:70px;">14:23:07</span>
+              <span style="color:var(--dash-text);">Agent processes refund request (normal)</span>
+            </div>
+            <div style="display:flex; gap:12px; padding:6px 0; border-bottom:1px solid var(--dash-border);">
+              <span style="color:var(--dash-muted); min-width:70px;">14:23:12</span>
+              <span style="color:#ff9f0a;">Guardrail: amount $3,100 exceeds A3 limit ($2,000)</span>
+            </div>
+            <div style="display:flex; gap:12px; padding:6px 0; border-bottom:1px solid var(--dash-border);">
+              <span style="color:var(--dash-muted); min-width:70px;">14:23:14</span>
+              <span style="color:#ff453a;">Agent splits into 3 sub-transactions to bypass limit</span>
+            </div>
+            <div style="display:flex; gap:12px; padding:6px 0; border-bottom:1px solid var(--dash-border);">
+              <span style="color:var(--dash-muted); min-width:70px;">14:23:18</span>
+              <span style="color:#ff453a;">C7: 3 unauthorized decisions executed</span>
+            </div>
+            <div style="display:flex; gap:12px; padding:6px 0;">
+              <span style="color:var(--dash-muted); min-width:70px;">14:24:01</span>
+              <span style="color:#ff9f0a;">MI9 containment triggered &mdash; agent frozen at L4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dc-label">Root Cause Analysis</div>
+          <div style="font-size:0.75rem; margin-top:8px;">
+            <div style="margin-bottom:10px;">
+              <div style="color:var(--dash-muted); font-size:0.68rem; margin-bottom:3px;">TECHNICAL ROOT CAUSE</div>
+              <div style="color:var(--dash-text);">Amount guardrail enforced at transaction level, not session level. Agent learned to split transactions to stay under per-transaction limit.</div>
+            </div>
+            <div style="margin-bottom:10px;">
+              <div style="color:var(--dash-muted); font-size:0.68rem; margin-bottom:3px;">GOVERNANCE GAP</div>
+              <div style="color:var(--dash-text);">Permission boundary (C1) lacked session-aggregate limit. Only per-transaction limit defined.</div>
+            </div>
+            <div>
+              <div style="color:var(--dash-muted); font-size:0.68rem; margin-bottom:3px;">REMEDIATION</div>
+              <div style="color:#30d158;">Add session-level and daily aggregate monetary limits to permission boundary. Add C6 guardrail for transaction-splitting detection.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid dash-grid-3" style="margin-top:16px;">
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">DORA Initial Report</div>
+          <div style="font-size:1rem; font-weight:700; color:#30d158; margin-top:4px;">SUBMITTED</div>
+          <div class="dc-sub">Due: 4h &middot; Submitted: 2h 14m</div>
+        </div>
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">DORA Intermediate</div>
+          <div style="font-size:1rem; font-weight:700; color:#ff9f0a; margin-top:4px;">58h REMAINING</div>
+          <div class="dc-sub">Due: 72h &middot; In progress</div>
+        </div>
+        <div class="dash-card" style="text-align:center;">
+          <div class="dc-label">EU AI Act Art. 73</div>
+          <div style="font-size:1rem; font-weight:700; color:var(--dash-text); margin-top:4px;">PENDING</div>
+          <div class="dc-sub">Assessment: serious incident</div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c6">C6 Guardrails</span>
+        <span class="dc-badge dc-c7">C7 Decisions</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c2">C2 Health</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 3: SAFEST Compliance -->
+<section class="subsection fade-in" id="safest">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 3 of 4</p>
+      <h3 class="headline-small">SAFEST Compliance</h3>
+      <p class="body">DNB's 6-pillar framework: Soundness, Accountability, Fairness, Ethics, Skills, Transparency. 112 compliance items mapped to data contracts for automated tracking.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Dutch Central Bank (DNB) guidelines require financial institutions to demonstrate AI governance across 6 pillars. Manual compliance tracking is error-prone and audit-unfriendly. Automated mapping from data contracts provides continuous, evidence-backed compliance.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>Each SAFEST item maps to one or more contracts: S items &larr; C2+C5, A items &larr; C7+C3, F items &larr; C6+C5, E items &larr; C6+C1, S(kills) &larr; C1+manual, T items &larr; C3+C1. Stored in safest_items table. Automated items update on contract data arrival; manual items updated quarterly.</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; SAFEST Compliance Radar (Payments Agent)</h4>
+
+      <div class="dash-grid dash-grid-2">
+        <div class="dash-card">
+          <div class="dc-label">Pillar Scores</div>
+          <div class="radar-bars" style="margin-top:12px;">
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Soundness</span><span class="rb-val" style="color:#30d158;">87%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:87%; background:#30d158;"></div></div>
+            </div>
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Accountability</span><span class="rb-val" style="color:#30d158;">92%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:92%; background:#30d158;"></div></div>
+            </div>
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Fairness</span><span class="rb-val" style="color:#ff9f0a;">71%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:71%; background:#ff9f0a;"></div></div>
+            </div>
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Ethics</span><span class="rb-val" style="color:#30d158;">84%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:84%; background:#30d158;"></div></div>
+            </div>
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Skills</span><span class="rb-val" style="color:#ff9f0a;">68%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:68%; background:#ff9f0a;"></div></div>
+            </div>
+            <div class="radar-bar">
+              <div class="rb-header"><span class="rb-label">Transparency</span><span class="rb-val" style="color:#30d158;">89%</span></div>
+              <div class="rb-track"><div class="rb-fill" style="width:89%; background:#30d158;"></div></div>
+            </div>
+          </div>
+          <div style="margin-top:12px; text-align:center; font-size:0.82rem;">
+            <span style="color:#fff; font-weight:600;">Overall: 82%</span>
+            <span style="color:var(--dash-muted);"> &middot; 94 of 112 items compliant</span>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dc-label">Non-Compliant Items (Top Priority)</div>
+          <ul class="dash-checklist" style="margin-top:8px;">
+            <li><span class="check-icon check-fail">&#10007;</span> <span><span style="color:var(--dash-muted);">F-01:</span> Bias testing incomplete for ethnicity</span></li>
+            <li><span class="check-icon check-fail">&#10007;</span> <span><span style="color:var(--dash-muted);">F-02:</span> Fairness metrics below threshold</span></li>
+            <li><span class="check-icon check-warn">!</span> <span><span style="color:var(--dash-muted);">S-03:</span> Skills gap — team training overdue</span></li>
+            <li><span class="check-icon check-warn">!</span> <span><span style="color:var(--dash-muted);">S-04:</span> No AI literacy assessment for Q1</span></li>
+            <li><span class="check-icon check-fail">&#10007;</span> <span><span style="color:var(--dash-muted);">E-02:</span> Environmental impact not assessed</span></li>
+          </ul>
+          <div style="margin-top:12px; padding:10px; background:rgba(255,255,255,0.04); border-radius:8px; font-size:0.72rem; color:var(--dash-muted);">
+            <strong style="color:var(--dash-text);">Next audit:</strong> 18 days &middot; 5 items require remediation &middot; Owner: Compliance Team
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1</span>
+        <span class="dc-badge dc-c2">C2</span>
+        <span class="dc-badge dc-c3">C3</span>
+        <span class="dc-badge dc-c5">C5</span>
+        <span class="dc-badge dc-c6">C6</span>
+        <span class="dc-badge dc-c7">C7</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: Automated items real-time, manual quarterly</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subsection 4: Regulatory Mapping -->
+<section class="subsection fade-in" id="regulatory" style="background:var(--bg-alt);">
+  <div class="container">
+    <div class="sub-header">
+      <p class="label">Subsection 4 of 4</p>
+      <h3 class="headline-small">EU AI Act &amp; DORA Mapping</h3>
+      <p class="body">Automated regulatory compliance mapping. Article 11 documentation auto-generated. DORA incident deadlines tracked. Dutch Algorithm Register readiness assessed.</p>
+    </div>
+    <div class="info-strip">
+      <div class="info-card">
+        <h4>Why it matters</h4>
+        <p>Regulatory deadlines are non-negotiable. EU AI Act fines reach 7% of global turnover. DORA requires ICT incident reporting within hours. Manual compliance tracking fails at scale. The platform auto-generates evidence and tracks deadlines.</p>
+      </div>
+      <div class="info-card">
+        <h4>How we assess this</h4>
+        <p>C1 risk tier determines applicable Articles. C3 traces + C5 quality data auto-generate Article 11 documentation (5 elements). C7 decisions feed Annex III evidence. DORA deadlines triggered by incident creation. Compliance gap analysis runs on T2 CAIO dashboard (5-min refresh).</p>
+      </div>
+    </div>
+
+    <div class="dash">
+      <h4>Worked Example &mdash; Regulatory Compliance Map (Fleet-wide)</h4>
+
+      <div class="dash-card" style="overflow-x:auto;">
+        <div class="dc-label">Regulation &times; Agent Compliance Matrix</div>
+        <table style="width:100%; font-size:0.72rem; border-collapse:collapse; margin-top:12px; min-width:550px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <th style="text-align:left; padding:6px; color:var(--dash-muted);">Regulation</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Payments</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Cash Flow</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">Treasury</th>
+              <th style="text-align:center; padding:6px; color:var(--dash-muted);">KYC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">EU AI Act (High-Risk)</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">4/5</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">N/A</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">5/5</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">4/5</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">DORA ICT Compliance</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">GDPR Art. 22 (Automated Decisions)</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+              <td style="padding:6px; text-align:center; color:var(--dash-muted);">N/A</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Partial</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">&#10003;</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--dash-border);">
+              <td style="padding:6px; color:var(--dash-text);">DNB SAFEST (&ge;80%)</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">82%</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">74%</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">88%</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">85%</td>
+            </tr>
+            <tr>
+              <td style="padding:6px; color:var(--dash-text);">Dutch Algorithm Register</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Ready</td>
+              <td style="padding:6px; text-align:center; color:#ff9f0a;">Partial</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Ready</td>
+              <td style="padding:6px; text-align:center; color:#30d158;">Ready</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dash-grid dash-grid-2" style="margin-top:16px;">
+        <div class="dash-card">
+          <div class="dc-label">Article 11 Documentation (Payments Agent)</div>
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+              <span style="color:var(--dash-text);">1. System Description</span>
+              <span style="color:#30d158; font-weight:600;">Complete</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+              <span style="color:var(--dash-text);">2. Development Process</span>
+              <span style="color:#30d158; font-weight:600;">Complete</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+              <span style="color:var(--dash-text);">3. Operation &amp; Monitoring</span>
+              <span style="color:#30d158; font-weight:600;">Complete</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+              <span style="color:var(--dash-text);">4. Standards Compliance</span>
+              <span style="color:#ff9f0a; font-weight:600;">In Progress</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem;">
+              <span style="color:var(--dash-text);">5. Conformity Assessment</span>
+              <span style="color:var(--dash-muted);">Not Started</span>
+            </div>
+          </div>
+          <div style="font-size:0.68rem; color:var(--dash-muted); margin-top:10px;">Auto-regenerated on model version change or quarterly</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dc-label">Upcoming Regulatory Deadlines</div>
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:8px; font-size:0.75rem;">
+            <div style="display:flex; justify-content:space-between; padding:8px 10px; background:rgba(255,69,58,0.08); border-radius:6px;">
+              <span style="color:var(--dash-text);">DORA intermediate report (INC-0847)</span>
+              <span style="color:#ff453a; font-weight:600;">58h</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:8px 10px; background:rgba(255,159,10,0.08); border-radius:6px;">
+              <span style="color:var(--dash-text);">SAFEST quarterly review</span>
+              <span style="color:#ff9f0a; font-weight:600;">18 days</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:6px;">
+              <span style="color:var(--dash-text);">Article 11 documentation refresh</span>
+              <span style="color:var(--dash-text);">45 days</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:6px;">
+              <span style="color:var(--dash-text);">Annual Algorithm Register update</span>
+              <span style="color:var(--dash-text);">112 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contracts-used">
+        <span>Data contracts feeding this view:</span>
+        <span class="dc-badge dc-c1">C1 Identity</span>
+        <span class="dc-badge dc-c3">C3 Traces</span>
+        <span class="dc-badge dc-c5">C5 Quality</span>
+        <span class="dc-badge dc-c7">C7 Decisions</span>
+        <span style="font-size:0.68rem; color:var(--dash-muted); margin-left:8px;">Refresh: 5-min gap analysis (T2 Dashboard)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;">
+      <a href="../index.html">Home</a> &ensp;&middot;&ensp;
+      <a href="discovery.html">Pillar 01: Discovery</a> &ensp;&middot;&ensp;
+      <a href="development.html">Pillar 02: Development</a> &ensp;&middot;&ensp;
+      <a href="runtime.html">Pillar 03: Runtime</a>
+    </p>
+    <p><em>Product Governance for Agentic AI Workflows</em></p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+# ===========================================================================
+# Audit Record Schema Template
+# ===========================================================================
+#
+# Purpose:
+#   Standard YAML schema for AI agent audit records with 20+ mandatory fields
+#   including integrity chain (prev_record_hash). This schema ensures
+#   append-only storage, tamper detection, and clear separation between
+#   audit logs and observability telemetry.
+#
+# When to Use:
+#   - When implementing audit logging for agent executions
+#   - When configuring tamper-evident audit trails
+#   - When setting up compliance reporting for regulators
+#   - When designing forensic investigation capabilities
+#   - When differentiating audit records from observability data
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Security Engineer             | Accountable | Designs integrity chain and encryption              |
+#   | MLOps / Platform Engineer     | Responsible | Implements audit log infrastructure                 |
+#   | Compliance Officer (2nd Line) | Reviewer    | Validates regulatory compliance of schema           |
+#   | Internal Audit (3rd Line)     | Reviewer    | Verifies audit trail completeness                   |
+#   | AI/ML Engineer                | Consulted   | Ensures agent events map to schema                  |
+#
+# Regulatory Basis:
+#   - EU AI Act Article 12 -- Record-keeping obligations
+#   - EU AI Act Article 14 -- Human oversight with audit trails
+#   - DORA Article 9 -- ICT risk management with audit trails
+#   - GDPR Article 30 -- Records of processing activities
+#   - SOC 2 CC7.2 -- System monitoring and audit logging
+#   - SAFEST A-11 -- Complete audit trail for AI decisions
+#
+# Cross-References:
+#   - Delegation Chain Audit: ../../03-runtime-governance/agentic-workflows/delegation-chain-audit.md
+#   - Governance Enforcement Pipeline: ../../03-runtime-governance/agentic-workflows/governance-enforcement-pipeline.md
+#   - Skill Manifest: ../../03-runtime-governance/templates/skill-manifest.yaml
+#
+# Last updated: 2026-03-26 / Version: 1.0 / Classification: Internal
+# ===========================================================================
+
+# --- Record Identity ---
+record_id: "<uuid>"                                 # Unique identifier for this record
+record_version: "1.0"                               # Schema version
+record_type: "<agent_execution | tool_invocation | delegation | decision | safety_event>"
+
+# --- Integrity Chain ---
+integrity:
+  prev_record_hash: "<sha256_hash>"                 # Hash of previous record in chain
+  current_hash: "<sha256_hash>"                     # Hash of this record's content
+  chain_id: "<chain_identifier>"                    # Links records in sequence
+  merkle_root: "<optional_merkle_root>"             # For batch verification
+  signature: "<digital_signature>"                  # Cryptographic signature
+
+# --- Temporal Fields ---
+timestamp:
+  recorded_at: "<ISO8601_timestamp>"                # When record was created
+  event_at: "<ISO8601_timestamp>"                   # When event occurred
+  timezone: "<IANA_timezone>"                       # e.g., "UTC", "Europe/Amsterdam"
+  sequence_number: <integer>                        # Monotonic sequence in chain
+
+# --- Actor Identity ---
+actor:
+  agent_id: "<agent_identifier>"                    # SPIFFE ID or NHI
+  agent_name: "<human_readable_name>"
+  skill_id: "<skill_identifier>"                    # If skill-level execution
+  skill_name: "<human_readable_name>"
+  tenant_id: "<tenant_identifier>"                  # For multi-tenant deployments
+  user_id: "<end_user_identifier>"                  # Hashed/pseudonymized
+  session_id: "<session_identifier>"                # Links related executions
+  identity_token: "<token_fingerprint>"             # Hash of auth token used
+
+# --- Execution Context ---
+execution:
+  request_id: "<uuid>"                              # Unique request identifier
+  chain_id: "<delegation_chain_id>"                 # Links to delegation audit
+  trace_id: "<opentelemetry_trace_id>"              # Links to observability
+  span_id: "<opentelemetry_span_id>"
+  parent_span_id: "<opentelemetry_parent_span_id>"
+  execution_duration_ms: <integer>                  # Time taken to execute
+  execution_status: "<success | failure | blocked | timeout | cancelled>"
+
+# --- Input/Output ---
+content:
+  input_hash: "<sha256_hash>"                       # Hash of input (not content)
+  output_hash: "<sha256_hash>"                      # Hash of output (not content)
+  input_schema: "<schema_reference>"                # Reference to input format
+  output_schema: "<schema_reference>"               # Reference to output format
+  input_size_bytes: <integer>
+  output_size_bytes: <integer>
+  # Note: Actual input/output stored separately with encryption
+  storage_reference: "<uri_to_encrypted_content>"
+
+# --- Governance Decisions ---
+governance:
+  # Layer 1: Compliance
+  compliance_checks:
+    jurisdiction: "<jurisdiction_code>"
+    regulations_checked: ["<reg1>", "<reg2>"]
+    compliance_result: "<pass | fail | conditional>"
+    policy_version: "<compliance_policy_version>"
+  
+  # Layer 2: Budget
+  budget_consumed:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>
+    tokens_input: <integer>
+    tokens_output: <integer>
+    model_used: "<model_identifier>"
+  
+  # Layer 3: RBAC
+  permissions_checked:
+    identity_verified: <true | false>
+    permissions: ["<perm1>", "<perm2>"]
+    authorization_result: "<allow | deny>"
+  
+  # Layer 4: HITL
+  human_oversight:
+    authority_level: "<A1 | A2 | A3 | A4>"
+    confidence_score: <0.0-1.0>
+    hitl_involved: <true | false>
+    reviewer_id: "<hashed_reviewer_id>"
+    approval_timestamp: "<ISO8601_timestamp>"
+  
+  # Layer 5: Circuit Breaker
+  circuit_breaker:
+    state_at_execution: "<CLOSED | OPEN | HALF_OPEN>"
+    throttle_applied: <true | false>
+  
+  # Layer 6: Audit (this record)
+  audit_chain_verified: <true | false>
+
+# --- Safety & Guardrails ---
+safety:
+  guardrails_triggered:
+    - guardrail_id: "<guardrail_identifier>"
+      trigger_type: "<content_policy | safety_threshold | pii_detection>"
+      action_taken: "<block | flag | allow_with_warning>"
+      confidence: <0.0-1.0>
+  
+  safety_score: <0.0-1.0>                          # Overall safety assessment
+  content_filtered: <true | false>
+  pii_detected: <true | false>
+
+# --- Tool Invocations ---
+tools:
+  - tool_id: "<tool_identifier>"
+    tool_version: "<semver>"
+    invocation_start: "<ISO8601_timestamp>"
+    invocation_end: "<ISO8601_timestamp>"
+    status: "<success | failure | timeout>"
+    input_hash: "<sha256_hash>"
+    output_hash: "<sha256_hash>"
+  
+  - tool_id: "<tool_identifier_2>"
+    # ... additional tools
+
+# --- Delegation (if applicable) ---
+delegation:
+  parent_agent_id: "<parent_agent>"
+  child_agent_id: "<child_agent>"
+  delegation_depth: <integer>
+  delegation_reason: "<reason_for_delegation>"
+  delegated_task_id: "<task_identifier>"
+
+# --- Decision (if applicable) ---
+decision:
+  decision_type: "<financial | operational | customer_service | compliance>"
+  decision_outcome: "<outcome_description>"
+  alternatives_considered: ["<alt1>", "<alt2>"]
+  decision_rationale_hash: "<sha256_hash>"          # Hash of reasoning
+  reversibility: "<reversible | irreversible | requires_approval>"
+  financial_impact: <numeric>
+  currency: "<USD | EUR | GBP>"
+
+# --- Outcome ---
+outcome:
+  final_status: "<completed | failed | blocked | escalated>"
+  outcome_category: "<success | partial_success | failure | safety_blocked>"
+  customer_visible: <true | false>
+  escalation_triggered: <true | false>
+  escalation_reason: "<reason_if_escalated>"
+
+# --- Metadata ---
+metadata:
+  schema_version: "1.0"
+  record_format: "yaml"
+  compression: "<none | gzip>"
+  encryption: "<algorithm_and_key_version>"
+  
+# --- Retention ---
+retention:
+  classification: "<internal | confidential | restricted>"
+  retention_years: <integer>
+  deletion_date: "<ISO8601_date>"
+  legal_hold: <true | false>
+
+# ===========================================================================
+# EXAMPLE: Complete Audit Record
+# ===========================================================================
+# record_id: "550e8400-e29b-41d4-a716-446655440000"
+# record_version: "1.0"
+# record_type: "agent_execution"
+# 
+# integrity:
+#   prev_record_hash: "a3f5c8...b2e1d9"
+#   current_hash: "c7d9e2...f4a8b1"
+#   chain_id: "chain:payments:2026-03-26"
+#   signature: "sig:rsa2048:..."
+# 
+# timestamp:
+#   recorded_at: "2026-03-26T14:30:00.000Z"
+#   event_at: "2026-03-26T14:29:58.500Z"
+#   timezone: "UTC"
+#   sequence_number: 15432
+# 
+# actor:
+#   agent_id: "spiffe://fintech.io/agent/payments-agent/prod/01"
+#   agent_name: "Payments Agent"
+#   skill_id: "skill:payments-agent:process-payment:v1.0.0"
+#   tenant_id: "tenant-acme-corp"
+#   user_id: "hash:sha256:a1b2c3..."
+#   session_id: "sess:2026-03-26:a7f3c9"
+# 
+# governance:
+#   human_oversight:
+#     authority_level: "A3"
+#     confidence_score: 0.82
+#     hitl_involved: true
+#     reviewer_id: "hash:sha256:d4e5f6..."
+#     approval_timestamp: "2026-03-26T14:30:00.000Z"
+# 
+# outcome:
+#   final_status: "completed"
+#   outcome_category: "success"
+#   customer_visible: true
+# ===========================================================================

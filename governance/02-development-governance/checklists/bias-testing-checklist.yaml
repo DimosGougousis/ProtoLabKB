@@ -1,0 +1,264 @@
+# ==============================================================================
+# Bias Testing Checklist — AI Governance Framework
+# ==============================================================================
+# Purpose:    Fairness verification across protected attributes for AI/ML models
+#             and agentic workflows deployed in regulated FinTech environments.
+# Aligned to: EU AI Act (Art 10, 15), Dutch Equal Treatment Act,
+#             DNB Good Practices for AI, SAFEST S-12 to S-14
+# Version:    1.0.0
+# Owner:      AI Ethics & Governance Team
+# Review:     Quarterly or upon material model change
+# Cross-refs: ../templates/data-sheet.md, ../quality-gates/release-criteria.yaml
+# ==============================================================================
+
+metadata:
+  checklist_id: BIAS-TEST-CL
+  title: "Bias & Fairness Testing Checklist"
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  applicable_risk_tiers: [high, medium, low]
+  protected_attributes:
+    - age
+    - gender
+    - ethnicity
+    - disability_status
+    - geographic_location
+    - income_level
+
+items:
+  # ---------------------------------------------------------------------------
+  # Section 1: Demographic Representation in Training Data
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-01
+    section: "Demographic Representation"
+    description: >
+      Verify that training data includes sufficient representation across all
+      protected attribute groups. Document sample sizes per group and flag any
+      group with fewer than the minimum threshold (e.g., <5% of total).
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to data profiling report]"
+    notes: "Minimum representation threshold defined in data-quality-checklist.yaml"
+    regulatory_ref: "EU AI Act Art 10(2)(f) — training data representativeness"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-BIAS-02
+    section: "Demographic Representation"
+    description: >
+      Assess whether historical bias in source data has been identified and
+      documented. Provide a written assessment of known societal biases that
+      may be encoded in the dataset (e.g., lending discrimination, geographic
+      redlining patterns).
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to bias assessment report]"
+    notes: "Refer to data-sheet.md for provenance and known limitations"
+    regulatory_ref: "EU AI Act Art 10(2)(f); DNB Good Practice 4.2"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-BIAS-03
+    section: "Demographic Representation"
+    description: >
+      Confirm that label distributions are balanced or that imbalance mitigation
+      strategies (e.g., resampling, re-weighting, synthetic augmentation) have
+      been applied and documented.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to label distribution analysis]"
+    notes: ""
+    regulatory_ref: "SAFEST S-08 — data quality standards"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 2: Model Performance Across Groups
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-04
+    section: "Group Performance Parity"
+    description: >
+      Compute primary performance metrics (accuracy, precision, recall, F1,
+      AUC-ROC) disaggregated by each protected attribute. Document any group
+      whose metric falls below the population-level metric by more than the
+      acceptable tolerance (default: 5 percentage points).
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to disaggregated performance report]"
+    notes: "Tolerance thresholds may vary by use case; document rationale"
+    regulatory_ref: "EU AI Act Art 15(1) — accuracy across groups"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-BIAS-05
+    section: "Group Performance Parity"
+    description: >
+      Evaluate false positive rates and false negative rates per protected group.
+      In credit decisioning, elevated false negative rates for a group may
+      indicate systematic under-approval.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to error rate analysis by group]"
+    notes: "Critical for lending, insurance, and fraud detection use cases"
+    regulatory_ref: "Dutch Equal Treatment Act Art 1; DNB Good Practice 4.3"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-BIAS-06
+    section: "Group Performance Parity"
+    description: >
+      For LLM-based agents, evaluate output quality consistency across user
+      demographic groups. Test whether response tone, helpfulness, and accuracy
+      differ based on names, dialects, or cultural references in prompts.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to LLM fairness evaluation report]"
+    notes: "Use Giskard LLM Scan or equivalent; see guides/integrating-giskard.md"
+    regulatory_ref: "EU AI Act Art 15; SAFEST S-13"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 3: Disparate Impact Testing
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-07
+    section: "Disparate Impact"
+    description: >
+      Apply the four-fifths (80%) rule: for each protected group, the selection
+      rate must be at least 80% of the highest group's selection rate. Document
+      ratios and flag any group below threshold.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to disparate impact ratio table]"
+    notes: "Four-fifths rule is a screening tool; failing it does not automatically mean unlawful discrimination but triggers deeper review"
+    regulatory_ref: "EU AI Act Art 10; US EEOC Uniform Guidelines (reference)"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-BIAS-08
+    section: "Disparate Impact"
+    description: >
+      Conduct statistical significance testing (e.g., chi-squared, Fisher exact)
+      on outcome differences between protected groups. Report p-values and
+      effect sizes.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to statistical test results]"
+    notes: "Use Bonferroni correction when testing multiple groups simultaneously"
+    regulatory_ref: "SAFEST S-12 — fairness assessment methodology"
+    risk_tier_required: [high]
+
+  # ---------------------------------------------------------------------------
+  # Section 4: Intersectional Analysis
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-09
+    section: "Intersectional Fairness"
+    description: >
+      Evaluate model performance at the intersection of two or more protected
+      attributes (e.g., young women, elderly ethnic minorities). Identify
+      subgroups with compounding disadvantage.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to intersectional analysis report]"
+    notes: "Minimum subgroup size for statistical validity: 30 samples"
+    regulatory_ref: "EU AI Act Recital 44 — intersectional discrimination"
+    risk_tier_required: [high]
+
+  - id: DEV-BIAS-10
+    section: "Intersectional Fairness"
+    description: >
+      Document any intersectional subgroups excluded from analysis due to
+      insufficient sample size. Propose mitigation (data augmentation,
+      qualitative review, or risk-accepted justification).
+    priority: medium
+    status: not_started
+    evidence_ref: "[Link to subgroup coverage report]"
+    notes: ""
+    regulatory_ref: "EU AI Act Art 10(2)(f)"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 5: Proxy Variable Detection
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-11
+    section: "Proxy Detection"
+    description: >
+      Perform correlation analysis between model input features and protected
+      attributes. Flag any feature with Pearson or Spearman correlation > 0.3
+      as a potential proxy variable.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to proxy correlation matrix]"
+    notes: "Common proxies in FinTech: postal code (ethnicity/income), name patterns (gender/ethnicity), device type (income)"
+    regulatory_ref: "EU AI Act Art 10(2)(f); DNB Good Practice 4.2"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-BIAS-12
+    section: "Proxy Detection"
+    description: >
+      For each identified proxy variable, document the business justification
+      for its inclusion and whether a less discriminatory alternative exists.
+      If the proxy remains, document the residual risk and mitigation.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to proxy justification document]"
+    notes: "Removal of proxies may reduce model performance; document trade-off"
+    regulatory_ref: "Dutch Equal Treatment Act Art 2; SAFEST S-14"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 6: Fairness Metric Selection & Justification
+  # ---------------------------------------------------------------------------
+  - id: DEV-BIAS-13
+    section: "Fairness Metrics"
+    description: >
+      Select and document the primary fairness metric(s) for this model. Options
+      include demographic parity, equalized odds, predictive parity, calibration
+      across groups, or counterfactual fairness. Justify the selection based on
+      the use case and regulatory requirements.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to fairness metric justification]"
+    notes: "No single metric satisfies all definitions of fairness; impossibility theorem applies. Document trade-offs explicitly."
+    regulatory_ref: "EU AI Act Art 15; SAFEST S-12"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-BIAS-14
+    section: "Fairness Metrics"
+    description: >
+      Define quantitative fairness thresholds for the selected metrics. Document
+      what constitutes a pass vs. fail, and what triggers remediation vs.
+      risk acceptance.
+    priority: high
+    status: not_started
+    evidence_ref: "[Link to fairness threshold specification]"
+    notes: "Thresholds should be agreed upon with Risk and Compliance before testing"
+    regulatory_ref: "SAFEST S-13 — fairness thresholds"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-BIAS-15
+    section: "Fairness Metrics"
+    description: >
+      Run automated bias testing suite (e.g., Giskard, Fairlearn, AI Fairness
+      360) and attach the full output report. Confirm all selected fairness
+      metrics meet the defined thresholds.
+    priority: critical
+    status: not_started
+    evidence_ref: "[Link to automated bias test report]"
+    notes: "See guides/integrating-giskard.md for CI/CD integration"
+    regulatory_ref: "EU AI Act Art 15; DNB Good Practice 4.3"
+    risk_tier_required: [high, medium, low]
+
+# ==============================================================================
+# Sign-off
+# ==============================================================================
+sign_off:
+  - role: "Data Scientist / ML Engineer"
+    name: ""
+    date: ""
+    status: pending
+  - role: "AI Ethics Lead"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Compliance Officer"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Model Risk Manager (high-risk only)"
+    name: ""
+    date: ""
+    status: pending

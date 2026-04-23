@@ -1,0 +1,320 @@
+# ===========================================================================
+# Skill Manifest Template
+# ===========================================================================
+#
+# Purpose:
+#   Standard YAML template for defining a skill within an AI agent system.
+#   The skill manifest declares per-skill metadata including permissions,
+#   budget constraints, model routing preferences, HITL configuration, and
+#   circuit breaker settings. This enables granular governance at the skill
+#   level rather than just the agent level.
+#
+# When to Use:
+#   - When defining a new skill for an agent
+#   - When registering skill-level permissions in the governance pipeline
+#   - When configuring per-skill budget caps and model routing
+#   - When auditing skill-level governance compliance
+#   - When implementing fine-grained RBAC for agent capabilities
+#
+# Who Is Responsible:
+#   | Role                          | R/A/C/I     | Responsibility                                      |
+#   |-------------------------------|-------------|-----------------------------------------------------|
+#   | Skill Owner                   | Accountable | Defines skill purpose, permissions, and constraints  |
+#   | AI/ML Engineer                | Responsible | Implements skill logic and registers manifest        |
+#   | Security Engineer             | Responsible | Reviews permission_matrix and approves scopes        |
+#   | MLOps / Platform Engineer     | Responsible | Configures pipeline enforcement for skill            |
+#   | Compliance Officer (2nd Line) | Reviewer    | Validates regulatory alignment                       |
+#   | Model Owner                   | Consulted   | Ensures skill fits within agent governance profile   |
+#
+# Regulatory Basis:
+#   - EU AI Act Article 12 -- Record-keeping for high-risk AI systems
+#   - EU AI Act Article 14 -- Human oversight proportionate to risk
+#   - DORA Article 9 -- ICT risk management including access controls
+#   - SAFEST S-08 -- Access controls and permission boundaries
+#   - SAFEST A-06 -- Human-in-the-loop controls
+#
+# Cross-References:
+#   - Governance Enforcement Pipeline: ../agentic-workflows/governance-enforcement-pipeline.md
+#   - Agent Registry Entry: agent-registry-entry.yaml
+#   - Agent Permission Boundaries: ../agentic-workflows/agent-permission-boundaries.md
+#   - Budget Cap Config: budget-cap-config.yaml
+#   - Circuit Breaker Config: circuit-breaker-config.yaml
+#
+# Last updated: 2026-03-26 / Version: 1.0 / Classification: Internal
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# TEMPLATE: Replace all placeholder values (in angle brackets) with actuals
+# ---------------------------------------------------------------------------
+
+# --- Identity ---
+skill_id: "<skill:[agent-name]:[skill-name]:v[version]>"  # Globally unique
+skill_name: "<Human-readable Skill Name>"                 # Display name
+skill_version: "<semver, e.g., 1.0.0>"                   # Skill version
+parent_agent_id: "<agent:[name]-[env]-[instance]>"       # Link to parent agent
+
+# --- Purpose & Scope ---
+description: "<Clear description of what this skill does>"
+purpose: "<Business purpose aligned with C1 data contract>"
+
+# --- Risk Classification ---
+risk_tier: "<high | limited | minimal>"
+  # high     -- Financial decisions, customer data access, irreversible actions
+  # limited  -- Advisory outputs, internal data, reversible actions
+  # minimal  -- Public data, informational only, no decisions
+
+# --- Permission Matrix (Per-Skill RBAC) ---
+permission_matrix:
+  # Define what this skill is allowed to do
+  allowed_actions:
+    - action: "<action_name>"                           # e.g., "read_customer_data"
+      resource_type: "<resource_type>"                  # e.g., "customer_record"
+      scope: "<scope_definition>"                       # e.g., "own_tenant_only"
+      conditions:                                       # Optional conditions
+        - "<condition_1>"                               # e.g., "customer_consent_obtained"
+        - "<condition_2>"
+    
+    - action: "<action_name_2>"
+      resource_type: "<resource_type_2>"
+      scope: "<scope_definition_2>"
+  
+  # Explicitly denied actions (defense in depth)
+  denied_actions:
+    - action: "<sensitive_action>"
+      reason: "<Why this action is denied to this skill>"
+    
+    - action: "<another_denied_action>"
+      reason: "<Security or compliance rationale>"
+  
+  # Delegation permissions (if this skill can delegate to other agents/skills)
+  delegation:
+    can_delegate: <true | false>
+    max_delegation_depth: <integer>                      # Prevent infinite loops
+    allowed_delegates:                                   # Whitelist if restricted
+      - "<skill_id_1>"
+      - "<skill_id_2>"
+    forbidden_delegates:                                 # Blacklist
+      - "<skill_id_3>"
+
+# --- Budget Configuration ---
+budget_config:
+  # Skill-level budget caps (fit within parent agent's budget)
+  skill_cap:
+    currency: "<USD | EUR | GBP>"
+    amount: <numeric>                                   # Monthly cap
+    alert_threshold: <0.0-1.0>                         # Alert at % of cap
+  
+  # Per-run limits
+  run_cap:
+    max_tokens: <integer>                              # Max tokens per execution
+    max_cost: <numeric>                                # Max cost per execution
+    timeout_seconds: <integer>                         # Execution timeout
+  
+  # Model routing by complexity/cost
+  model_routing:
+    default_model: "<model_id>"                        # Default model for this skill
+    
+    routing_rules:
+      - condition: "<complexity_score > 0.8>"
+        model: "<high_capability_model>"
+        max_cost: <numeric>
+      
+      - condition: "<complexity_score < 0.3>"
+        model: "<efficient_model>"
+        max_cost: <numeric>
+      
+      - condition: "<safety_critical == true>"
+        model: "<most_capable_model>"
+        hitl_required: true
+
+# --- Human-in-the-Loop Configuration ---
+hitl_config:
+  # Authority level for this skill
+  authority_level: "<A1 | A2 | A3 | A4>"
+    # A1 -- Full Autonomy: Skill executes without human involvement
+    # A2 -- Notify and Execute: Skill executes, notifies human after
+    # A3 -- Decide and Confirm: Skill decides, requires human confirmation
+    # A4 -- Recommend Only: Skill analyzes, human makes final decision
+  
+  # Confidence scoring thresholds
+  confidence_thresholds:
+    critical: <0.0-1.0>                                # A4 routing
+    high: <0.0-1.0>                                    # A3 routing
+    medium: <0.0-1.0>                                  # A2 routing
+    low: <0.0-1.0>                                     # A1 routing
+  
+  # HITL trigger conditions beyond confidence
+  hitl_triggers:
+    - condition: "<financial_impact > threshold>"
+      threshold: <numeric>
+    
+    - condition: "<customer_impact == high>"
+    
+    - condition: "<regulatory_sensitivity == true>"
+    
+    - condition: "<novel_scenario == true>"
+  
+  # Human reviewer requirements
+  reviewer_requirements:
+    min_seniority: "<junior | senior | expert>"
+    domain_expertise: ["<domain_1>", "<domain_2>"]
+    response_sla_minutes: <integer>
+
+# --- Circuit Breaker Configuration ---
+circuit_breaker_config:
+  # Error rate thresholds
+  error_thresholds:
+    warning: <0.0-1.0>                                 # Log warning
+    throttle: <0.0-1.0>                                # Reduce capacity (MI9-L1)
+    pause: <0.0-1.0>                                   # Stop new executions (MI9-L2)
+    stop: <0.0-1.0>                                    # Full stop (MI9-L3/L4)
+  
+  # Time windows for error rate calculation
+  time_windows:
+    short: "<duration>"                                # e.g., "1m"
+    medium: "<duration>"                               # e.g., "5m"
+    long: "<duration>"                                 # e.g., "15m"
+  
+  # Recovery conditions
+  recovery:
+    auto_recovery: <true | false>
+    recovery_delay_seconds: <integer>
+    test_requests_before_full_open: <integer>
+  
+  # Loop detection
+  loop_detection:
+    enabled: <true | false>
+    max_iterations: <integer>
+    detection_window_seconds: <integer>
+
+# --- Safety & Guardrails ---
+safety_config:
+  # Content safety filters
+  content_filters:
+    - type: "<PII_detection>"
+      action: "<block | mask | log>"
+    
+    - type: "<toxicity_detection>"
+      threshold: <0.0-1.0>
+      action: "<block | flag>"
+    
+    - type: "<jailbreak_detection>"
+      action: "<block | log>"
+  
+  # Output validation
+  output_validation:
+    schema_validation: <true | false>
+    format_check: "<json | xml | csv | custom>"
+    max_output_size_bytes: <integer>
+
+# --- Audit & Observability ---
+audit_config:
+  # What to log
+  log_level: "<minimal | standard | verbose>"
+  
+  # Fields to include in audit records
+  audit_fields:
+    - "timestamp"
+    - "skill_id"
+    - "parent_agent_id"
+    - "input_hash"
+    - "output_hash"
+    - "confidence_score"
+    - "decision_authority"
+    - "budget_consumed"
+    - "model_used"
+    - "execution_duration_ms"
+    - "tools_invoked"
+    - "hitl_involved"
+    - "outcome"
+  
+  # Retention policy
+  retention_days: <integer>
+  
+  # Integrity
+  integrity_chain: <true | false>                      # Link to previous record
+
+# --- Dependencies ---
+dependencies:
+  # External services this skill requires
+  services:
+    - name: "<service_name>"
+      endpoint: "<service_endpoint>"
+      required: <true | false>
+      timeout_seconds: <integer>
+      retry_policy:
+        max_retries: <integer>
+        backoff_strategy: "<linear | exponential>"
+  
+  # Data sources
+  data_sources:
+    - name: "<data_source_name>"
+      type: "<database | api | file | cache>"
+      access_mode: "<read | write | read_write>"
+
+# --- Metadata ---
+metadata:
+  created_by: "<author>"
+  created_at: "<YYYY-MM-DD>"
+  last_modified: "<YYYY-MM-DD>"
+  review_date: "<YYYY-MM-DD>"
+  approval_status: "<draft | pending_review | approved | deprecated>"
+  
+# --- Compliance Tags ---
+compliance:
+  eu_ai_act:
+    applicable: <true | false>
+    risk_class: "<minimal | limited | high | unacceptable>"
+    article_refs: ["<Article_X>", "<Article_Y>"]
+  
+  dora:
+    applicable: <true | false>
+    ict_risk_category: "<category>"
+  
+  gdpr:
+    applicable: <true | false>
+    data_subject_rights: ["<right_1>", "<right_2>"]
+    lawful_basis: "<basis>"
+  
+  custom_policies:
+    - policy_id: "<policy_ref>"
+      compliance_status: "<compliant | non_compliant | pending>"
+
+# ===========================================================================
+# EXAMPLE: Payment Processing Skill
+# ===========================================================================
+# skill_id: "skill:payments-agent:process-payment:v1.0.0"
+# skill_name: "Process Payment"
+# skill_version: "1.0.0"
+# parent_agent_id: "agent:payments-agent-prod-01"
+# description: "Processes customer payments with fraud detection"
+# purpose: "Execute payment transactions securely"
+# risk_tier: "high"
+# permission_matrix:
+#   allowed_actions:
+#     - action: "initiate_payment"
+#       resource_type: "payment_transaction"
+#       scope: "own_tenant_only"
+#       conditions:
+#         - "customer_authenticated"
+#         - "sufficient_funds_verified"
+#   denied_actions:
+#     - action: "modify_payment_rails"
+#       reason: "Infrastructure changes require human approval"
+# budget_config:
+#   skill_cap:
+#     currency: "EUR"
+#     amount: 50000
+#     alert_threshold: 0.8
+#   run_cap:
+#     max_tokens: 4000
+#     max_cost: 0.50
+#     timeout_seconds: 30
+# hitl_config:
+#   authority_level: "A3"
+#   confidence_thresholds:
+#     critical: 0.99
+#     high: 0.95
+#     medium: 0.85
+#     low: 0.75
+# ===========================================================================

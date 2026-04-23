@@ -1,0 +1,287 @@
+ # ProtoLab Multi-Agent System — Use Case Catalogue
+## For Technical Product Managers: Business Idea Evaluation & Breakdown
+
+---
+
+## Executive Summary
+
+The ProtoLab Product Office is a **multi-agent system** that enables Technical Product Managers to decompose new business ideas through the lens of manufacturing feasibility, strategic positioning, and compliance requirements. The system uses **10 specialist agents** that can be invoked individually or in combination to analyze product concepts from multiple dimensions.
+
+---
+
+## Agent Catalogue & Use Cases
+
+### 1. 🎯 Strategic Analysis Agent
+**Agent ID:** `trends-strategy`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-1.1: Market Entry Strategy** | Evaluate entering a new manufacturing market using MIT Sloan frameworks | Strategic recommendation using Delta Model, Platform Leadership, Dynamic Capabilities |
+| **UC-1.2: Competitive Positioning** | Analyze how to bond with customers in a competitive manufacturing landscape | Customer-centric positioning strategy (Best Product, Total Solutions, or System Lock-in) |
+| **UC-1.3: Technology Adoption** | Assess when to adopt new manufacturing technologies (AI, Industry 4.0, additive) | Sensing/Seizing/Transforming capability roadmap |
+| **UC-1.4: Ecosystem Strategy** | Design platform strategy for manufacturing services ecosystem | Platform leadership recommendations (scope, technology, relationships, organization) |
+| **UC-1.5: Innovation Portfolio** | Prioritize innovation initiatives using transient advantage framework | Prioritized initiatives with timeline and resource requirements |
+| **UC-1.6: Regulatory Trend Monitoring** | Track emerging compliance requirements affecting product strategy | Regulatory trend report with risk assessment |
+
+**MIT Sloan Frameworks Available:**
+- **Delta Model**: Customer bonding strategies
+- **Dynamic Capabilities**: Sensing, seizing, transforming
+- **Platform Leadership**: Ecosystem orchestration
+- **Transient Advantage**: Continuous innovation
+- **Simple Rules**: Strategic heuristics
+
+---
+
+### 2. 🔧 Process Feasibility Agents
+
+#### 2.1 CNC Machining Agent
+**Agent ID:** `cnc-machining`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-2.1: Complex Feature Evaluation** | Assess manufacturability of complex machined features | DFM score with critical issues, warnings, recommendations |
+| **UC-2.2: Tolerance Analysis** | Evaluate tolerance requirements against CNC capabilities | Tolerance feasibility report with cost implications |
+| **UC-2.3: Threading Feasibility** | Check threaded features for manufacturability | Thread specification validation |
+| **UC-2.4: Prototype-to-Production** | Plan CNC path from prototype to production volumes | Process roadmap with scaling considerations |
+| **UC-2.5: ITAR/EAR Compliance** | Evaluate export control requirements for machined defense parts | Compliance checklist and risk assessment |
+
+#### 2.2 Injection Molding Agent
+**Agent ID:** `injection-molding`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-2.6: Moldability Review** | Evaluate part design for injection molding feasibility | Moldability score with wall thickness, draft angle, undercut analysis |
+| **UC-2.7: Material Selection** | Recommend thermoplastic materials for application | Material comparison with properties and cost |
+| **UC-2.8: Cosmetic Requirements** | Assess cosmetic appearance requirements | Surface finish recommendations and limitations |
+| **UC-2.9: Overmolding Strategy** | Plan insert molding or overmolding approach | Multi-material design recommendations |
+| **UC-2.10: LSR Evaluation** | Evaluate liquid silicone rubber applications | LSR-specific DFM guidance |
+
+#### 2.3 3D Printing Agent
+**Agent ID:** `3d-printing`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-2.11: Additive DFM** | Evaluate design for additive manufacturing | Orientation, support, and feature size recommendations |
+| **UC-2.12: Process Selection** | Choose between SLA, SLS, MJF, FDM, DMLS | Process comparison with trade-offs |
+| **UC-2.13: End-Use Production** | Assess 3D printing for production volumes | Production feasibility with cost analysis |
+| **UC-2.14: Metal 3D Printing** | Evaluate metal additive applications | Metal 3DP material and process recommendations |
+| **UC-2.15: Biocompatibility** | Assess FDA biocompatibility for 3D printed medical devices | Biocompatibility pathway and requirements |
+
+#### 2.4 Sheet Metal Agent
+**Agent ID:** `sheet-metal`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-2.16: Fabrication Design** | Evaluate sheet metal part design | Bend radius, flange, punch feasibility |
+| **UC-2.17: Gauge Selection** | Recommend material gauge for application | Thickness recommendations with structural analysis |
+
+---
+
+### 3. 🧪 Materials Intelligence Agent
+**Agent ID:** `materials-selection`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-3.1: Material Comparison** | Compare material alternatives for an application | Side-by-side comparison with properties, cost, availability |
+| **UC-3.2: Corrosion Resistance** | Select corrosion-resistant materials | Material recommendations with environmental ratings |
+| **UC-3.3: UV Stability** | Evaluate UV-resistant plastic options | UV stability analysis for outdoor applications |
+| **UC-3.4: Glass Transition** | Assess temperature requirements vs. material Tg | Thermal suitability analysis |
+| **UC-3.5: Export-Controlled Materials** | Check material restrictions (ITAR/EAR) | Compliance verification for restricted materials |
+
+---
+
+### 4. 🏭 Vertical Market Agents
+
+#### 4.1 Aerospace Agent
+**Agent ID:** `vertical-aerospace`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-4.1: AS9100 Compliance** | Evaluate AS9100D quality requirements | Certification pathway and gap analysis |
+| **UC-4.2: Lightweight Design** | Optimize for aerospace weight requirements | Weight reduction strategies with structural integrity |
+| **UC-4.3: Flight-Critical Parts** | Assess flight-critical manufacturing requirements | Critical part classification and requirements |
+| **UC-4.4: Defense Export Controls** | Evaluate ITAR/EAR for aerospace defense | Export control compliance matrix |
+
+#### 4.2 Medical Device Agent
+**Agent ID:** `vertical-medical`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-4.5: FDA Pathway** | Navigate FDA 510(k) or PMA requirements | Regulatory pathway with timeline |
+| **UC-4.6: ISO 13485** | Evaluate medical quality system requirements | QMS gap analysis |
+| **UC-4.7: Biocompatibility** | Assess ISO 10993 / USP Class VI requirements | Biocompatibility testing roadmap |
+| **UC-4.8: Sterilization** | Evaluate sterilization method compatibility | Sterilization validation approach |
+| **UC-4.9: Low-Volume Production** | Plan for medical device low-volume manufacturing | Scalable production strategy |
+
+#### 4.3 Automotive/EV Agent
+**Agent ID:** `vertical-automotive-ev`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-4.10: IATF 16949** | Evaluate automotive quality requirements | Automotive QMS requirements |
+| **UC-4.11: PPAP/APQP** | Plan production part approval process | PPAP level and submission requirements |
+| **UC-4.12: Weight Reduction** | Optimize for automotive lightweighting | Material and design recommendations |
+| **UC-4.13: EV Battery Enclosures** | Design battery housing for electric vehicles | EV-specific safety and thermal requirements |
+| **UC-4.14: Powertrain Components** | Evaluate powertrain part manufacturability | High-stress component analysis |
+
+---
+
+### 5. 🔀 Routing & Orchestration Agent
+**Agent ID:** `dfm-router`
+
+| Use Case | Description | Output |
+|----------|-------------|--------|
+| **UC-5.1: Intent Classification** | Parse user request and classify intent | Process, mode, vertical classification |
+| **UC-5.2: Multi-Agent Coordination** | Route to multiple agents for comparative analysis | Coordinated response from multiple specialists |
+| **UC-5.3: Compliance Detection** | Detect regulated keywords and set compliance flag | Regulated=true/false with framework identification |
+
+---
+
+## Cross-Cutting Use Cases (Multi-Agent Workflows)
+
+### Workflow 1: New Product Introduction (NPI)
+**Trigger:** "I have a new product idea for [market] using [process]"
+
+**Agent Sequence:**
+1. `trends-strategy` → Market analysis and competitive positioning
+2. `dfm-router` → Classify process and vertical requirements
+3. Process agent (cnc/injection/3dp/sheet-metal) → Feasibility analysis
+4. `materials-selection` → Material recommendations
+5. Vertical agent (if applicable) → Industry-specific requirements
+
+**Output:** Complete NPI dossier with strategy, feasibility, materials, and compliance
+
+---
+
+### Workflow 2: Make-vs-Buy Decision
+**Trigger:** "Should we manufacture [part] in-house or use ProtoLabs?"
+
+**Agent Sequence:**
+1. `trends-strategy` → Platform leadership analysis (make vs. buy as ecosystem decision)
+2. Process agent → Technical feasibility and cost drivers
+3. `materials-selection` → Material availability and expertise requirements
+4. Vertical agent (if regulated) → Compliance complexity
+
+**Output:** Decision framework with quantitative and qualitative factors
+
+---
+
+### Workflow 3: Compliance-First Design Review
+**Trigger:** "Design a [part] for [regulated industry]"
+
+**Agent Sequence:**
+1. `dfm-router` → Sets regulated=true, identifies frameworks
+2. Vertical agent → Industry-specific compliance requirements
+3. Process agent → DFM with compliance constraints
+4. `materials-selection` → Compliance-compatible materials
+
+**Output:** Compliance-validated design with regulatory pathway
+
+---
+
+### Workflow 4: Technology Pivot Analysis
+**Trigger:** "Should we switch from [process A] to [process B]?"
+
+**Agent Sequence:**
+1. `trends-strategy` → Dynamic capabilities analysis (can we adapt?)
+2. Process Agent A → Current state assessment
+3. Process Agent B → Target state feasibility
+4. `materials-selection` → Material implications
+5. Vertical agent → Certification/validation impact
+
+**Output:** Technology transition roadmap with risk assessment
+
+---
+
+### Workflow 5: AI-Enabled Manufacturing Strategy
+**Trigger:** "How can we use AI in our manufacturing process?"
+
+**Agent Sequence:**
+1. `trends-strategy` → AI governance and EU AI Act compliance
+2. `trends-strategy` → Platform leadership for AI services ecosystem
+3. Process agents → AI-ready process evaluation
+4. Vertical agents → Regulated AI requirements (FDA, aerospace)
+
+**Output:** AI implementation strategy with governance framework
+
+---
+
+## Command Reference for TPMs
+
+| Command | Use Case | Agents Invoked |
+|---------|----------|----------------|
+| `/pl-dfm-review <part>` | Evaluate part design | Router → Process Agent → Vertical Agent (if needed) |
+| `/pl-ask <question>` | General manufacturing Q&A | Router → Relevant Agent(s) |
+| `/pl-refresh-kb [folder]` | Update knowledge base | N/A (maintenance) |
+
+---
+
+## Example: Business Idea Breakdown Session
+
+**Idea:** "A lightweight, ITAR-compliant drone component for defense contractors, manufactured using metal 3D printing"
+
+**Agent Workflow:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 1: Strategic Analysis (trends-strategy)               │
+│  • Market: Defense drone manufacturing growing 15% YoY      │
+│  • Positioning: Total Customer Solutions (custom + speed)     │
+│  • Capability: Dynamic - need sensing for defense trends      │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│  STEP 2: Process Feasibility (3d-printing)                  │
+│  • Metal 3DP: DMLS suitable for aluminum/titanium           │
+│  • Feature size: Minimum 0.5mm wall thickness               │
+│  • Build volume: Fits standard DMLS machines                │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│  STEP 3: Materials (materials-selection)                    │
+│  • Titanium Ti-6Al-4V: High strength-to-weight              │
+│  • Aluminum AlSi10Mg: Cost-effective alternative            │
+│  • Both: ITAR-controlled if specific alloys                 │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│  STEP 4: Compliance (vertical-aerospace + 3d-printing)      │
+│  • ITAR: Technical data restrictions apply                  │
+│  • EAR: ECCN classification required                        │
+│  • NIST 800-171: Cybersecurity for CUI                      │
+│  • Export: Cannot share designs with non-US persons         │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│  STEP 5: Output Synthesis                                     │
+│  • DFM Score: 85/100 (ITAR compliance reduces flexibility)  │
+│  • Recommendation: Proceed with ITAR-compliant workflow      │
+│  • Investment: ~$50K for NIST 800-171 compliance            │
+│  • Timeline: 6 months to first ITAR-compliant part           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Knowledge Base Coverage Summary
+
+| Category | Articles | Key Frameworks |
+|----------|----------|----------------|
+| **Strategy** | 4 + 3 AI | MIT Sloan 5 Lenses, AI Governance |
+| **Process** | 21 + 10 compliance | DFM rules, compliance frameworks |
+| **Materials** | 5 | Selection guides, alternatives |
+| **Verticals** | 4 + 3 compliance | Industry-specific requirements |
+| **Trends** | 4 | Innovation, Industry 4.0 |
+
+**Total: 50+ knowledge articles** with full compliance coverage
+
+---
+
+## Next Steps for TPMs
+
+1. **Initiate Discussion:** Use `/pl-ask` to explore high-level questions
+2. **Deep Dive:** Use `/pl-dfm-review` with part descriptions for detailed analysis
+3. **Strategic Context:** Reference MIT Sloan frameworks in `trends-strategy` agent
+4. **Compliance Check:** Include regulatory keywords to trigger compliance assessment
+
+The system is ready to support your business idea evaluation. Which use case would you like to explore first?

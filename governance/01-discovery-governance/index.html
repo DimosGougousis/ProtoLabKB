@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pillar 1: Discovery Governance — Evaluate AI products for risk, ethics, feasibility before development.">
+<meta name="theme-color" content="#0071e3">
+<title>Pillar 1: Discovery Governance — Product Governance for Agentic AI</title>
+<link rel="stylesheet" href="../styles/shared.css">
+<style>
+  /* Page-specific styles */
+  .hero { padding-top: 120px; text-align: center; background: var(--bg-alt); }
+  .hero .label { margin-bottom: 16px; display: block; }
+  .hero h1 { margin-bottom: 20px; }
+  .hero .body-large { max-width: 800px; margin: 0 auto 40px; }
+
+  .content-section h2 { font-size: 1.5rem; font-weight: 600; margin: 40px 0 20px; }
+  .content-section h3 { font-size: 1.2rem; font-weight: 600; margin: 30px 0 15px; color: var(--text-secondary); }
+  .content-section p { margin-bottom: 16px; color: var(--text-secondary); line-height: 1.7; }
+  .content-section ul { margin: 16px 0; padding-left: 24px; color: var(--text-secondary); }
+  .content-section li { margin-bottom: 8px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 30px 0; }
+  .card {
+    padding: 24px; border-radius: 16px; border: 1px solid var(--border-light);
+    transition: box-shadow 0.25s, transform 0.25s; background: var(--bg);
+  }
+  .card:hover { box-shadow: var(--card-shadow); transform: translateY(-2px); }
+  .card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 0.9rem; margin-bottom: 12px; }
+  .card a { color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.85rem; }
+  .card a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="../index.html">&#8592; Back to Platform</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <span class="label">Pillar 1</span>
+    <h1 class="headline-large">Discovery Governance</h1>
+    <p class="body-large">Evaluate AI products for risk, ethics, feasibility, and strategic alignment <strong>before any development begins</strong>. This is the "shift-left" pillar — where you decide whether to build, what guardrails must exist, and how you'll know if the system works.</p>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="container">
+    <h2>When to Use</h2>
+    <p>Apply Discovery Governance at the earliest stage of any AI initiative:</p>
+    <ul>
+      <li>When a new AI product or feature is proposed</li>
+      <li>When an existing non-AI system is being augmented with AI capabilities</li>
+      <li>When a third-party AI system is being evaluated for procurement</li>
+      <li>When the scope of an existing AI system changes materially</li>
+      <li>When regulatory changes require reclassification of an existing system</li>
+    </ul>
+    <p><strong>Trigger:</strong> Any entry in the product backlog that involves AI/ML/LLM capabilities must pass through Discovery Governance before entering a development sprint.</p>
+
+    <h2>Who Is Responsible</h2>
+    <table>
+      <tr><th>Role</th><th>Responsibility</th></tr>
+      <tr><td><strong>Product Manager</strong></td><td><strong>Accountable</strong> — owns the business case, defines the opportunity, ensures governance artifacts are completed before development begins</td></tr>
+      <tr><td>Ethics Lead / Responsible AI Lead</td><td><strong>Consulted</strong> — provides ethical review, identifies potential harms, challenges assumptions about fairness and transparency</td></tr>
+      <tr><td>Compliance Officer (2nd Line)</td><td><strong>Consulted</strong> — validates EU AI Act risk classification, identifies regulatory obligations, reviews documentation for regulatory adequacy</td></tr>
+      <tr><td>AI/ML Engineer</td><td><strong>Consulted</strong> — provides technical feasibility assessment, identifies data requirements, advises on evaluation approach</td></tr>
+      <tr><td>AI Governance Committee</td><td><strong>Approver</strong> — grants Discovery Gate approval for limited and high-risk systems</td></tr>
+    </table>
+
+    <h2>What This Pillar Contains</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h4>&#128203; Checklists</h4>
+        <p>EU AI Act risk classification checklist — structured assessment for determining the risk tier of an AI system.</p>
+        <a href="checklists/eu-ai-act-risk-classification.yaml">View checklist &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128200; Evaluations</h4>
+        <p>Guides for defining acceptance criteria, evaluation strategy templates, and AI quality metrics catalog.</p>
+        <a href="evaluations/">Browse evaluations &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128214; Guides</h4>
+        <p>Implementation guidance for applying Discovery Governance in your organization.</p>
+        <a href="guides/">View guides &#8594;</a>
+      </div>
+      <div class="card">
+        <h4>&#128196; Templates</h4>
+        <p>Reusable document templates for risk classification, acceptance criteria, and evaluation planning.</p>
+        <a href="templates/">Browse templates &#8594;</a>
+      </div>
+    </div>
+
+    <h2>Key Output</h2>
+    <p>Every AI initiative that passes through Discovery Governance exits with three things:</p>
+    <ol style="margin: 16px 0; padding-left: 24px; color: var(--text-secondary);">
+      <li><strong>Risk classification</strong> — EU AI Act tier determination</li>
+      <li><strong>Acceptance criteria</strong> — measurable definitions of success</li>
+      <li><strong>Evaluation strategy</strong> — how to verify the system works</li>
+    </ol>
+    <p>Without these, development must not begin.</p>
+
+    <h2>Regulatory Basis</h2>
+    <ul>
+      <li><strong>EU AI Act Articles 5-6, 9, Annex III</strong> — Risk classification obligations and prohibited practices</li>
+      <li><strong>EU AI Act Article 9(2)</strong> — Risk management system must identify and analyze known and foreseeable risks</li>
+      <li><strong>GDPR Article 35</strong> — Data Protection Impact Assessment for high-risk processing</li>
+      <li><strong>DNB Good Practice for AI</strong> — Expectation that AI risk assessment occurs before deployment</li>
+      <li><strong>SAFEST items S-01, S-02, E-03, F-01, F-02</strong> — System inventory, algorithm selection rationale, prohibited uses, protected characteristics identification, proxy variable analysis</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Part of the <a href="../index.html">AI Governance Platform</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

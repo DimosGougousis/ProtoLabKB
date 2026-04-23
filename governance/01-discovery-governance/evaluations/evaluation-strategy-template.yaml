@@ -1,0 +1,405 @@
+# Evaluation Strategy Template
+#
+# Purpose: Document the complete evaluation strategy for an AI system. This is the
+#          contract between Discovery Governance (which defines what must be measured)
+#          and Development Governance (which implements the measurements as automated evals).
+#
+# When to Use: After acceptance criteria are defined (see defining-acceptance-criteria.md)
+#              and before the AI system enters a development sprint.
+#
+# Who Is Responsible:
+#   - Product Manager: fills in product metrics and business context
+#   - AI/ML Engineer: fills in AI quality metrics, measurement methods, data sources
+#   - Compliance Officer (2nd Line): validates fairness metrics and regulatory coverage
+#   - AI Governance Committee: approves for limited/high-risk systems
+#
+# Regulatory Basis:
+#   - EU AI Act Art. 9(2)(a) -- risk management must include performance metrics
+#   - EU AI Act Art. 15 -- accuracy, robustness, and cybersecurity requirements
+#   - SAFEST items S-03 (acceptance criteria), F-03 (bias testing), F-04 (fairness metrics)
+#
+# Cross-References:
+#   - Defining Acceptance Criteria: ./defining-acceptance-criteria.md
+#   - AI Quality Metrics Catalog: ./ai-quality-metrics-catalog.md
+#   - Eval-Driven Development: ../../02-development-governance/evaluations/eval-driven-development.md
+#   - Pre-Deployment Gate: ../../02-development-governance/checklists/pre-deployment-gate.yaml
+#   - Continuous Online Evaluation: ../../03-runtime-governance/evaluations/continuous-online-evaluation.md
+#
+# Instructions:
+#   1. Complete the metadata section
+#   2. Define product metrics (business outcomes the system must achieve)
+#   3. Define AI quality metrics (technical performance thresholds)
+#   4. Define fairness metrics (required for limited and high-risk systems)
+#   5. Define LLM-specific metrics (if the system uses large language models)
+#   6. Specify evaluation frequency for each phase
+#   7. Document data sources for evaluation
+#   8. Define escalation thresholds (when metric breaches trigger action)
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  system_name: ""
+  system_description: ""
+  risk_tier: ""         # minimal | limited | high
+  system_owner: ""      # Name and role of the accountable person
+  strategy_author: ""
+  strategy_date: ""
+  approved_by: ""
+  approval_date: ""
+  version: "1.0"
+  next_review_date: ""
+
+# ============================================================================
+# PRODUCT METRICS
+# Business outcomes and user experience measures.
+# Minimum 3 metrics for minimal-risk; 5+ for limited/high-risk.
+# ============================================================================
+
+product_metrics:
+  - id: "PM-01"
+    metric_name: "Task Completion Rate"
+    description: "Percentage of user tasks the AI system resolves without human intervention"
+    threshold: ">= 0.70"
+    measurement_method: "Count of successfully completed tasks divided by total tasks initiated"
+    data_source: "Production interaction logs"
+    sample_size: "Minimum 1,000 interactions"
+    blocking: true       # true = hard gate (blocks deployment); false = soft gate (warn only)
+    evaluation_frequency: "pre_deployment, continuous"
+    owner: ""            # Person responsible for this metric
+
+  - id: "PM-02"
+    metric_name: "User Satisfaction Score (CSAT)"
+    description: "Average post-interaction customer satisfaction rating"
+    threshold: ">= 4.0 on 5-point scale"
+    measurement_method: "Post-interaction survey"
+    data_source: "Survey responses"
+    sample_size: "Minimum 200 responses"
+    blocking: true
+    evaluation_frequency: "continuous, periodic_monthly"
+    owner: ""
+
+  - id: "PM-03"
+    metric_name: "Escalation Rate"
+    description: "Percentage of interactions requiring human takeover"
+    threshold: "<= 0.25"
+    measurement_method: "Count of escalation events divided by total interactions"
+    data_source: "Production escalation logs"
+    sample_size: "Minimum 500 interactions"
+    blocking: false
+    evaluation_frequency: "continuous"
+    owner: ""
+
+  # Add additional product metrics as needed:
+  # - id: "PM-04"
+  #   metric_name: ""
+  #   ...
+
+# ============================================================================
+# AI QUALITY METRICS
+# Technical performance of the model or AI system.
+# Select metrics appropriate to the model type from ai-quality-metrics-catalog.md.
+# ============================================================================
+
+ai_quality_metrics:
+  - id: "AQ-01"
+    metric_name: "Precision"
+    description: "Fraction of positive predictions that are actually positive"
+    threshold: ">= 0.92"
+    measurement_method: "Evaluated on holdout test set"
+    data_source: "Labeled holdout test set"
+    sample_size: "Minimum 5,000 labeled examples"
+    blocking: true
+    evaluation_frequency: "pre_deployment, periodic_quarterly"
+    owner: ""
+
+  - id: "AQ-02"
+    metric_name: "Recall"
+    description: "Fraction of actual positives correctly identified"
+    threshold: ">= 0.85"
+    measurement_method: "Evaluated on holdout test set"
+    data_source: "Labeled holdout test set"
+    sample_size: "Minimum 5,000 labeled examples"
+    blocking: true
+    evaluation_frequency: "pre_deployment, periodic_quarterly"
+    owner: ""
+
+  - id: "AQ-03"
+    metric_name: "AUC-ROC"
+    description: "Area under the receiver operating characteristic curve -- model discrimination ability"
+    threshold: ">= 0.95"
+    measurement_method: "ROC curve analysis on holdout test set"
+    data_source: "Labeled holdout test set"
+    sample_size: "Minimum 5,000 labeled examples"
+    blocking: true
+    evaluation_frequency: "pre_deployment, periodic_quarterly"
+    owner: ""
+
+  - id: "AQ-04"
+    metric_name: "P95 Latency"
+    description: "95th percentile end-to-end response time"
+    threshold: "<= 200ms"
+    measurement_method: "Load testing with production-representative traffic patterns"
+    data_source: "Load test results and production latency metrics"
+    sample_size: "10,000+ requests under load"
+    blocking: true
+    evaluation_frequency: "pre_deployment, continuous"
+    owner: ""
+
+  - id: "AQ-05"
+    metric_name: "Calibration (Brier Score)"
+    description: "How well predicted probabilities match actual outcomes"
+    threshold: "<= 0.10"
+    measurement_method: "Brier score computation on holdout test set"
+    data_source: "Labeled holdout test set with ground truth outcomes"
+    sample_size: "Minimum 5,000 labeled examples"
+    blocking: false
+    evaluation_frequency: "pre_deployment, periodic_quarterly"
+    owner: ""
+
+  # Add additional AI quality metrics as needed
+
+# ============================================================================
+# FAIRNESS METRICS
+# Required for limited-risk and high-risk systems.
+# For minimal-risk systems, include at least a basic fairness check.
+# ============================================================================
+
+fairness_metrics:
+  protected_attributes:
+    - attribute: "age_group"
+      groups: ["18-25", "26-40", "41-60", "60+"]
+      data_available: true
+      proxy_variables_identified: ["account_tenure", "product_type"]
+
+    - attribute: "gender"
+      groups: ["male", "female", "non-binary", "undisclosed"]
+      data_available: false     # If not directly available, use proxy or inference
+      proxy_variables_identified: ["first_name"]
+
+    - attribute: "nationality"
+      groups: ["defined per jurisdiction"]
+      data_available: true
+      proxy_variables_identified: ["country_of_residence", "language_preference"]
+
+    # Add additional protected attributes as relevant to your use case
+
+  metrics:
+    - id: "FM-01"
+      metric_name: "Demographic Parity Ratio"
+      description: "Ratio of positive prediction rates between least-favored group and most-favored group"
+      threshold: ">= 0.80"
+      measurement_method: "Subgroup analysis: compute positive prediction rate per group, take min/max ratio"
+      data_source: "Holdout test set stratified by protected attributes"
+      sample_size: "Minimum 200 examples per subgroup"
+      blocking: true
+      evaluation_frequency: "pre_deployment, periodic_quarterly"
+      owner: ""
+      regulatory_ref: "SAFEST F-03, F-04"
+
+    - id: "FM-02"
+      metric_name: "Equalized Odds Difference"
+      description: "Maximum absolute difference in TPR or FPR across groups"
+      threshold: "<= 0.10"
+      measurement_method: "Compute TPR and FPR per group, take maximum absolute difference"
+      data_source: "Holdout test set stratified by protected attributes"
+      sample_size: "Minimum 200 examples per subgroup"
+      blocking: true
+      evaluation_frequency: "pre_deployment, periodic_quarterly"
+      owner: ""
+      regulatory_ref: "SAFEST F-03, F-04"
+
+    - id: "FM-03"
+      metric_name: "Calibration Across Groups"
+      description: "Maximum difference in Brier scores between any two groups"
+      threshold: "<= 0.05"
+      measurement_method: "Compute Brier score per group, take maximum absolute difference"
+      data_source: "Holdout test set stratified by protected attributes"
+      sample_size: "Minimum 200 examples per subgroup"
+      blocking: false
+      evaluation_frequency: "pre_deployment, periodic_quarterly"
+      owner: ""
+      regulatory_ref: "SAFEST F-04"
+
+# ============================================================================
+# LLM-SPECIFIC METRICS
+# Complete this section ONLY if the system uses large language models.
+# Delete or leave empty if the system is a traditional ML model.
+# ============================================================================
+
+llm_metrics:
+  applicable: false  # Set to true if the system uses LLMs
+
+  metrics:
+    - id: "LLM-01"
+      metric_name: "Hallucination Rate"
+      description: "Percentage of responses containing fabricated or unsupported facts"
+      threshold: "<= 0.02"
+      measurement_method: "Human evaluation of sampled responses against ground truth sources"
+      data_source: "500 randomly sampled production responses per evaluation cycle"
+      blocking: true
+      evaluation_frequency: "pre_deployment, periodic_monthly"
+      owner: ""
+
+    - id: "LLM-02"
+      metric_name: "Safety Violation Rate"
+      description: "Percentage of responses violating defined safety policies"
+      threshold: "0.0 for critical categories; <= 0.001 for borderline"
+      measurement_method: "Automated safety classifier on all responses + human review of flagged items"
+      data_source: "All production responses (automated); flagged items (human review)"
+      blocking: true
+      evaluation_frequency: "continuous"
+      owner: ""
+
+    - id: "LLM-03"
+      metric_name: "Instruction Following Score"
+      description: "Percentage of responses correctly adhering to system prompt constraints"
+      threshold: ">= 0.98"
+      measurement_method: "Automated eval suite with test cases covering each system prompt constraint"
+      data_source: "Curated test suite of 200+ scenarios"
+      blocking: true
+      evaluation_frequency: "pre_deployment, periodic_weekly"
+      owner: ""
+
+    - id: "LLM-04"
+      metric_name: "Groundedness Score (RAG systems)"
+      description: "Percentage of factual claims traceable to retrieved source documents"
+      threshold: ">= 0.95"
+      measurement_method: "Automated citation verification comparing claims to source passages"
+      data_source: "500 sampled response-source pairs"
+      blocking: true
+      evaluation_frequency: "pre_deployment, periodic_monthly"
+      owner: ""
+
+    - id: "LLM-05"
+      metric_name: "Toxicity Score"
+      description: "Rate of responses flagged by toxicity classifiers"
+      threshold: "<= 0.0005"
+      measurement_method: "Automated toxicity classifier (e.g., Perspective API) on all responses"
+      data_source: "Full production response corpus"
+      blocking: true
+      evaluation_frequency: "continuous"
+      owner: ""
+
+# ============================================================================
+# EVALUATION FREQUENCY
+# Define when each type of evaluation runs across the AI lifecycle.
+# ============================================================================
+
+evaluation_frequency:
+  pre_deployment:
+    description: "Evaluations that must pass before the system enters production"
+    runs_when: "Before every deployment, including retraining and material changes"
+    blocking: true
+    metrics_included:
+      - "All metrics marked with evaluation_frequency containing 'pre_deployment'"
+    responsible: "AI/ML Engineer"
+    approver: "Model Owner (minimal risk) / AI Governance Committee (limited/high risk)"
+
+  continuous:
+    description: "Evaluations that run on live production data in real-time or near-real-time"
+    runs_when: "Continuously during production operation"
+    blocking: false   # Continuous evals trigger alerts, not deployment blocks
+    metrics_included:
+      - "All metrics marked with evaluation_frequency containing 'continuous'"
+    responsible: "MLOps / Platform Engineer"
+    alert_channel: ""  # Specify: Slack channel, PagerDuty, email, dashboard
+
+  periodic:
+    description: "Evaluations that run on a scheduled cadence"
+    cadences:
+      weekly:
+        metrics_included: ["LLM-03"]
+        responsible: "AI/ML Engineer"
+      monthly:
+        metrics_included: ["LLM-01", "LLM-04", "PM-02"]
+        responsible: "Model Owner"
+      quarterly:
+        metrics_included: ["AQ-01", "AQ-02", "AQ-03", "AQ-05", "FM-01", "FM-02", "FM-03"]
+        responsible: "Model Owner + 2nd Line"
+
+# ============================================================================
+# DATA SOURCES FOR EVALUATION
+# Document where evaluation data comes from and how it is maintained.
+# ============================================================================
+
+data_sources:
+  - id: "DS-01"
+    name: "Holdout Test Set"
+    description: "Labeled dataset reserved exclusively for evaluation, never used in training"
+    size: ""              # e.g., "10,000 labeled examples"
+    refresh_frequency: "Quarterly or when data distribution shifts materially"
+    labeling_method: ""   # e.g., "Human labeling by domain experts" or "Production outcome labels"
+    stratification: "Stratified by protected attributes and key business dimensions"
+    owner: ""
+    storage_location: ""
+
+  - id: "DS-02"
+    name: "Production Traffic Sample"
+    description: "Sampled production interactions for ongoing evaluation"
+    size: ""              # e.g., "5% random sample of daily traffic"
+    refresh_frequency: "Continuous"
+    labeling_method: ""   # e.g., "Delayed outcome labels" or "Human annotation of sample"
+    stratification: "Random with minimum representation per subgroup"
+    owner: ""
+    storage_location: ""
+
+  - id: "DS-03"
+    name: "Adversarial Test Suite"
+    description: "Curated edge cases, adversarial inputs, and boundary conditions"
+    size: ""              # e.g., "500 adversarial examples"
+    refresh_frequency: "Updated after each red-teaming exercise or incident"
+    labeling_method: "Expert-curated with expected outputs defined"
+    stratification: "Organized by attack type and failure mode category"
+    owner: ""
+    storage_location: ""
+
+# ============================================================================
+# ESCALATION THRESHOLDS
+# Define what happens when metrics breach their thresholds.
+# ============================================================================
+
+escalation_thresholds:
+  - level: "warning"
+    description: "Metric is trending toward threshold but has not breached it"
+    trigger: "Metric within 10% of threshold for 3 consecutive measurement periods"
+    action: "Alert model owner via monitoring dashboard. Investigate root cause."
+    response_time: "Within 2 business days"
+    notification: ["model_owner"]
+
+  - level: "breach"
+    description: "Metric has breached its defined threshold"
+    trigger: "Metric value crosses threshold boundary"
+    action: "Alert model owner and 2nd line. Initiate investigation. For hard-gate metrics, consider rollback."
+    response_time: "Within 4 hours for high-risk; within 1 business day for limited/minimal"
+    notification: ["model_owner", "second_line", "ai_governance_committee_chair"]
+
+  - level: "critical"
+    description: "Safety-critical metric has breached threshold (safety violations, zero-tolerance criteria)"
+    trigger: "Any safety violation or zero-tolerance metric breach"
+    action: "Immediate rollback or circuit breaker activation. Incident declared. Governance Committee notified."
+    response_time: "Immediate (< 1 hour)"
+    notification: ["model_owner", "second_line", "ai_governance_committee", "incident_commander"]
+
+# ============================================================================
+# SIGN-OFF
+# ============================================================================
+
+sign_off:
+  product_manager:
+    name: ""
+    date: ""
+    signature: ""  # "Approved" or "Approved with conditions"
+  ai_ml_lead:
+    name: ""
+    date: ""
+    signature: ""
+  compliance_officer:
+    name: ""
+    date: ""
+    signature: ""
+  governance_committee:
+    approval_date: ""
+    meeting_reference: ""
+    conditions: ""

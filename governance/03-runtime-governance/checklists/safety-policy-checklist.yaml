@@ -1,0 +1,259 @@
+# =============================================================================
+# Safety Policy Checklist
+# AI Governance Framework for Agentic Workflows in Regulated FinTech
+# =============================================================================
+# Version: 1.0.0
+# Last Updated: 2026-02-28
+# Owner: AI Governance Office
+# Scope: All AI agents and model endpoints prior to production launch
+# Cross-ref: ./guardrail-deployment-checklist.yaml
+# Cross-ref: ../templates/guardrail-specification.yaml
+# Cross-ref: ../templates/fallback-procedure.md
+# =============================================================================
+
+metadata:
+  checklist_id: CL-RUN-SAF
+  title: "Safety Policy Checklist"
+  description: >
+    Pre-launch checklist verifying that all required safety policies are
+    defined, implemented, tested, and documented before an AI agent enters
+    production. Maps controls to EU AI Act articles and SAFEST framework
+    requirements. Mandatory completion for any agent classified as
+    high-risk under the organisation's AI risk taxonomy.
+  applicable_to:
+    - customer_facing_agents
+    - autonomous_decision_agents
+    - financial_transaction_agents
+    - multi_agent_orchestrations
+  approval_required_from:
+    - ai_governance_lead
+    - chief_compliance_officer
+    - data_protection_officer
+  revision_history:
+    - version: "1.0.0"
+      date: "2026-02-28"
+      author: "AI Governance Office"
+      change: "Initial release"
+
+# =============================================================================
+# Section 1 --- Content Policy
+# =============================================================================
+content_policy:
+  - id: RUN-SAF-01
+    description: "Content policy document published -- defines acceptable and prohibited output categories"
+    priority: critical
+    status: pending
+    evidence_ref: "Link to content policy document in governance wiki"
+    eu_ai_act_ref: "Article 9(2)(b) -- identification and analysis of known and foreseeable risks"
+    notes: "Must cover hate speech, misinformation, profanity, self-harm, and domain-specific prohibitions"
+
+  - id: RUN-SAF-02
+    description: "Content policy enforcement rules codified in guardrail specification"
+    priority: critical
+    status: pending
+    evidence_ref: "guardrail-specification.yaml output_rails section"
+    cross_ref: "../templates/guardrail-specification.yaml"
+
+  - id: RUN-SAF-03
+    description: "Content policy tested against adversarial prompt dataset (min. 500 samples)"
+    priority: high
+    status: pending
+    evidence_ref: "Red-team evaluation report with precision/recall on policy violations"
+
+# =============================================================================
+# Section 2 --- Action Policy (Agentic Decision Limits)
+# =============================================================================
+action_policy:
+  - id: RUN-SAF-04
+    description: "Action policy defined -- enumerates every action the agent is permitted to take"
+    priority: critical
+    status: pending
+    evidence_ref: "Action-policy document listing allowed actions, conditions, and limits"
+    eu_ai_act_ref: "Article 14(4)(a) -- measures to enable human oversight"
+
+  - id: RUN-SAF-05
+    description: "Autonomous decision limits set -- thresholds beyond which human approval is required"
+    priority: critical
+    status: pending
+    evidence_ref: "Decision-limit matrix (action, threshold, oversight model HITL/HOTL/HOTA)"
+    notes: >
+      Example: Loan pre-approval up to EUR 10,000 = HOTA (human-on-the-alert);
+      above EUR 10,000 = HITL (human-in-the-loop mandatory).
+
+  - id: RUN-SAF-06
+    description: "Financial transaction limits enforced -- per-transaction cap, daily rolling cap, velocity checks"
+    priority: critical
+    status: pending
+    evidence_ref: "Transaction-limit configuration; test evidence showing cap enforcement"
+    notes: "Caps must be agreed with Treasury, Risk, and Compliance"
+
+  - id: RUN-SAF-07
+    description: "Irreversible action safeguard -- double-confirmation or human gate before destructive operations"
+    priority: critical
+    status: pending
+    evidence_ref: "Irreversible-action inventory with safeguard mapping"
+
+# =============================================================================
+# Section 3 --- Data Access Policy
+# =============================================================================
+data_access_policy:
+  - id: RUN-SAF-08
+    description: "Data access policy defined -- agent's data access scoped to minimum necessary (least privilege)"
+    priority: critical
+    status: pending
+    evidence_ref: "IAM role definition; data-access matrix"
+    eu_ai_act_ref: "GDPR Article 5(1)(c) -- data minimisation"
+
+  - id: RUN-SAF-09
+    description: "Machine Identity (NHI) provisioned -- agent authenticated via service account with short-lived credentials"
+    priority: critical
+    status: pending
+    evidence_ref: "NHI registration record; credential rotation policy"
+    notes: "Agents are IAM citizens: each must have a unique, auditable non-human identity"
+
+  - id: RUN-SAF-10
+    description: "PII access controls enforced -- agent cannot read, store, or transmit PII beyond its authorised scope"
+    priority: critical
+    status: pending
+    evidence_ref: "PII access audit log; data-flow diagram showing PII boundaries"
+
+  - id: RUN-SAF-11
+    description: "Data retention limits configured -- agent session data purged per retention schedule"
+    priority: high
+    status: pending
+    evidence_ref: "Retention policy; automated purge job configuration"
+
+# =============================================================================
+# Section 4 --- Escalation Policy
+# =============================================================================
+escalation_policy:
+  - id: RUN-SAF-12
+    description: "Escalation policy defined -- conditions, channels, and SLAs for human handoff"
+    priority: critical
+    status: pending
+    evidence_ref: "Escalation policy document; workflow diagram"
+    eu_ai_act_ref: "Article 14(4)(e) -- ability to intervene or interrupt"
+
+  - id: RUN-SAF-13
+    description: "Escalation triggers mapped to oversight models (HITL / HOTL / HOTA)"
+    priority: critical
+    status: pending
+    evidence_ref: "Trigger-to-oversight mapping table"
+    notes: >
+      HITL: human must approve before action proceeds.
+      HOTL: human monitors in near-real-time, can veto.
+      HOTA: human is alerted asynchronously, reviews post-hoc.
+
+  - id: RUN-SAF-14
+    description: "Human takeover mechanism tested -- verified that a human can assume control within SLA"
+    priority: high
+    status: pending
+    evidence_ref: "Takeover drill report; measured time-to-control"
+
+# =============================================================================
+# Section 5 --- Compliance Policy
+# =============================================================================
+compliance_policy:
+  - id: RUN-SAF-15
+    description: "Regulatory mapping completed -- agent's functions mapped to applicable regulations"
+    priority: critical
+    status: pending
+    evidence_ref: "Regulatory mapping matrix (function -> regulation -> control)"
+    eu_ai_act_ref: "Article 9(1) -- risk management system proportionate to risks"
+    notes: "FinTech examples: MiFID II, PSD2, Consumer Duty, TILA, ECOA, GDPR"
+
+  - id: RUN-SAF-16
+    description: "Transparency disclosures in place -- users informed they are interacting with an AI"
+    priority: critical
+    status: pending
+    evidence_ref: "UI screenshot showing disclosure; copy of disclosure text"
+    eu_ai_act_ref: "Article 52(1) -- transparency obligations for AI systems"
+
+  - id: RUN-SAF-17
+    description: "Explainability mechanism available -- agent can provide reasoning summary on demand"
+    priority: high
+    status: pending
+    evidence_ref: "Sample explanation output; reasoning-trace Span example"
+    eu_ai_act_ref: "Article 13 -- transparency and provision of information to deployers"
+
+  - id: RUN-SAF-18
+    description: "Audit trail completeness verified -- all decisions logged with trace IDs for regulatory reconstruction"
+    priority: critical
+    status: pending
+    evidence_ref: "Audit-trail sample; trace reconstruction walkthrough"
+    cross_ref: "../agentic-workflows/delegation-chain-audit.md"
+
+# =============================================================================
+# Section 6 --- Tool-Use Policy (Agentic-Specific)
+# =============================================================================
+tool_use_policy:
+  - id: RUN-SAF-19
+    description: "Tool manifest defined -- exhaustive list of tools the agent may invoke"
+    priority: critical
+    status: pending
+    evidence_ref: "Tool manifest YAML; denied-tool invocation test"
+
+  - id: RUN-SAF-20
+    description: "Agentic Tool Sovereignty layers validated (Configuration, Policy, Network)"
+    priority: critical
+    status: pending
+    evidence_ref: "Layer verification report"
+    notes: >
+      Configuration: static allow-list per agent.
+      Policy: dynamic OPA/Cedar evaluation at runtime.
+      Network: service-mesh egress rules restricting reachable endpoints.
+
+  - id: RUN-SAF-21
+    description: "Tool invocation rate limits configured -- prevents runaway loops and resource exhaustion"
+    priority: high
+    status: pending
+    evidence_ref: "Rate-limit configuration; test showing throttle enforcement"
+
+# =============================================================================
+# Section 7 --- Consent and Incident Response
+# =============================================================================
+consent_and_incident_response:
+  - id: RUN-SAF-22
+    description: "Consent mechanisms active -- user opt-in/opt-out for AI-assisted features documented and functional"
+    priority: critical
+    status: pending
+    evidence_ref: "Consent flow screenshots; backend toggle verification"
+    eu_ai_act_ref: "GDPR Article 7 -- conditions for consent"
+
+  - id: RUN-SAF-23
+    description: "Incident response plan ready -- AI-specific runbook covering safety incidents, model misbehaviour, data leaks"
+    priority: critical
+    status: pending
+    evidence_ref: "Incident response runbook URL; tabletop exercise report"
+    eu_ai_act_ref: "Article 62 -- reporting of serious incidents"
+
+  - id: RUN-SAF-24
+    description: "Kill-switch tested -- ability to disable the agent across all channels within defined SLA"
+    priority: critical
+    status: pending
+    evidence_ref: "Kill-switch drill report; measured disable time"
+    notes: "SLA target: full disable within 5 minutes of decision"
+
+# =============================================================================
+# Section 8 --- Sign-Off
+# =============================================================================
+sign_off:
+  - role: ai_governance_lead
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: chief_compliance_officer
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: data_protection_officer
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false
+
+  - role: head_of_risk
+    name: "[FILL IN]"
+    date: "[FILL IN]"
+    approved: false

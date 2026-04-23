@@ -1,0 +1,347 @@
+# ==============================================================================
+# Data Quality Checklist — AI Governance Framework
+# ==============================================================================
+# Purpose:    Verify data quality dimensions and acceptance thresholds for
+#             datasets used in AI/ML model training, evaluation, and inference
+#             within regulated FinTech environments.
+# Aligned to: EU AI Act (Art 10), GDPR (Art 5), SAFEST S-08,
+#             DNB Good Practices for AI, DAMA-DMBOK Data Quality Framework
+# Version:    1.0.0
+# Owner:      Data Engineering & AI Governance Team
+# Review:     Per dataset onboarding and quarterly thereafter
+# Cross-refs: ../templates/data-sheet.md, ./bias-testing-checklist.yaml
+# ==============================================================================
+
+metadata:
+  checklist_id: DATA-QUAL-CL
+  title: "Data Quality Assessment Checklist"
+  version: "1.0.0"
+  last_updated: "2026-02-28"
+  applicable_risk_tiers: [high, medium, low]
+  quality_dimensions:
+    - completeness
+    - accuracy
+    - consistency
+    - timeliness
+    - uniqueness
+    - validity
+    - representativeness
+
+items:
+  # ---------------------------------------------------------------------------
+  # Section 1: Data Profiling & Completeness
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-01
+    section: "Completeness"
+    dimension: completeness
+    description: >
+      Execute automated data profiling on the full dataset. Document row count,
+      column count, data types, and overall null-rate summary. Attach the
+      profiling report.
+    priority: critical
+    threshold: "Profiling report generated and reviewed"
+    status: not_started
+    evidence_ref: "[Link to data profiling report]"
+    notes: "Use tools such as Great Expectations, pandas-profiling, or Evidently AI"
+    regulatory_ref: "SAFEST S-08 — data quality documentation"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-02
+    section: "Completeness"
+    dimension: completeness
+    description: >
+      Perform missing value analysis per feature. For each feature, document
+      the percentage of missing values and the missingness mechanism (MCAR,
+      MAR, MNAR). Flag features exceeding the acceptable null threshold.
+    priority: critical
+    threshold: "Critical features: <1% missing. Non-critical: <5% missing."
+    status: not_started
+    evidence_ref: "[Link to missing value analysis]"
+    notes: "MNAR features may introduce selection bias; document and mitigate"
+    regulatory_ref: "EU AI Act Art 10(3) — data quality requirements"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-03
+    section: "Completeness"
+    dimension: completeness
+    description: >
+      Document and justify the imputation strategy for each feature with missing
+      values. Verify that imputation does not introduce systematic bias against
+      protected groups.
+    priority: high
+    threshold: "Imputation strategy documented; bias impact assessed"
+    status: not_started
+    evidence_ref: "[Link to imputation methodology document]"
+    notes: "Cross-ref bias-testing-checklist.yaml DEV-BIAS-01 for demographic completeness"
+    regulatory_ref: "EU AI Act Art 10(2)(f)"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 2: Accuracy
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-04
+    section: "Accuracy"
+    dimension: accuracy
+    description: >
+      Validate a random sample of records against a trusted source of truth
+      (e.g., core banking system, official registry, manual verification).
+      Report the accuracy rate.
+    priority: critical
+    threshold: "Accuracy rate >= 99% for critical fields; >= 95% for supporting fields"
+    status: not_started
+    evidence_ref: "[Link to accuracy validation report]"
+    notes: "Sample size: minimum 1,000 records or 5% of dataset, whichever is larger"
+    regulatory_ref: "GDPR Art 5(1)(d) — accuracy principle"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-05
+    section: "Accuracy"
+    dimension: accuracy
+    description: >
+      Assess label quality for supervised learning tasks. For classification,
+      compute inter-annotator agreement (e.g., Cohen's kappa, Fleiss' kappa).
+      For regression targets, verify against authoritative values.
+    priority: critical
+    threshold: "Inter-annotator kappa >= 0.8 for high-risk; >= 0.7 for medium-risk"
+    status: not_started
+    evidence_ref: "[Link to label quality assessment]"
+    notes: "Low kappa indicates ambiguous labeling criteria; revise guidelines before proceeding"
+    regulatory_ref: "SAFEST S-08; EU AI Act Art 10(3)"
+    risk_tier_required: [high, medium]
+
+  - id: DEV-DQ-06
+    section: "Accuracy"
+    dimension: accuracy
+    description: >
+      Perform outlier detection using statistical methods (IQR, z-score) and
+      domain-based rules. Document outliers found, whether they are legitimate
+      or erroneous, and the handling decision (keep, cap, remove).
+    priority: high
+    threshold: "All outliers reviewed; erroneous values corrected or removed"
+    status: not_started
+    evidence_ref: "[Link to outlier analysis]"
+    notes: "In fraud detection, extreme values may be legitimate; domain expert review required"
+    regulatory_ref: "SAFEST S-08"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 3: Consistency
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-07
+    section: "Consistency"
+    dimension: consistency
+    description: >
+      Check for internal consistency: cross-field validation rules hold
+      (e.g., start_date < end_date, age matches birth_date, total equals
+      sum of components). Report violation rate.
+    priority: high
+    threshold: "Consistency violation rate < 0.1% for critical fields"
+    status: not_started
+    evidence_ref: "[Link to consistency rule validation results]"
+    notes: ""
+    regulatory_ref: "SAFEST S-08"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-08
+    section: "Consistency"
+    dimension: consistency
+    description: >
+      Verify external consistency: values align with the same entities in other
+      authoritative systems (e.g., customer ID maps to the same person in CRM
+      and core banking). Report discrepancy rate.
+    priority: high
+    threshold: "Cross-system discrepancy rate < 0.5%"
+    status: not_started
+    evidence_ref: "[Link to cross-system consistency report]"
+    notes: ""
+    regulatory_ref: "GDPR Art 5(1)(d); SAFEST S-08"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 4: Timeliness
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-09
+    section: "Timeliness"
+    dimension: timeliness
+    description: >
+      Document the data freshness: when was the data collected, when was it
+      last updated, and what is the expected latency between real-world events
+      and their appearance in the dataset.
+    priority: high
+    threshold: "Data freshness documented and within acceptable window for the use case"
+    status: not_started
+    evidence_ref: "[Link to data freshness assessment]"
+    notes: "Fraud detection may require near-real-time; credit scoring may tolerate monthly updates"
+    regulatory_ref: "GDPR Art 5(1)(d) — kept up to date"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-10
+    section: "Timeliness"
+    dimension: timeliness
+    description: >
+      Check for temporal leakage: features that use information from the future
+      relative to the prediction time. Verify that the training/test split
+      respects temporal ordering.
+    priority: critical
+    threshold: "No temporal leakage detected; time-based split validated"
+    status: not_started
+    evidence_ref: "[Link to temporal leakage analysis]"
+    notes: "Common sources: post-event aggregates, label timestamps preceding feature timestamps"
+    regulatory_ref: "SAFEST S-08 — data integrity for model training"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 5: Uniqueness
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-11
+    section: "Uniqueness"
+    dimension: uniqueness
+    description: >
+      Identify and report duplicate records. Apply deduplication at the entity
+      level (not just exact row matches). Document the deduplication method
+      and the number of duplicates removed.
+    priority: high
+    threshold: "Duplicate rate < 0.5% after deduplication"
+    status: not_started
+    evidence_ref: "[Link to deduplication report]"
+    notes: "In transaction data, exact duplicates may be legitimate; use business rules"
+    regulatory_ref: "SAFEST S-08"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 6: Validity
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-12
+    section: "Validity"
+    dimension: validity
+    description: >
+      Apply schema validation: verify all fields conform to expected data types,
+      formats, and value ranges (e.g., IBAN format, date ISO-8601, categorical
+      values within allowed set). Report violation counts.
+    priority: critical
+    threshold: "Schema violation rate: 0% for critical fields; < 0.1% for others"
+    status: not_started
+    evidence_ref: "[Link to schema validation report]"
+    notes: "Use JSON Schema, Great Expectations, or equivalent validation framework"
+    regulatory_ref: "SAFEST S-08"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 7: Representativeness
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-13
+    section: "Representativeness"
+    dimension: representativeness
+    description: >
+      Compare the dataset's demographic and behavioral distributions against
+      the target deployment population. Document any significant divergences
+      using statistical tests (KS test, chi-squared).
+    priority: critical
+    threshold: "No statistically significant divergence (p > 0.05) on key attributes"
+    status: not_started
+    evidence_ref: "[Link to representativeness analysis]"
+    notes: "Cross-ref bias-testing-checklist.yaml DEV-BIAS-01"
+    regulatory_ref: "EU AI Act Art 10(2)(f) — representative datasets"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-14
+    section: "Representativeness"
+    dimension: representativeness
+    description: >
+      Assess whether data sources introduce systematic selection bias
+      (e.g., digital-only data excludes elderly customers, survival bias in
+      loan performance data). Document known biases and mitigations.
+    priority: high
+    threshold: "Selection bias assessment documented; mitigations in place"
+    status: not_started
+    evidence_ref: "[Link to selection bias analysis]"
+    notes: ""
+    regulatory_ref: "EU AI Act Art 10(2)(f); DNB Good Practice 4.2"
+    risk_tier_required: [high, medium]
+
+  # ---------------------------------------------------------------------------
+  # Section 8: Privacy & Compliance
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-15
+    section: "Privacy Compliance"
+    dimension: compliance
+    description: >
+      Confirm that a Data Protection Impact Assessment (DPIA) has been conducted
+      for the dataset. Verify that the legal basis for processing personal data
+      is documented (GDPR Art 6).
+    priority: critical
+    threshold: "DPIA completed and approved by DPO"
+    status: not_started
+    evidence_ref: "[Link to DPIA document]"
+    notes: ""
+    regulatory_ref: "GDPR Art 35; EU AI Act Art 29a"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-16
+    section: "Privacy Compliance"
+    dimension: compliance
+    description: >
+      Verify data minimisation: only features necessary and proportionate for
+      the stated purpose are included. Remove or justify any special category
+      data (GDPR Art 9).
+    priority: critical
+    threshold: "Feature-level justification documented; special category data usage approved"
+    status: not_started
+    evidence_ref: "[Link to data minimisation assessment]"
+    notes: ""
+    regulatory_ref: "GDPR Art 5(1)(c) — data minimisation"
+    risk_tier_required: [high, medium, low]
+
+  # ---------------------------------------------------------------------------
+  # Section 9: Data Lineage & Documentation
+  # ---------------------------------------------------------------------------
+  - id: DEV-DQ-17
+    section: "Lineage & Documentation"
+    dimension: traceability
+    description: >
+      Produce a complete data lineage diagram showing the origin, transformation
+      pipeline, and destination of the dataset. Include all intermediate
+      processing steps.
+    priority: high
+    threshold: "Data lineage documented end-to-end in data-sheet.md"
+    status: not_started
+    evidence_ref: "[Link to data lineage diagram]"
+    notes: "See ../templates/data-sheet.md for the documentation template"
+    regulatory_ref: "SAFEST S-08; EU AI Act Art 12 — record-keeping"
+    risk_tier_required: [high, medium, low]
+
+  - id: DEV-DQ-18
+    section: "Lineage & Documentation"
+    dimension: traceability
+    description: >
+      Complete the Datasheet for Datasets template (data-sheet.md) covering
+      motivation, composition, collection, preprocessing, uses, distribution,
+      and maintenance. Attach the completed datasheet.
+    priority: critical
+    threshold: "Datasheet completed with all sections filled"
+    status: not_started
+    evidence_ref: "[Link to completed data-sheet.md]"
+    notes: ""
+    regulatory_ref: "SAFEST S-08; EU AI Act Art 10(2)"
+    risk_tier_required: [high, medium, low]
+
+# ==============================================================================
+# Sign-off
+# ==============================================================================
+sign_off:
+  - role: "Data Engineer"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Data Scientist / ML Engineer"
+    name: ""
+    date: ""
+    status: pending
+  - role: "Data Protection Officer"
+    name: ""
+    date: ""
+    status: pending
+  - role: "AI Governance Lead"
+    name: ""
+    date: ""
+    status: pending
