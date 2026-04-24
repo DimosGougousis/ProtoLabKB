@@ -13,7 +13,7 @@ Status: **● done** Phases 0-6 completed. Phase 7 (compliance guardrails refact
 - [x] 0.1 Confirm workspace root is `C:\Users\dimos\ProtoLab\` (PLAN §2.1)
 - [x] 0.2 Write `.gitignore` (node_modules, .DS_Store, slides_out/, *.tmp, .env)
 - [x] 0.3 Write `README.md` entry point (already drafted in review)
-- [x] 0.4 Relocate existing interview-prep files into `reference/interview-prep/` (pptx, pdf, html, build_deck.js, export_slides.ps1, slides_out/, _prep_readonly.md)
+- [x] 0.4 ~~Relocate existing interview-prep files into `reference/interview-prep/`~~ (removed — interview prep materials deleted)
 - [x] 0.5 `git init` → set default branch `main`
 - [x] 0.6 `git remote add origin https://github.com/DimosGougousis/ProtoLabKB.git`
 - [x] 0.7 Commit: `chore: scaffold ProtoLabs Product Office (plan + readme)`
