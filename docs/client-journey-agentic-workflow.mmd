@@ -1,0 +1,168 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e1f5fe', 'primaryTextColor': '#01579b', 'primaryBorderColor': '#0288d1', 'lineColor': '#0288d1', 'secondaryColor': '#fff3e0', 'tertiaryColor': '#e8f5e9', 'fontFamily': 'Segoe UI'}}}%%
+
+graph TB
+    subgraph LEGEND[" "]
+        direction LR
+        CLIENT["👤 Client Action"]:::client
+        AI["🤖 AI Agent"]:::ai
+        HUMAN["👷 Human Action"]:::human
+        SYSTEM["⚙️ System/Monitor"]:::system
+        GATE["🛡️ Governance Gate"]:::gate
+    end
+
+    subgraph STAGE1["STAGE 1: Discovery & Intake"]
+        direction TB
+        S1A["Client uploads CAD file<br/>or describes part"]:::client
+        S1B["{{dfm-router}} classifies<br/>process & vertical"]:::ai
+        S1C["Risk classification:<br/>Limited / High / Regulated"]:::ai
+        S1D["Governance Gate:<br/>Discovery Check"]:::gate
+        S1E["Intake sanitized<br/>& validated"]:::system
+
+        S1A --> S1B
+        S1B --> S1C
+        S1C --> S1D
+        S1D -->|"Pass"| S1E
+        S1D -->|"Fail"| S1A
+    end
+
+    subgraph STAGE2["STAGE 2: AI-Powered DFM Analysis"]
+        direction TB
+        S2A["Agent loads skill manifest<br/>& KB articles"]:::ai
+        S2B["{{cnc-machining}} /<br/>{{injection-molding}} /<br/>{{sheet-metal}} /<br/>{{3d-printing}} agent"]:::ai
+        S2C["DFM accuracy eval suite<br/>runs golden-set tests"]:::system
+        S2D["Safety Agent validates<br/>output against guardrails"]:::ai
+        S2E["Source citation enforced<br/>KB + source_url"]:::system
+        S2F["Governance Gate:<br/>Development Check"]:::gate
+
+        S2A --> S2B
+        S2B --> S2C
+        S2C -->|">90% accuracy"| S2D
+        S2C -->|"<90% accuracy"| S2B
+        S2D --> S2E
+        S2E --> S2F
+        S2F -->|"Pass"| S2G["DFM Report Generated"]:::system
+        S2F -->|"Fail"| S2B
+    end
+
+    subgraph STAGE3["STAGE 3: Quote & Proposal"]
+        direction TB
+        S3A["{{materials-selection}}<br/>agent recommends<br/>material & finish"]:::ai
+        S3B["Quote bot calculates<br/>pricing & lead time"]:::ai
+        S3C["Financial guardrails:<br/>margin checks, approval tiers"]:::system
+        S3D["Human review:<br/>Account Manager validation"]:::human
+        S3E["Governance Gate:<br/>Quote Approval"]:::gate
+
+        S3A --> S3B
+        S3B --> S3C
+        S3C -->|"Within bounds"| S3D
+        S3C -->|"Exceeds bounds"| S3F["Escalate to<br/>Pricing Team"]:::human
+        S3D --> S3E
+        S3F --> S3E
+        S3E -->|"Approved"| S3G["Proposal sent<br/>to client"]:::system
+    end
+
+    subgraph STAGE4["STAGE 4: Order Confirmation & Production"]
+        direction TB
+        S4A["Client approves<br/>proposal & PO received"]:::client
+        S4B["Order enters<br/>MES/ERP system"]:::system
+        S4C["{{production-scheduler}}<br/>agent optimizes<br/>job queue"]:::ai
+        S4D["Hard guardrails:<br/>safety locks, maintenance<br/>windows enforced"]:::system
+        S4E["Safety Agent validates<br/>schedule against<br/>ISO 10218 / IEC 62443"]:::ai
+        S4F["Governance Gate:<br/>Production Release"]:::gate
+
+        S4A --> S4B
+        S4B --> S4C
+        S4C --> S4D
+        S4D --> S4E
+        S4E --> S4F
+        S4F -->|"Approved"| S4G["Job released<br/>to shop floor"]:::system
+    end
+
+    subgraph STAGE5["STAGE 5: Manufacturing & Quality"]
+        direction TB
+        S5A["CNC / molding / printing<br/>machine executes job"]:::system
+        S5B["IoT sensors stream<br/>telemetry in real-time"]:::system
+        S5C["{{quality-agent}} monitors<br/>dimensions & tolerances"]:::ai
+        S5D["Anomaly detection:<br/>drift >5% triggers alert"]:::system
+        S5E["Kill switch available:<br/>30-second activation"]:::system
+        S5F["Human operator<br/>monitors & intervenes"]:::human
+
+        S5A --> S5B
+        S5B --> S5C
+        S5C -->|"Within spec"| S5G["Part passes<br/>inspection"]:::system
+        S5C -->|"Out of spec"| S5D
+        S5D -->|"Critical"| S5E
+        S5D -->|"Minor"| S5F
+        S5E --> S5H["Auto-hold +<br/>alert engineer"]:::system
+        S5F --> S5I["Manual adjustment<br/>or rework"]:::human
+    end
+
+    subgraph STAGE6["STAGE 6: Delivery & Feedback"]
+        direction TB
+        S6A["Part ships to<br/>client"]:::system
+        S6B["Delivery confirmation<br/>& tracking"]:::system
+        S6C["Client feedback<br/>collected"]:::client
+        S6D["Feedback feeds<br/>KB freshness SLA<br/>& model retraining"]:::system
+        S6E["Periodic revalidation:<br/>quarterly eval run"]:::system
+        S6F["Governance Gate:<br/>Post-Market Review"]:::gate
+
+        S6A --> S6B
+        S6B --> S6C
+        S6C --> S6D
+        S6D --> S6E
+        S6E --> S6F
+    end
+
+    subgraph MONITORING["🔍 CONTINUOUS MONITORING LAYER"]
+        direction TB
+        M1["WP03: Runtime Monitoring<br/>Agent collects metrics"]:::system
+        M2["WP04: Audit & Compliance<br/>Agent logs all events"]:::system
+        M3["Safety Agent (Governor)<br/>validates all Tier 2/3 actions"]:::ai
+        M4["Orchestration Agent<br/>detects cascading failures"]:::ai
+        M5["Grafana Dashboard<br/>real-time visibility"]:::system
+        M6["Quarterly Governance<br/>Report to Board"]:::system
+
+        M1 --> M5
+        M2 --> M5
+        M3 --> M5
+        M4 --> M5
+        M5 --> M6
+    end
+
+    %% Flow connections between stages
+    S1E --> S2A
+    S2G --> S3A
+    S3G --> S4A
+    S4G --> S5A
+    S5G --> S6A
+    S5I --> S6A
+    S5H --> S5F
+
+    %% Monitoring connections
+    S1B -.->|"logs"| M2
+    S1C -.->|"risk score"| M1
+    S2B -.->|"eval results"| M1
+    S2D -.->|"validation"| M3
+    S3B -.->|"quote metrics"| M1
+    S4C -.->|"schedule validation"| M3
+    S4E -.->|"safety check"| M3
+    S5C -.->|"quality metrics"| M1
+    S5D -.->|"anomaly alert"| M4
+    S5E -.->|"kill switch log"| M2
+    S6D -.->|"feedback metrics"| M1
+
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1
+    classDef ai fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#e65100
+    classDef human fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20
+    classDef system fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#4a148c
+    classDef gate fill:#ffebee,stroke:#c62828,stroke-width:3px,color:#b71c1c,stroke-dasharray: 5 5
+
+    style STAGE1 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style STAGE2 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style STAGE3 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style STAGE4 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style STAGE5 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style STAGE6 fill:#fafafa,stroke:#424242,stroke-width:2px
+    style MONITORING fill:#fff8e1,stroke:#ff6f00,stroke-width:3px
+    style LEGEND fill:#ffffff,stroke:#9e9e9e,stroke-width:1px
