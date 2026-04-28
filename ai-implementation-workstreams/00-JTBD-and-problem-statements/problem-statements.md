@@ -397,10 +397,133 @@ ProtoLabs security capabilities are fragmented across multiple disconnected tool
 
 ---
 
+## 🔴 P0-STRATEGIC - Blocking Strategic Decisions
+
+These problems are **upstream blockers** — they prevent governance artifacts, data pipelines, and Phase 2 model development from proceeding. They are higher priority than P1 because P1 items depend on them.
+
+---
+
+### P0-STRAT-1: LMM Buy/Build Strategy Undecided
+
+**Problem Statement:**
+ProtoLabs has not yet made a formal decision on how to power its multimodal RFQ extraction and manufacturing intelligence capabilities — whether to buy commodity LLM APIs, fine-tune open-source models, or build a proprietary foundation model. The strategy is drafted (`docs/proprietary-manufacturing-model-strategy.md`) but not approved, and the three Phase 0 validation spikes have not started.
+
+**Impact:**
+- **Governance Gaps:** Cannot create data card templates, automated lineage specs, or training run logging standards (don't know what to template)
+- **Model Card Ambiguity:** Bought API vs. fine-tuned model vs. foundation model require fundamentally different documentation
+- **Budget Uncertainty:** Cannot forecast Phase 2/3 infrastructure costs without a decision
+- **Vendor Lock-in Risk:** Every month of indecision deepens dependency on commodity LLM providers
+- **Competitive Delay:** Competitors with proprietary manufacturing models gain advantage
+
+**Evidence:**
+- Strategy doc marked "Draft — for workshop discussion"
+- Three validation spikes (quote join key, contract NDA review, ML platform readiness) not started
+- Governance framework has 3 documented gaps traceable to this decision
+- No approved budget for Phase 2/3 infrastructure
+
+**Success Criteria:**
+- ✅ Phase 0 validation spike #1 complete (quote-to-outcome join validated)
+- ✅ Phase 0 validation spike #2 complete (contract NDA/legal review done)
+- ✅ Phase 0 validation spike #3 complete (ML platform readiness confirmed)
+- ✅ Formal go/no-go decision documented and approved
+- ✅ Phase 1 vendor selection finalized (if go)
+
+**Related JTBD:** SD-1 (LMM Buy/Build Strategy Decision)
+
+---
+
+### P0-STRAT-2: Historical Data Pipeline Not Built
+
+**Problem Statement:**
+ProtoLabs possesses 20 years of valuable manufacturing data (quotes, DFM outcomes, pricing signals, conversion data) but has no pipeline to load, clean, label, and certify this data into a structured training corpus. The data exists in semi-structured form across CRM, ERP, and ProDesk but cannot be used for model training without curation.
+
+**Impact:**
+- **Phase 2 Blocked:** Fine-tuning requires 500–2,000 labeled pairs — none exist yet
+- **No Ground Truth:** Drift detection has no baseline to measure against
+- **No Golden Eval Set:** Pre-deployment gates cannot validate model accuracy
+- **Lost Training Signals:** Every quote processed without logging is a permanently lost data point
+- **Data Flywheel Delayed:** The compounding advantage never starts
+
+**Evidence:**
+- Strategy doc explicitly lists 4 data gaps as "Needs curation" or "Needs build"
+- Funnel intake marks NDA review and ITAR classification as 🔴 Blocked
+- No ERP integration scope defined
+- No engineer override UI instrumentation planned
+
+**Success Criteria:**
+- ✅ Legal review of training-data permissions complete
+- ✅ ITAR/EAR segregation approach confirmed
+- ✅ ERP integration scope defined
+- ✅ Engineer override logging instrumented in review UI
+- ✅ First 500 labeled (input → Order Object) pairs curated
+- ✅ Data pipeline architecture documented
+
+**Related JTBD:** SD-2 (Historical Data Loading & Curation Pipeline)
+
+---
+
+### P0-STRAT-3: Governance Artifacts Cannot Be Created (Data Cards, Lineage, Training Logging)
+
+**Problem Statement:**
+Three governance artifacts required for ISO 42001 and EU AI Act Article 10 compliance cannot be meaningfully created because the underlying data pipeline and model strategy are undefined: data card templates, automated lineage specifications, and training run logging standards.
+
+**Impact:**
+- **ISO 42001 Blocked:** Clause 7.5 documentation requirements unmet
+- **EU AI Act Non-Compliance:** Article 10 (data governance) cannot be demonstrated for high-risk systems
+- **Audit Risk:** No data provenance or lineage evidence for auditors
+- **GDPR Risk:** Cannot demonstrate Article 17 (right to erasure) capability for training data
+- **~20% Governance Gap:** Framework coverage stuck at ~80% until resolved
+
+**Evidence:**
+- Governance assessment identified 3 specific gaps
+- Model card template exists but data card template does not
+- Lineage is documented manually, not automated
+- No training run logging standard exists
+
+**Success Criteria:**
+- ✅ Data card template drafted and reviewed by Governance
+- ✅ Automated lineage architecture scoped with owner assigned
+- ✅ Training run logging standard drafted (can be Phase 2-only)
+- ✅ ISO 42001 gap assessment refreshed to reflect LMM-specific requirements
+- ✅ GDPR erasure capability designed
+
+**Related JTBD:** SD-3 (Governance Gap Resolution)
+
+---
+
+### P0-STRAT-4: Phase 0 Decision Gate Missing Governance Criteria
+
+**Problem Statement:**
+The Phase 0 decision gate (which green-lights Phase 1 kickoff) currently validates only technical and legal spikes but does not include governance readiness criteria. Without this, Phase 2 fine-tuning could start without governance guardrails, creating retroactive compliance work that is 3–5× more expensive than proactive design.
+
+**Impact:**
+- **Retroactive Compliance Cost:** Fixing governance gaps after Phase 2 starts is 3–5× more expensive
+- **Regulatory Risk:** Training on customer data without documented controls
+- **Audit Findings:** Auditors will flag absence of governance gate criteria
+- **Process Integrity:** Decision gate should be holistic, not just technical
+
+**Evidence:**
+- Current gate criteria cover only 3 validation spikes (technical/legal)
+- No governance readiness check in the gate
+- Industry best practice: governance gates embedded in ML lifecycle
+
+**Success Criteria:**
+- ✅ Governance readiness criteria added to Phase 0 decision gate
+- ✅ Gate includes: data card template, lineage scope, training logging standard, ITAR approach, GDPR erasure design
+- ✅ Gate criteria reviewed and approved by AI Governance Committee
+
+**Related JTBD:** SD-4 (Phase 0 Decision Gate — Governance Readiness Checkpoint)
+
+---
+
 ## Summary: Problem Priority Matrix
 
 | Priority | Problem ID | Problem Statement | Business Impact | Technical Complexity | Timeline |
 |----------|------------|-------------------|-----------------|---------------------|----------|
+| **P0-STRAT** | P0-STRAT-1 | LMM Buy/Build Strategy Undecided | Critical | High | Immediate |
+| **P0-STRAT** | P0-STRAT-2 | Historical Data Pipeline Not Built | Critical | High | Immediate |
+| **P0-STRAT** | P0-STRAT-3 | Governance Artifacts Blocked | Critical | Low | Immediate |
+| **P0-STRAT** | P0-STRAT-4 | Decision Gate Missing Governance Criteria | Critical | Low | Immediate |
 | **P0** | P0-1 | Unprotected AI Inputs | Critical | Low | Immediate |
 | **P0** | P0-2 | No Adversarial Defense | Critical | Medium | Immediate |
 | **P0** | P0-3 | Audit & Compliance Gap | Critical | Low | Immediate |
@@ -413,13 +536,34 @@ ProtoLabs security capabilities are fragmented across multiple disconnected tool
 
 ---
 
+## Dependency Chain
+
+```
+P0-STRAT-1 (LMM Strategy Decision)
+    │
+    ├──► P0-STRAT-2 (Historical Data Pipeline)
+    │        │
+    │        ├──► P0-STRAT-3 (Governance Artifacts)
+    │        │        │
+    │        │        └──► ISO 42001 / EU AI Act Art 10 compliance
+    │        │
+    │        └──► Phase 2 Fine-Tuning (500-2000 labeled pairs)
+    │
+    └──► P0-STRAT-4 (Decision Gate Update)
+             │
+             └──► Phase 1 Kickoff Approval
+```
+
+---
+
 ## Document Control
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | April 23, 2026 | AI Governance Team | Initial problem statements |
+| 1.1 | April 28, 2026 | AI Governance Team | Added P0-STRAT-1 through P0-STRAT-4 (strategic decision blockers) |
 
 **Document Owner:** AI Governance Committee  
-**Last Updated:** April 23, 2026  
+**Last Updated:** April 28, 2026  
 **Next Review:** Bi-weekly during implementation  
 **Classification:** Internal Use - Strategic Planning

@@ -1,0 +1,370 @@
+# =============================================================================
+# Model Card Completeness Checklist
+# ProtoLabs AI Governance Framework
+# =============================================================================
+# Purpose: Validates that a model card is complete before deployment approval.
+#          This checklist is the enforcement mechanism for model documentation
+#          requirements — without it, model cards remain optional.
+#
+# When to Use:
+#   - Before every deployment gate (pre-deployment-gate.yaml references this)
+#   - When a model card is updated or versioned
+#   - During internal audit of model documentation
+#
+# Who Is Responsible:
+#   - Technical Owner: completes the checklist
+#   - Policy Owner: validates business context sections
+#   - Governance Council: verifies completeness for Tier 2/3
+#
+# Regulatory Basis:
+#   - EU AI Act Article 11 — Technical documentation requirements
+#   - EU AI Act Annex IV — Detailed documentation for high-risk AI
+#   - ISO/IEC 42001 Clause 7.5 — Documented information
+#   - NIST AI RMF GV-7.1 — Model documentation complete
+# =============================================================================
+
+metadata:
+  id: DEV-MCC
+  title: Model Card Completeness Checklist
+  version: "1.0.0"
+  last_updated: "2026-04-28"
+  owner: Technical Owner
+  review_cadence: semi_annually
+  applies_to_tiers: ["Tier 1", "Tier 2", "Tier 3"]
+
+sections:
+
+  # ---------------------------------------------------------------------------
+  # Section 1: Document Metadata
+  # ---------------------------------------------------------------------------
+  - section: document_metadata
+    description: >
+      The model card itself must be properly versioned, attributed, and
+      linked to the agent registry.
+    items:
+      - id: DEV-MCC-001
+        item: "Model card has a unique version number and date"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 7.5"
+
+      - id: DEV-MCC-002
+        item: "Model card lists author(s) and reviewer(s) with roles"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 11"
+
+      - id: DEV-MCC-003
+        item: "Model card is linked to agent registry via agent_id"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF GV-7.1"
+
+      - id: DEV-MCC-004
+        item: "Approval status is explicitly set (Draft / Under Review / Approved / Superseded)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 7.5"
+
+  # ---------------------------------------------------------------------------
+  # Section 2: Intended Use and Scope
+  # ---------------------------------------------------------------------------
+  - section: intended_use
+    description: >
+      Defines what the model is for, what it should not be used for, and
+      who the users are. Prevents scope creep and misuse.
+    items:
+      - id: DEV-MCC-005
+        item: "Intended use case is clearly described with business context"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 11(1)"
+
+      - id: DEV-MCC-006
+        item: "Out-of-scope uses are explicitly listed (what the model must NOT be used for)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)"
+
+      - id: DEV-MCC-007
+        item: "Target users are identified (internal engineers, clients, automated systems)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(1)"
+
+      - id: DEV-MCC-008
+        item: "Affected stakeholders are listed (who is impacted by model outputs)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MP-3.1"
+
+  # ---------------------------------------------------------------------------
+  # Section 3: Technical Architecture
+  # ---------------------------------------------------------------------------
+  - section: technical_architecture
+    description: >
+      Documents the model's technical foundation: architecture, training
+      data, prompts, and dependencies.
+    items:
+      - id: DEV-MCC-009
+        item: "Model architecture described (base model, fine-tuning approach, RAG pipeline, etc.)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 11(2)"
+
+      - id: DEV-MCC-010
+        item: "Training data sources documented (datasets, KB articles, synthetic data)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10(1)"
+
+      - id: DEV-MCC-011
+        item: "Prompt templates documented and versioned (for LLM-based systems)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF GV-7.1"
+
+      - id: DEV-MCC-012
+        item: "Third-party dependencies listed (vendor model, API version, SDK)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF GV-6.1"
+
+      - id: DEV-MCC-013
+        item: "Data lineage documented (source → processing → training/inference)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10(2)"
+
+  # ---------------------------------------------------------------------------
+  # Section 4: Performance and Evaluation
+  # ---------------------------------------------------------------------------
+  - section: performance_evaluation
+    description: >
+      Documents how well the model performs, what metrics are tracked, and
+      what the evaluation results show.
+    items:
+      - id: DEV-MCC-014
+        item: "Primary performance metrics defined (accuracy, precision, recall, or domain-specific)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-1.1"
+
+      - id: DEV-MCC-015
+        item: "Evaluation results documented with test dataset description"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-2.1"
+
+      - id: DEV-MCC-016
+        item: "Performance meets or exceeds defined thresholds per risk tier"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 15(1)"
+
+      - id: DEV-MCC-017
+        item: "Fairness and bias evaluation completed (if applicable)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 10(2)(f)"
+
+      - id: DEV-MCC-018
+        item: "Safety evaluation completed (harm scenarios tested)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-3.1"
+
+  # ---------------------------------------------------------------------------
+  # Section 5: Limitations and Risks
+  # ---------------------------------------------------------------------------
+  - section: limitations_risks
+    description: >
+      Honest documentation of what the model cannot do, where it fails,
+      and what risks it carries.
+    items:
+      - id: DEV-MCC-019
+        item: "Known limitations documented (edge cases, failure modes, accuracy gaps)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 13(3)(b)"
+
+      - id: DEV-MCC-020
+        item: "Risk tier classification documented with rationale"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 6"
+
+      - id: DEV-MCC-021
+        item: "Residual risks documented after mitigation"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 8.2"
+
+      - id: DEV-MCC-022
+        item: "Hallucination risk documented (for LLM-based systems)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-4.1"
+
+  # ---------------------------------------------------------------------------
+  # Section 6: Human Oversight and Controls
+  # ---------------------------------------------------------------------------
+  - section: human_oversight
+    description: >
+      Documents how humans oversee, intervene, and override the model.
+    items:
+      - id: DEV-MCC-023
+        item: "Human oversight mechanism documented (HITL, HITL-by-exception, full autonomy)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(1)"
+
+      - id: DEV-MCC-024
+        item: "Override and intervention procedures documented"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 14(3)(a)"
+
+      - id: DEV-MCC-025
+        item: "Kill switch mechanism documented (if Tier 2+)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "Singapore MGF"
+
+      - id: DEV-MCC-026
+        item: "Escalation path documented (who to contact when model fails)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MG-2.1"
+
+  # ---------------------------------------------------------------------------
+  # Section 7: Monitoring and Maintenance
+  # ---------------------------------------------------------------------------
+  - section: monitoring_maintenance
+    description: >
+      Documents how the model will be monitored in production and when
+      it will be re-evaluated.
+    items:
+      - id: DEV-MCC-027
+        item: "Production monitoring plan documented (metrics, frequency, alerting)"
+        priority: critical
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "EU AI Act Art. 72(1)"
+
+      - id: DEV-MCC-028
+        item: "Drift detection method documented"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-3.1"
+
+      - id: DEV-MCC-029
+        item: "Re-evaluation schedule defined (quarterly, on-trigger, or both)"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 9.1"
+
+      - id: DEV-MCC-030
+        item: "Retirement criteria documented (when and how the model will be decommissioned)"
+        priority: medium
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 8.4"
+
+  # ---------------------------------------------------------------------------
+  # Section 8: Version History
+  # ---------------------------------------------------------------------------
+  - section: version_history
+    description: >
+      Maintains a changelog of material changes to the model or its card.
+    items:
+      - id: DEV-MCC-031
+        item: "Version history table present with dates, changes, and authors"
+        priority: high
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "ISO 42001 Cl. 7.5"
+
+      - id: DEV-MCC-032
+        item: "Each version links to corresponding eval results"
+        priority: medium
+        status: not_started
+        evidence_ref: ""
+        notes: ""
+        regulatory_ref: "NIST AI RMF MS-2.1"
+
+# =============================================================================
+# Completeness Scoring
+# =============================================================================
+#
+# Critical items (12): DEV-MCC-001 through 003, 005, 006, 009, 010, 014-016,
+#                      019-020, 023-024, 027
+# High items (14):     DEV-MCC-004, 007-008, 011-013, 017-018, 021-022,
+#                      025-026, 028-029, 031
+# Medium items (3):    DEV-MCC-030, 032
+#
+# Deployment Gate:
+#   - Tier 1: All critical items must be complete
+#   - Tier 2: All critical + all high items must be complete
+#   - Tier 3: All items must be complete
+#
+# =============================================================================
