@@ -1,10 +1,10 @@
 # Worked Example — Funnel Intake: Large Manufacturing Model (LMM) for RFQ
 
 > **Type:** Qualified Product Review  
-> **Skill:** `/pl-funnel-intake`  
-> **Date:** 2026-04-27  
+> **Skill:** `/pl-funnel-intake` v1.1.0  
+> **Date:** 2026-04-29  
 > **Use case:** Large Manufacturing Model to support the Request for Quote process  
-> **Verdict:** ✅ Fully compliant — all 12 pre-emission checks pass  
+> **Verdict:** ✅ Fully compliant — all 28 pre-emission checks pass  
 
 ---
 
@@ -23,21 +23,25 @@ This worked example captures a complete, spec-compliant `/pl-funnel-intake` run 
 | Dimension | Verdict | Notes |
 |---|---|---|
 | Structural compliance | ✅ | Single markdown, correct section order, Appendix E justified |
-| Pre-emission self-check (12/12) | ✅ | All items verified with evidence |
+| Pre-emission self-check (28/28) | ✅ | All items verified with evidence |
 | Glossary format | ✅ | 14 terms, Source column, intro/outro framing |
 | Canvas (Boxes 1–6) | ✅ | All boxes complete with required elements |
-| Appendix A — Solution Architecture | ✅ | Component diagram, build/buy, compliance table, WwM routing |
-| Appendix B — Cost & Timeline | ✅ | Ranged estimates, milestones, kill criteria, headcount |
+| **Box 7 — Change Readiness & Human Impact** | ✅ | Human impact analysis, resistance scoring (83 = Critical), change cost vs ROI, buy-in strategy |
+| **Box 8 — Data Readiness & Engineering** | ✅ | Data source inventory, quality assessment, pipeline architecture, readiness score (2.16/5.0) |
+| Appendix A — Solution Architecture | ✅ | Component diagram, build/buy, compliance table with ISO 42001 Annex A controls, WwM routing |
+| Appendix B — Cost & Timeline | ✅ | Ranged estimates adjusted for change cost + data readiness, milestones, kill criteria, headcount |
 | Appendix C — Experiment / Test Plan | ✅ | Falsifiable hypothesis, numeric success/kill bars |
 | Appendix D — Competitive Scan | ✅ | Xometry + Fictiv with verifiable URLs |
-| Appendix E — Historical Data Strategy | ✅ | Flywheel diagram, defensibility table, governance implications |
+| Appendix E — Historical Data Strategy | ✅ | Flywheel diagram, defensibility table, governance implications, flywheel-engagement dependency |
 
 ### Minor Observations (not defects)
 
 1. **Glossary term count (14 vs. 5–12 target):** Slightly over guidance, but every term is load-bearing for a use case spanning manufacturing, AI/ML, governance, legal, and portfolio strategy.
-2. **Risks count (7 vs. ≤5 target):** Exceeds guidance, but proportionate for a Tier 3 strategic R&D bet with $2.7M–$6.4M investment. The "wrong autonomy level" risk is explicitly required by the skill spec.
-3. **Verification section at end:** Not required by skill spec but adds practical value.
-4. **Appendix B kill criteria format:** Narrative bullets rather than structured table — functionally complete but slightly inconsistent with table-heavy format elsewhere.
+2. **Risks count (7 vs. ≤5 target):** Exceeds guidance, but proportionate for a Tier 3 strategic R&D bet with $4.95M–$12.15M adjusted investment. The "wrong autonomy level" risk is explicitly required by the skill spec.
+3. **Box 7 resistance score (83 = Critical):** This is the highest possible intervention level. The skill spec says "may need to defer" at this level. The artifact proceeds because the strategic value justifies the cost, but this requires explicit executive acknowledgment.
+4. **Box 8 data readiness (2.16 = Significant Gaps):** This triggers sequential (not parallel) data engineering. The timeline adjustment from 24 to 27–30 months is material and changes the investment conversation.
+5. **Verification section at end:** Not required by skill spec but adds practical value.
+6. **Appendix B kill criteria format:** Narrative bullets rather than structured table — functionally complete but slightly inconsistent with table-heavy format elsewhere.
 
 ---
 
@@ -236,6 +240,232 @@ A 3-layer system — (1) PL-LMM-Core foundation encoder trained on 20-year B-rep
 | Bind firm quotes (vs. indicative) at what confidence threshold | Legal + Pricing | Month 9 (after WAPE calibration) |
 | Reveal LMM as a product story (marketing) vs. keep as silent moat | CMO + CEO | Month 15 |
 
+### Box 7 — Change Readiness & Human Impact
+
+> Required by skill spec v1.1.0. The LMM is the most organizationally disruptive use case in the portfolio — it redefines what it means to be a manufacturing engineer at ProtoLabs. Without quantifying the human transformation cost, the ROI hypothesis in Box 3 is incomplete.
+
+#### 7.1 Human Impact Analysis
+
+| Question | Assessment |
+|----------|-----------|
+| **Who is affected?** | Applications engineers (primary — quoting workflow redefined), pricing/margin managers (model output replaces manual pricing judgment), operations/routing engineers (routing-head changes dispatch logic), sales (quote SLA changes from hours to seconds), compliance officers (new audit-trail obligations), customer support (new escalation paths for AI-generated quotes) |
+| **What changes for them?** | Engineers shift from "I price the part" to "I review the AI's price and advise the client." Pricing managers shift from "I set the rules" to "I monitor the model's calibration." Sales shifts from "I wait for the quote" to "I explain the AI quote to the client." |
+| **How many people?** | ~20–40 applications engineers (direct), ~5–10 pricing managers (direct), ~10–15 operations engineers (indirect), ~30–50 sales reps (indirect). Total: 65–115 people across direct + indirect roles. |
+| **What is the identity threat level?** | **HIGH** — "If AI does the quoting, what am I?" Engineers derive professional worth from pricing judgment and technical expertise. The LMM automates the thinking, not just the drafting. This strikes at the heart of engineering identity, per the change management framework's Identity Threat resistance type. |
+| **What skills must they learn?** | AI-output interpretation (reading confidence scores, provenance trails), confidence-routing judgment (when to override vs. approve), consultative client advisory (explaining AI quotes, offering alternatives), data literacy (understanding model drift, calibration). Current capability gap: **significant** — none of these skills are in current engineering training. |
+| **What do they lose?** | Control over pricing decisions (AI proposes, they approve — not they decide), visibility as the "expert quoter" (AI may outperform them on standard geometries), potential status if AI reduces the perceived complexity of their work, potential career path disruption if the "senior engineer → pricing expert" ladder is redefined. |
+
+#### 7.2 Resistance Risk Scoring
+
+| Resistance Type | Likelihood (1-5) | Severity (1-5) | Risk Score | Mitigation Strategy |
+|----------------|-----------------|----------------|------------|-------------------|
+| Identity Threat | 4 | 5 | 20 | Public no-cut commitment (written, signed); "AI Engineering Liaison" role for senior engineers; co-design rule (engineers vote on override UX); failure archaeology sessions that position engineers as knowledge masters |
+| Skill Anxiety | 3 | 4 | 12 | Structured training program (AI co-pilot mastery, confidence-routing certification); shadow authority model (engineers control the AI, not the other way around); teach-back protocol (pair senior + junior engineers) |
+| Economic Fear | 4 | 5 | 20 | Guaranteed compensation floor (no engineer earns less for 12 months); advisory commission upside (compensation goes UP, not down); career path formalization (L1–L5 with clear progression) |
+| Quality Gatekeeper | 4 | 4 | 16 | HITL by default for all regulated verticals; engineer override authority preserved; kill-switch for quality incidents; override-impact dashboard showing engineer contribution to model improvement |
+| Change Fatigue | 2 | 3 | 6 | Phase 0 listening tour (1:1 confidential interviews); champion identification (3–5 peer champions with early access); quick-win demonstrations (pilot shows value before scaling) |
+| Comfort Zone | 3 | 3 | 9 | Compelling personal benefit (more interesting work, higher compensation, career acceleration); "Day in the Life" simulation workshops; client testimonial videos |
+| **Total Resistance Risk** | | | **83** | **CRITICAL (46+)** |
+
+**Risk threshold: CRITICAL (83)** — Per the skill spec: *"Fundamental redesign of use case or rollout strategy; may need to defer."* This triggers the most intensive intervention level: executive sponsorship, structural guarantees, and a phased rollout that proves value before scaling.
+
+#### 7.3 Change Cost Estimation
+
+| Cost Category | Estimate | Notes |
+|--------------|----------|-------|
+| **Training & skill building** | $5K–$15K per engineer | AI co-pilot mastery, confidence-routing training, consultative selling workshops. ~65–115 affected people. |
+| **Productivity dip during transition** | 20–30% for 8–12 weeks | Learning curve on new workflow; expected output reduction during transition period |
+| **Attrition risk cost** | $80K–$150K per senior engineer lost | Replacement cost + knowledge drain. Risk of 2–5 senior engineers leaving if transformation is mishandled. |
+| **Change management program** | $200K–$500K over 18 months | CM lead hire, workshops, coaching, knowledge bounties, champion program, listening tours |
+| **Compensation transition** | $500K–$1.2M guaranteed floor | 12-month no-cut commitment for affected engineers; advisory commission structure setup |
+| **Total Change Cost** | **$1.5M–$3.5M** | **Compare to Box 3 ROI hypothesis of $2.7M–$6.4M total technical investment** |
+
+**Critical insight:** Change cost ($1.5M–$3.5M) is **40–55% of total technical investment**. The existing ROI hypothesis doesn't account for this. The adjusted ROI is:
+
+> **Adjusted ROI = Business Value − Technical Cost ($2.7M–$6.4M) − Change Cost ($1.5M–$3.5M) − Attrition Risk ($400K–$1.5M)**
+>
+> **Adjusted Time to Value = Technical Build Time (24 months) + Change Adoption Time (3–6 months) = 27–30 months**
+
+#### 7.4 Business Value vs. Change Cost Matrix
+
+```
+                        HIGH Business Value
+                              |
+           QUICK WIN          |         STRATEGIC BET ← LMM IS HERE
+           ─────────          |         ─────────────
+           High value,        |         High value,
+           low change cost    |         high change cost
+           → Proceed fast     |         → Phased rollout
+                              |         → Executive sponsorship
+    ──────────────────────────┼──────────────────────────
+                              |
+           DEPRIORITIZE       |         RECONSIDER
+           ────────────       |         ──────────
+           Low value,         |         Low value,
+           low change cost    |         high change cost
+           → Backlog          |         → Kill or redesign
+                              |
+                        LOW Business Value
+```
+
+**Placement: STRATEGIC BET** — The LMM has very high business value (structural moat, 24-month window, enables all Tier 1/2 use cases) but also very high change cost (83 resistance score, $1.5M–$3.5M transformation cost, identity-level threat to engineers). This placement requires: phased rollout with executive sponsorship, structural guarantees, and intensive change management.
+
+#### 7.5 Buy-In Strategy Recommendation
+
+**Recommended strategy: Executive-Mandated**
+
+| Criterion | Assessment |
+|-----------|-----------|
+| Resistance score | 83 (Critical) — exceeds the 31–45 threshold for Executive-Mandated |
+| Strategic value | Very high — structural moat, 24-month competitive window, enables entire portfolio |
+| Change cost | $1.5M–$3.5M — requires executive budget authority |
+
+**Approach:**
+- CEO/COO sponsors the transformation publicly
+- Written Transformation Guarantee: no involuntary layoffs for 24 months; all engineers who complete transition receive evolved role with ≥ current compensation
+- Structural guarantees: compensation floor, career path formalization, quality review authority preserved
+- Intensive CM program: dedicated CM lead, Phase 0 listening tour, champion program, knowledge bounties
+- Escalation protocol: Level 3+ (executive-level intervention for identity-threat cases)
+
+#### 7.6 Integration with Change Management Framework
+
+Resistance risk is **Critical (83)**, which triggers ALL of the following required activities:
+
+- [x] **Phase 0 activities** from `change-management-for-ai.md`: listening tour (1:1 confidential interviews with every affected engineer), champion identification (3–5 peer champions), leadership alignment workshop
+- [x] **Transformation Guarantee requirement**: written, signed, public commitment — no involuntary layoffs for 24 months; evolved role with ≥ current compensation for all engineers who complete transition
+- [x] **Compensation transition planning**: 12-month guaranteed floor → phased introduction of advisory commission → full performance model by Month 13+
+- [x] **Escalation protocol activation**: Level 3+ (executive-level intervention for identity-threat cases; dedicated coaching for high-resistance individuals)
+- [x] **Adjusted ROI calculation**: `Adjusted ROI = Business Value − Technical Cost ($2.7M–$6.4M) − Change Cost ($1.5M–$3.5M) − Attrition Risk ($400K–$1.5M)`
+- [x] **Adjusted Time to Value**: `Technical Build Time (24 months) + Change Adoption Time (3–6 months) = 27–30 months`
+
+### Box 8 — Data Readiness & Engineering
+
+> Required by skill spec v1.1.0. The LMM's entire value proposition rests on the 20-year archive. Data engineering is the longest lead-time item for any ML use case — and for the LMM it's existential. If the archive can't be unified, classified, and labelled, the model doesn't exist.
+
+#### 8.1 Data Source Inventory
+
+| Data Source | Owner | Format | Access Model | Volume | Freshness | Status |
+|------------|-------|--------|-------------|--------|-----------|--------|
+| B-rep CAD files (STEP/IGES) | Engineering | STEP/IGES/STL | File system + ERP | Millions of parts | Historical + real-time | Available but needs unification |
+| Quote line-items | Sales Ops / Pricing | SQL DB + CRM | API + direct DB | Tens of millions | Real-time | Available but siloed (3+ schemas) |
+| DFM rule firings + engineer overrides | Apps Engineering | Mixed (logs + DB) | ProDesk instrumentation | Hundreds of millions | Real-time | Partially instrumented |
+| Manufactured-order outcomes | Operations | ERP | API | Hundreds of thousands | Daily batch | Available but needs backfill |
+| Tooling/mold libraries | Engineering | Mixed | File system + DB | Thousands | Quarterly | Stale |
+| Customer NDA/contract metadata | Legal | PDF + CRM | Manual | Thousands | Ad-hoc | Unstructured — **BLOCKED** |
+| ITAR/EAR classification flags | Legal + CISO | Manual | Manual | Unknown | Ad-hoc | **NOT STARTED** |
+| Material properties / substitutions | Engineering | CSV/Excel + DB | Manual + API | Thousands | Quarterly | Stale |
+
+#### 8.2 Data Quality Assessment
+
+| Data Source | Completeness | Accuracy | Consistency | Timeliness | Validity | Uniqueness | Overall |
+|------------|-------------|----------|-------------|------------|----------|------------|---------|
+| CAD files | 85% | 90% | 60% (mixed STEP/IGES/STL formats) | OK | 85% | 95% | **Medium** |
+| Quote line-items | 90% | 85% | 70% (3+ DB schemas, legacy fields) | OK | 80% | 90% | **Medium** |
+| DFM overrides | 50% | 80% | 40% (inconsistent logging, no taxonomy) | OK | 70% | 85% | **Low** |
+| Order outcomes | 75% | 90% | 65% (process-specific schemas) | Stale for historical | 85% | 95% | **Medium** |
+| Tooling libraries | 60% | 75% | 50% (mixed formats, no canonical schema) | Stale | 70% | 80% | **Low** |
+| NDA metadata | 30% | Unknown | 20% (manual PDF review) | Ad-hoc | Unknown | Unknown | **Low** |
+| ITAR/EAR flags | 0% | N/A | N/A | N/A | N/A | N/A | **Blocked** |
+
+#### 8.3 Data Normalization & Transformation Requirements
+
+| Transformation | Source | Target | Complexity | Owner | Effort |
+|---------------|--------|--------|------------|-------|--------|
+| Schema harmonization | 3+ quote DBs + CRM | Unified quote schema | High | Data Engineer | 6–8 weeks |
+| CAD format standardization | Mixed STEP/IGES/STL | Canonical B-rep + feature tokens | High | ML Engineer | 8–12 weeks |
+| DFM override instrumentation | Inconsistent logging | Structured override taxonomy with reason codes | Medium | Apps Eng + Data Eng | 4–6 weeks |
+| Outcome label backfill | Historical orders without ML labels | Labeled training pairs (input → outcome) | High | Domain Expert + Data Eng | 12–16 weeks |
+| NDA/ITAR classification | Manual PDF review | Structured classification flags per CAD asset | High | Legal + Data Eng | 8–12 weeks |
+| Unit/material standardization | Mixed imperial/metric + legacy material codes | SI units + canonical material DB | Medium | Data Engineer | 3–4 weeks |
+| Deduplication | Overlapping customer records across CRM + ERP | Golden record | Medium | Data Engineer | 2–3 weeks |
+
+#### 8.4 Data Pipeline Architecture
+
+| Stage | Technology | Latency SLA | Owner | Status |
+|-------|-----------|-------------|-------|--------|
+| **Ingestion** | Airflow + CDC from ERP/CRM + ProDesk event stream | Daily batch + real-time for new quotes | Data Engineer | **Build** |
+| **Transformation** | dbt + Python ETL | Daily | Data Engineer | **Build** |
+| **Feature Store** | Feast or custom (Tecton evaluation pending) | Minutes | ML Engineer | **Build** |
+| **Model Serving** | SageMaker / Vertex AI / custom | Sub-second | ML Engineer | **Build** |
+| **Output Storage** | PostgreSQL + S3 (model artifacts) | Real-time | Platform Eng | **Exists** |
+| **Monitoring** | Evidently + Great Expectations | Continuous | Data Engineer | **Build** |
+| **Data Lineage** | Custom schema + OpenLineage | Continuous | Data Engineer | **Build** |
+
+#### 8.5 Data Governance & Privacy
+
+| Requirement | Assessment | Owner | Status |
+|------------|-----------|-------|--------|
+| **PII identification** | Customer names/addresses in CRM; no PII in CAD geometry; quote metadata may contain contact info | Data Steward | **In Progress** |
+| **Anonymization strategy** | Feature-level aggregation for legacy data; opt-in for new contracts via T&C update | Privacy Lead | **TBD** |
+| **Data retention policy** | Undefined for training data; existing ERP retention is 7 years | Legal | **Not Started** |
+| **Data lineage tracking** | Not implemented; required for GDPR Art 17 (right to erasure) and audit trail | Data Engineer | **Planned** |
+| **Access control** | RBAC exists for ERP/CRM; training corpus has no access controls yet | Security | **Planned** |
+| **GDPR compliance** | DPIA not started; required before any EU customer data enters training pipeline | DPO | **Pending** |
+| **ITAR/EAR compliance** | Classification not started; every CAD asset needs export-control flag before training | Legal + CISO | **Not Started** |
+| **Training data IP** | NDA review per contract class needed; legacy data opt-in strategy undefined | Legal | **Blocked** |
+
+#### 8.6 ML-Specific Data Requirements
+
+| Requirement | Specification | Current Status | Gap |
+|------------|--------------|----------------|-----|
+| **Training data volume** | 500–2,000 labeled pairs for Phase 1; 50K+ for Phase 2 encoder pretraining | ~0 labeled pairs | **Critical** |
+| **Label quality** | Expert-verified input→output pairs (engineer-corrected Order Objects) | 0% verified | **Critical** |
+| **Class balance** | Target process distribution: CNC 40%, IM 30%, SM 20%, 3DP 10% | Unknown actual distribution | **Unknown** |
+| **Train/val/test split** | 70/15/15 stratified by process + complexity | Not split | **Work needed** |
+| **Data drift baseline** | Production distribution not established | Not established | **Work needed** |
+| **Feedback loop** | Override → retraining signal pipeline | Not designed | **Pipeline work** |
+| **A/B test data** | Control (rule-based) vs. treatment (model) isolation | Not set up | **Infrastructure work** |
+
+#### 8.7 Data Engineering Backlog (JTBDs feeding Box 6)
+
+| JTBD | Priority | Effort | Dependencies | Owner |
+|------|----------|--------|-------------|-------|
+| "When I'm building the training corpus, I need unified quote schemas across all processes, so I can train a model that works cross-process" | P0 | 6–8 weeks | DB access, schema mapping | Data Engineer |
+| "When I'm labeling training pairs, I need structured engineer-override taxonomy, so I can create high-quality input→output labels" | P0 | 4–6 weeks | ProDesk UI instrumentation | Apps Eng + Data Eng |
+| "When I'm classifying training data, I need NDA/ITAR flags on every CAD asset, so I can legally include or exclude it from training" | P0 | 8–12 weeks | Legal review per contract class | Legal + Data Eng |
+| "When I'm monitoring model quality, I need data drift detection, so I can catch accuracy degradation before it affects customers" | P1 | 3–4 weeks | Feature store + monitoring infra | ML Engineer |
+| "When I'm backfilling outcome labels, I need manufactured-order actuals linked to original quotes, so I can create closed-loop training pairs" | P0 | 12–16 weeks | ERP integration + schema harmonization | Data Eng + Domain Expert |
+| "When I'm handling customer data, I need PII anonymization, so I can use order history for training without privacy violations" | P0 | 2–3 weeks | Privacy assessment + DPIA | Data Eng + Privacy Lead |
+
+#### 8.8 Data Readiness Score
+
+| Dimension | Weight | Score (1-5) | Weighted |
+|-----------|--------|-------------|----------|
+| Data source availability | 20% | 3.5 | 0.70 |
+| Data quality | 25% | 2.5 | 0.63 |
+| Normalization complexity | 15% | 2.0 | 0.30 |
+| Pipeline readiness | 15% | 1.5 | 0.23 |
+| Governance compliance | 10% | 1.5 | 0.15 |
+| ML-specific readiness | 15% | 1.0 | 0.15 |
+| **Total Data Readiness Score** | 100% | | **2.16 / 5.0** |
+
+**Readiness threshold: 2.0–2.9 (Significant Gaps)** — Data work must complete before ML build begins. The original timeline assumed data engineering runs in parallel with model development. **This is incorrect.** Per the skill spec:
+
+> If Data Readiness 2.0–2.9: Time to Value = Data Infrastructure Time + Data Engineering Time + Technical Build Time
+
+**Adjusted timeline impact:** Add 3–6 months of dedicated data engineering before Phase 1 model training can begin. Total time to value extends from 24 months to **27–30 months** (consistent with Box 7 adjusted timeline).
+
+#### 8.9 Data Readiness vs. Technical Build Timeline
+
+```
+Original timeline:    [Discovery 1mo] → [Phase 1 Build 5mo] → [Phase 2 Build 12mo] → [Phase 3 Build 18mo] = 24 months
+                      Data engineering assumed parallel
+
+Adjusted timeline:    [Discovery 1mo] → [Data Engineering 3-6mo] → [Phase 1 Build 5mo] → [Phase 2 Build 12mo] → [Phase 3 Build 18mo] = 27-30 months
+                      Data engineering is on critical path
+```
+
+**Key insight:** The 500-pair labeled corpus target for Phase 1 cannot be achieved without completing schema harmonization (6–8 weeks), override instrumentation (4–6 weeks), and NDA/ITAR classification (8–12 weeks) first. These are sequential dependencies, not parallel workstreams.
+
+#### 8.10 Integration with Box 7 (Change Readiness)
+
+Data work requires heavy domain expert involvement. Cross-check with Box 7:
+
+- [ ] **Domain expert availability for data labeling and validation:** AT RISK — the same applications engineers being asked to change roles are needed for labeling training pairs and validating outcome backfills. Their time must be explicitly budgeted and compensated.
+- [ ] **Change resistance to data sharing and knowledge extraction:** HIGH — engineers may resist extracting their pricing judgment into training data ("you're taking my job"). Knowledge bounties ($100–$1,000 per knowledge unit) and the teach-back protocol are essential mitigations.
+- [ ] **Compensation for data engineering contributions:** NOT ADDRESSED in current budget — knowledge bounties mentioned in change management framework but not costed in Appendix B. Estimate: $50K–$150K for Phase 1 bounty pool.
+- [ ] **Data governance training for personnel handling sensitive data:** NOT STARTED — personnel handling ITAR/GDPR-classified data need training before they touch the training corpus.
+
 ---
 
 ## Appendix A — Solution Architecture
@@ -347,6 +577,14 @@ A 3-layer system — (1) PL-LMM-Core foundation encoder trained on 20-year B-rep
 | ISO/IEC 42001 Cl. 8.4 — performance monitoring | MLOps drift dashboard | ProtoLabs |
 | ISO/IEC 42001 Cl. 9.1 — evaluation | Quarterly model evaluation report | ProtoLabs |
 | ISO/IEC 42001 Cl. 10.1 — incident response | On-call + rollback playbook | ProtoLabs |
+| **ISO 42001 Annex A.1 — AI policy** | AI Governance Board charter + LMM-specific policy addendum | ProtoLabs |
+| **ISO 42001 Annex A.2 — Internal organization** | RACI in Box 2; AI Governance Board (Legal + CISO + AI Eng + Apps Eng + Compliance) | ProtoLabs |
+| **ISO 42001 Annex A.3 — Resources for AI** | Headcount in Appendix B (10–15 ML engineers + academic partnership); compute budget per phase | ProtoLabs |
+| **ISO 42001 Annex A.4 — AI system impact assessment** | Per-head impact assessment: price head (financial impact), DFM head (safety impact for regulated), yield head (operational impact) | ProtoLabs |
+| **ISO 42001 Annex A.5 — AI system lifecycle** | 3-layer architecture + 4-phase roadmap (Phase 0–3) with decision gates per Appendix B kill criteria | ProtoLabs |
+| **ISO 42001 Annex A.6 — Data for AI systems** | Box 8 data readiness assessment; training-corpus classification; data lineage; GDPR/ITAR compliance per source | ProtoLabs |
+| **ISO 42001 Annex A.7 — Information for interested parties** | EU AI Act Art 50 transparency (AI-disclosure banner + provenance citations in Customer Interaction layer) | ProtoLabs |
+| **ISO 42001 Annex A.8 — Use of AI systems** | Confidence routing + HITL design (WwM sub-section above); engineer override authority; kill-switch | ProtoLabs |
 | GDPR Art 22 — automated-decision human review | Decision Orchestration HITL gate | ProtoLabs |
 | GDPR Art 17 — right to erasure | Data lineage + selective re-training | ProtoLabs |
 | ITAR/EAR — controlled technical data | Segregated training corpus + on-prem variant | ProtoLabs (US) + Customer (data classification) |
@@ -378,7 +616,30 @@ Provenance trail attached to every quote: input span → extraction → confiden
 | Phase 2 — Fine-Tune | T+180 to T+540 days | 200–350 ew | $50K → $150K | +2 senior MLE; +1 MLOps; encoder partnership LOI signed | Domain-adapted model beats GPT-4V on held-out set; vector DB live; EU private endpoint; replace pricing for non-regulated CNC/3DP | Fine-tuned WAPE not better than baseline OR encoder partner falls through with no Plan B |
 | Phase 3 — LMM | T+540 to T+1080 days | 400–700 ew | $200K → $500K | +2 senior MLE; +1 generative-AI specialist; budget for compute bursts | PL-LMM-Core trained; self-learning loop measurably improving WAPE month-over-month; generative DFM copilot accepted by customers | Self-learning loop produces no measurable accuracy improvement after 2 retraining cycles |
 
-**Total 24–36mo investment (per strategy doc §6):** $2.7M–$6.4M. Assumes EU private cloud (not on-prem); excludes data-center / on-prem variant for defense which adds ~$500K–$1M.
+**Total 24–36mo technical investment (per strategy doc §6):** $2.7M–$6.4M. Assumes EU private cloud (not on-prem); excludes data-center / on-prem variant for defense which adds ~$500K–$1M.
+
+**Adjusted total investment (including change cost + data readiness):**
+
+| Cost category | Range | Source |
+|---|---|---|
+| Technical build (Phases 0–3) | $2.7M–$6.4M | Appendix B above |
+| Change management & human transformation | $1.5M–$3.5M | Box 7.3 |
+| Attrition risk (2–5 senior engineers) | $400K–$1.5M | Box 7.3 |
+| Knowledge bounties (Phase 1 pool) | $50K–$150K | Box 8.10 |
+| Data engineering (3–6 months dedicated) | $300K–$600K | Box 8.8–8.9 |
+| **Adjusted total investment** | **$4.95M–$12.15M** | |
+
+**Adjusted timeline:** 27–30 months (not 24). Breakdown:
+- Discovery + data engineering: 4–7 months (was 1 month)
+- Phase 1 build: 5 months (unchanged)
+- Phase 2 build: 12 months (unchanged)
+- Phase 3 build: 18 months (unchanged, starts Month 19–22)
+- Change adoption runs in parallel but adds 3–6 months to time-to-value
+
+**Adjusted ROI hypothesis (replaces Box 3 original):**
+- Inputs: $4.95M–$12.15M over 27–30 months
+- Returns by Month 30: (a) 30–60% engineer-hour reclaim on pilot segments → $X redirected to high-margin DFM consulting; (b) 1–3% gross-margin uplift from pricing accuracy; (c) 3–8pp conversion uplift from sub-minute quote SLA
+- **The bet still works** — the moat thesis holds — but the conversation shifts from "can we build this in 24 months?" to "can we absorb the organizational transformation cost while building the technical system?"
 
 ---
 
@@ -529,6 +790,22 @@ Customer submits multimodal RFQ (CAD + intent)
 | ITAR/EAR | Controlled CAD in training corpus | Red-team segregation OR US-person-cleared infra OR exclusion |
 | IP — fine-tuned weights | Trade secret | Access-controlled weight storage; signed model artifacts; weight-exfil DLP |
 
+### Flywheel-engagement dependency (critical insight)
+
+The data flywheel described above has a **circular dependency** that is not immediately obvious:
+
+```
+Engineer engagement → Override data → Model improvement → Better predictions → Less override needed → ???
+```
+
+**The flywheel only works if engineers engage with the override UI.** If resistance is high (Box 7 resistance score: 83 = Critical) and engineers bypass or ignore the system, the flywheel stalls. This creates a direct coupling between Box 7 (Change Readiness) and Appendix E (Data Strategy):
+
+- **Phase 1–2 (high override rate):** Flywheel depends on engineer engagement. Knowledge bounties, shadow authority model, and the "Cobot Can't Do This" challenge are essential to generate training signal.
+- **Phase 3 (declining override rate):** As the model improves, engineers override less. The flywheel decelerates. The strategy must transition from override-driven learning to **outcome-driven learning** — manufactured cost, yield, lead-time-actual, and conversion outcomes become the primary training signal, not engineer corrections.
+- **Phase 3+ (steady state):** The flywheel becomes self-sustaining through outcome labels. Engineer engagement shifts from "correcting the AI" to "advising the client" — which is the target state in Box 7's transformation vision.
+
+**Mitigation:** Design the override UI to capture lightweight signals even when no correction is needed (e.g., "approve + confidence rating," "approve + client context note"). This maintains training signal even as override rate declines.
+
 ### Self-learning loop diagram
 
 ```
@@ -555,7 +832,7 @@ Customer submits multimodal RFQ (CAD + intent)
 
 ---
 
-## Pre-Emission Self-Check
+## Pre-Emission Self-Check (v1.1.0 — 28 items)
 
 | # | Check | ✓ |
 |---|-------|---|
@@ -564,21 +841,39 @@ Customer submits multimodal RFQ (CAD + intent)
 | 3 | Box 5 includes all three governance frameworks (EU AI Act + NIST AI RMF + ISO 42001) | ✅ |
 | 4 | Box 5 includes Working-with-Machines placement with autonomy level + 12-month target + HITL design | ✅ |
 | 5 | Appendix A compliance table maps controls to specific components | ✅ |
-| 6 | Appendix A compliance table includes ISO 42001 clause-level mapping (not just "lifecycle management") | ✅ (Cl. 6.1, 7.5, 8.4, 9.1, 10.1) |
+| 6 | Appendix A compliance table includes ISO 42001 clause-level mapping (not just "lifecycle management") | ✅ (Cl. 6.1, 7.5, 8.4, 9.1, 10.1 + Annex A.1–A.8) |
 | 7 | Appendix A compliance table includes liability allocation per component (vendor / Protolabs / customer) | ✅ |
 | 8 | Appendix A includes Working-with-Machines sub-section with confidence-routing thresholds (numeric) | ✅ (>0.85, 0.60–0.85, <0.60) |
 | 9 | Appendix A non-functional reqs include security posture detail (auth, network, audit, pen-test) | ✅ |
 | 10 | Appendix D cites specific URLs for Xometry and Fictiv capability evidence, or states "no public evidence found" | ✅ |
 | 11 | Portfolio tier cites memoized-questing-sphinx.md §7–8 explicitly | ✅ (Tier 3 R&D bet, substrate for Tier 1/2) |
 | 12 | All four strategic dimensions surfaced: Working-with-Machines, Governance, Market Competition, Legal & Compliance | ✅ |
+| 13 | Box 7 includes Human Impact Analysis with identity threat level assessment | ✅ (HIGH — "If AI does the quoting, what am I?") |
+| 14 | Box 7 includes Resistance Risk Scoring with total score and risk threshold classification | ✅ (83 = Critical) |
+| 15 | Box 7 includes Change Cost Estimation with total compared to Box 3 ROI | ✅ ($1.5M–$3.5M vs. $2.7M–$6.4M technical) |
+| 16 | Box 7 includes Business Value vs. Change Cost matrix placement | ✅ (Strategic Bet) |
+| 17 | Box 7 includes Buy-In Strategy recommendation with specific approach | ✅ (Executive-Mandated) |
+| 18 | If resistance risk is Medium+, Box 7 flags Phase 0 activities and adjusted ROI | ✅ (Critical = all Phase 0 activities flagged; adjusted ROI calculated) |
+| 19 | Box 8 includes Data Source Inventory with owner, format, access model, volume, freshness, and status | ✅ (8 sources inventoried) |
+| 20 | Box 8 includes Data Quality Assessment with completeness, accuracy, consistency, timeliness, validity, uniqueness | ✅ (7 sources assessed) |
+| 21 | Box 8 includes Data Normalization & Transformation Requirements with effort estimates | ✅ (7 transformations, 3–16 weeks each) |
+| 22 | Box 8 includes Data Pipeline Architecture with stage-by-stage breakdown | ✅ (7 stages: ingestion → monitoring) |
+| 23 | Box 8 includes Data Governance & Privacy assessment (PII, GDPR, ITAR, IP) | ✅ (8 requirements assessed) |
+| 24 | Box 8 includes ML-Specific Data Requirements (volume, labels, class balance, drift, feedback loop) | ✅ (7 requirements) |
+| 25 | Box 8 includes Data Engineering Backlog as JTBDs feeding into Box 6 | ✅ (6 JTBDs, P0/P1 prioritized) |
+| 26 | Box 8 includes Data Readiness Score (1-5) with threshold classification | ✅ (2.16/5.0 = Significant Gaps) |
+| 27 | Box 8 includes timeline adjustment based on data readiness | ✅ (+3–6 months; 27–30 months total) |
+| 28 | Box 8 includes integration check with Box 7 for domain expert availability | ✅ (4 integration items checked) |
 
 ---
 
 ## Verification — How to use this artifact
 
-1. **Workshop transcription**: Boxes 1–6 are designed to be transcribed onto the printed 6-box canvas in <30 minutes.
-2. **Engineering review prep**: Hand Appendix A to the AI Eng lead and applications-engineering lead for line-by-line interrogation. Use `/pl-feasibility-probe` for deeper component-level pushback if needed.
-3. **Skeptical-engineer rehearsal**: Run `/pl-rehearse` against this artifact to stress-test before the workshop.
-4. **Cost validation**: Cross-check Appendix B engineer-week ranges with current AI/Data team capacity (4 engineers per memoized-questing-sphinx.md §1) — the LMM bet requires ≥3 incremental hires by Phase 2.
-5. **Decision gate**: The five "parked decisions" in Box 6 are the first agenda items for the next AI Governance Board meeting.
-6. **Live evidence**: Re-verify Xometry / Fictiv capability claims monthly — competitive landscape moves fast and "no public evidence found" is a snapshot, not a permanent state.
+1. **Workshop transcription**: Boxes 1–6 are designed to be transcribed onto the printed 6-box canvas in <30 minutes. Box 7 (Change Readiness) and Box 8 (Data Readiness) should be presented as separate workshop segments — they are the two dimensions most likely to kill or reshape the bet.
+2. **Change readiness review**: Hand Box 7 to the Engineering Director and HR Business Partner before the workshop. The resistance score of 83 (Critical) requires executive pre-alignment on the Transformation Guarantee and compensation model before the broader team sees it.
+3. **Data readiness review**: Hand Box 8 to the Data Engineering lead and Legal. The readiness score of 2.16 (Significant Gaps) means data engineering is on the critical path — the 3–6 month data sprint must be resourced and funded before Phase 1 model training begins.
+4. **Engineering review prep**: Hand Appendix A to the AI Eng lead and applications-engineering lead for line-by-line interrogation. Use `/pl-feasibility-probe` for deeper component-level pushback if needed.
+5. **Skeptical-engineer rehearsal**: Run `/pl-rehearse` against this artifact to stress-test before the workshop. Focus on Box 7 identity-threat scenarios and Box 8 data-quality challenges.
+6. **Cost validation**: Cross-check Appendix B adjusted investment ($4.95M–$12.15M) against current AI/Data team capacity (4 engineers per memoized-questing-sphinx.md §1) — the LMM bet requires ≥6 incremental hires by Phase 2 (up from ≥3 in the original estimate).
+7. **Decision gate**: The five "parked decisions" in Box 6 are the first agenda items for the next AI Governance Board meeting. Add two new parked decisions: (a) knowledge bounty budget approval ($50K–$150K Phase 1 pool), (b) Transformation Guarantee sign-off (CEO/COO signature required).
+8. **Live evidence**: Re-verify Xometry / Fictiv capability claims monthly — competitive landscape moves fast and "no public evidence found" is a snapshot, not a permanent state.

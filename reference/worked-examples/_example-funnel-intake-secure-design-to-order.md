@@ -194,6 +194,207 @@ _No 🔴🔴 entries — proceeding without clarification._
 
 ---
 
+## Box 7 — Change Readiness & Human Impact
+
+### 7.1 Human Impact Analysis
+
+| Question | Assessment |
+|----------|-----------|
+| **Who is affected?** | Protolabs applications engineers (primary — new review workflow inside audited sandbox), Protolabs compliance officers (new audit-sampling duty), customer-side design engineers (new CAD environment + Save=Order mental model), customer-side export-control officers (new approval boundary to evaluate) |
+| **What changes for them?** | **AppEng:** shifts from reviewing uploaded files in ProDesk to reviewing Order Objects inside an audited, no-egress workspace with confidence-routing queues; must learn new UI + provenance-trail interpretation. **Compliance officer:** new quarterly audit-sampling cadence + incident-response runbook. **Customer engineers:** must work inside AppStream sandbox instead of local workstation — loss of familiar CAD shortcuts, plugins, macros; "Save" now means "submit order" not "save locally." **Customer export-control officers:** must evaluate a new deemed-export boundary architecture instead of blanket-refusing cloud uploads. |
+| **How many people?** | **Protolabs side:** ~5–8 AppEng (pilot), scaling to ~20–30 at GA; 1 compliance officer (50% allocation); 1 cloud security engineer (new hire). **Customer side:** ~5–10 design engineers per pilot customer (2 customers = 10–20); 2 export-control officers. **Total: ~20–30 people at pilot, ~50–70 at GA.** |
+| **What is the identity threat level?** | **Medium for AppEng** — their review role is preserved (HITL gate), but the workspace changes and confidence-routing may feel like surveillance. **Low for customer engineers** — they still design; the tool changes, not the role. **None for compliance/export-control** — their authority is strengthened, not diminished. |
+| **What skills must they learn?** | **AppEng:** confidence-routing interpretation, provenance-trail reading, sandbox-specific incident escalation. **Customer engineers:** AppStream session management, Save=Order mental model, "escalate to human" button usage. **Compliance:** SIEM dashboard reading, audit-sampling methodology, CMMC evidence packaging. |
+| **What do they lose?** | **Customer engineers:** local workstation performance (latency tax), custom CAD plugins/macros (may not be in allowlist), ability to save files locally. **AppEng:** familiar ProDesk review UI (replaced by extended console). **Nobody loses authority or sign-off power** — HITL gate preserves AppEng final-say on every regulated order. |
+
+### 7.2 Resistance Risk Scoring
+
+| Resistance Type | Likelihood (1-5) | Severity (1-5) | Risk Score | Mitigation Strategy |
+|----------------|-----------------|----------------|------------|-------------------|
+| Identity Threat | 2 | 3 | **6** | AppEng role is preserved as quality gatekeeper; identity threat is low because HITL reinforces their expertise, not replaces it. Frame as "you are the compliance firewall." |
+| Skill Anxiety | 3 | 2 | **6** | New sandbox UI + confidence-routing requires training; but skills are adjacent (review → review-in-new-tool), not transformational. Structured onboarding + sandbox dry-run. |
+| Economic Fear | 2 | 2 | **4** | No headcount reduction; SDTO adds regulated-vertical revenue that requires MORE AppEng at GA. Compensation unchanged at pilot; advisory-commission model at GA is additive. |
+| Quality Gatekeeper | 3 | 4 | **12** | **Highest risk.** AppEng will worry that Save=Order creates orders without their input. Mitigation: explicit HITL gate on EVERY regulated order at v1; confidence routing is a triage tool, not an auto-approve. AppEng retains final sign-off. |
+| Change Fatigue | 2 | 2 | **4** | SDTO is a new product, not a replacement of existing workflow. Non-regulated ProDesk path is unchanged. Low fatigue risk because it's additive, not disruptive. |
+| Comfort Zone | 3 | 3 | **9** | Customer engineers forced into AppStream sandbox lose familiar workstation. Mitigation: pre-provisioned warm sessions, allowlisted plugins, latency SLO, "try before you buy" pilot design. |
+| **Total Resistance Risk** | | | **41** | **HIGH (31-45): Intensive intervention required; executive sponsorship required; phased rollout mandatory.** |
+
+### 7.3 Change Cost Estimation
+
+| Cost Category | Estimate | Notes |
+|--------------|----------|-------|
+| **Training & skill building** | $3–5K per AppEng / 2 weeks | Sandbox UI training + confidence-routing workshop + incident-response tabletop. Customer engineers: self-service onboarding guide + 1-hr live walkthrough. |
+| **Productivity dip during transition** | 15–20% for 3–4 weeks (AppEng) | Learning new review console slows order-clearance SLA initially. Mitigated by running SDTO pilot in parallel with existing ProDesk (not replacing it). |
+| **Attrition risk cost** | Low ($0–50K) | AppEng role is strengthened, not eliminated. Customer-side attrition risk is near-zero (they still design). Only risk: 1–2 senior AppEng who resist the new tool may disengage. |
+| **Change management program** | $50–80K / 6 months | CM lead (part-time from existing team), 2× champion identification workshops, customer onboarding playbook, export-control officer design-partner workshop. |
+| **Compensation transition** | $0 at pilot | No compensation changes at pilot. At GA, advisory-commission model is additive (base preserved). Transformation Guarantee: no involuntary layoffs for 24 months. |
+| **Total Change Cost** | **$80–180K** | Compare to Box 3 ROI hypothesis: $5–15M ARR potential. Change cost is <2% of low-end ARR — negligible relative to business value. |
+
+### 7.4 Business Value vs. Change Cost Matrix
+
+```
+                        HIGH Business Value
+                              |
+           QUICK WIN          |         STRATEGIC BET
+           ─────────          |         ─────────────
+                              |         High value,
+                              |         high change cost
+                              |         → Phased rollout
+                              |         → Executive sponsorship
+    ──────────────────────────┼──────────────────────────
+                              |
+                              |
+                              |
+                              |
+                              |
+                        LOW Business Value
+```
+
+**Placement: STRATEGIC BET.** High business value ($5–15M ARR potential, regulated-vertical TAM unlock, competitive moat) but high change cost (41 resistance score, GovCloud complexity, customer-side sandbox adoption friction, compliance architecture validation). Requires phased rollout with executive sponsorship.
+
+### 7.5 Buy-In Strategy Recommendation
+
+**Recommended: Executive-Mandated + Pilot-First hybrid.**
+
+| Strategy | Rationale |
+|----------|-----------|
+| **Executive-Mandated** | Resistance score of 41 (High) requires CEO/COO sponsorship. The Transformation Guarantee (no layoffs, preserved authority) must come from the top. VP Engineering is the named sponsor per Box 2 RACI. |
+| **Pilot-First** | Despite executive sponsorship, the architecture has too many Unknowns (Box 4) to go straight to GA. 12-week pilot with 2 design-partner customers proves the value before scaling. Executive mandate funds the pilot; pilot evidence funds the GA rollout. |
+
+### 7.6 Integration with Change Management Framework
+
+Resistance risk is High (41), so the following activities are **required**:
+
+- [x] **Phase 0 activities** — Leadership alignment workshop before pilot kickoff; AppEng listening tour to surface quality-gatekeeper concerns; identify 1–2 AppEng champions who will co-design the review console.
+- [x] **Transformation Guarantee requirement** — Written, signed guarantee: no involuntary layoffs due to SDTO for 24 months; all AppEng who complete transition retain current compensation + receive advisory-commission upside at GA.
+- [x] **Compensation transition planning** — At GA, AppEng compensation model evolves from pure salary to base + margin-bonus (additive, not replacement). Model designed in Phase 0, communicated before pilot.
+- [x] **Escalation protocol activation (Level 2+)** — Engineering Director owns resistance escalation; weekly pulse survey during pilot; any Level 3+ resistance (active sabotage, public refusal) escalates to VP Engineering within 48 hours.
+- [x] **Adjusted ROI calculation:** `Adjusted ROI = $5–15M ARR - $3–5M technical cost - $0.1–0.2M change cost - $0–0.05M attrition risk = $1.9–11.8M net` — change cost is negligible relative to business value; does not change the investment thesis.
+
+---
+
+## Box 8 — Data Readiness & Engineering
+
+### 8.1 Data Source Inventory
+
+| Data Source | Owner | Format | Access Model | Volume | Freshness | Status |
+|------------|-------|--------|-------------|--------|-----------|--------|
+| Customer CAD files (controlled technical data) | Customer (IP owner) | STEP, IGES, native CAD (SLDPRT, PRT, CATPart) | AppStream sandbox → S3 PutObject | ~10–50 files/tenant/week at pilot | Real-time (per Save event) | **Need** — exists only inside sandbox at runtime |
+| Order Object schema | AI Platform Lead | JSON (existing Layer 1 contract) | Lambda → DynamoDB → existing pipeline | ~25–50 orders/tenant/week at pilot | Real-time | **Have** — reused from Section-2 architecture |
+| Audit trail (session events, Save events, AppEng actions, blocked egress) | Security Lead | Structured logs (CloudTrail + AppStream + custom) | SIEM (Splunk / OpenSearch) | ~1K–10K events/tenant/day | Real-time | **Need** — must be built for SDTO |
+| Customer entity + KYC data | Sales Ops + Compliance | Structured (CRM + KYC provider API) | Salesforce + Refinitiv/Persona API | ~50 entities at pilot | At onboarding + daily screening | **Need** — ECCN + restricted-party screening |
+| Network telemetry (egress attempts, clipboard attempts) | Security Lead | VPC Flow Logs + AppStream fleet logs | SIEM | ~100–1K events/tenant/day | Real-time | **Need** — AppStream-specific logging config |
+| DFM/geometry analysis output | AI Platform Lead | JSON (existing Layer 2 output) | Existing pipeline API | Per-order | Real-time | **Have** — reused unchanged |
+| Pricing/ETA output | AI Platform Lead | JSON (existing Layer 3 output) | Existing pipeline API | Per-order | Real-time | **Have** — reused unchanged |
+| Pen-test evidence | CISO | PDF reports | Internal document store | Annual + post-change | Event-driven | **Need** — first pen-test before pilot |
+
+### 8.2 Data Quality Assessment
+
+| Data Source | Completeness | Accuracy | Consistency | Timeliness | Validity | Uniqueness | Overall |
+|------------|-------------|----------|-------------|------------|----------|------------|---------|
+| Customer CAD files | N/A (customer-owned) | N/A | Varies by CAD product | Real-time | ISO 10303-21 validation in Lambda | Per-tenant KMS isolation | **Medium** — quality is customer's responsibility; Protolabs validates format only |
+| Order Object schema | 100% (controlled) | 100% (generated) | 100% (single schema) | Real-time | Schema validation | Deterministic per Save | **High** |
+| Audit trail | 100% (automated) | 100% (system-generated) | 100% (structured) | Real-time | SIEM validation | Event-ID dedup | **High** |
+| KYC data | 90% (some manual steps) | 95% (provider-verified) | 90% (CRM ↔ KYC sync) | Daily screening | Provider-validated | Entity dedup | **Medium** |
+| Network telemetry | 100% (automated) | 100% (system-generated) | 100% (AWS-native) | Real-time | CloudTrail-native | Event-ID dedup | **High** |
+| DFM/geometry output | 100% (existing pipeline) | Existing pipeline quality | Existing pipeline quality | Real-time | Existing validation | Per-order | **High** (inherited) |
+
+### 8.3 Data Normalization & Transformation Requirements
+
+| Transformation | Source | Target | Complexity | Owner | Effort |
+|---------------|--------|--------|------------|-------|--------|
+| CAD format validation | Native CAD files (multi-vendor) | ISO 10303-21 (STEP) acceptance gate | Medium — per-CAD-product Save semantics differ (temp files, lock files) | Cloud Infra Lead | 3–4 weeks |
+| Audit trail schema harmonization | CloudTrail + AppStream logs + custom AppEng events | Unified SIEM schema | Low — AWS-native formats, standard ETL | Security Lead | 1–2 weeks |
+| KYC/ECCN data integration | Refinitiv/Persona API → CRM | Tenant onboarding record | Medium — API integration + daily screening cron | Sales Ops + Cloud Infra | 2–3 weeks |
+| Order Object enrichment | S3 PutObject event → existing Order Object schema | Enriched with: tenant ID, session ID, audit-trail pointer, compliance-class flag | Low — thin Lambda glue | AI Platform Lead | 1–2 weeks |
+| Confidence-score calibration data | AppEng review outcomes (approve/revise/refuse) | Labeled dataset for confidence-routing tuning | Medium — requires 50–100 labeled orders before routing thresholds are reliable | AI Platform Lead | 4–6 weeks (accumulates during pilot) |
+
+### 8.4 Data Pipeline Architecture
+
+```
+[Customer CAD] → [AppStream Sandbox] → [S3 PutObject] → [Lambda Order Processor] → [Order Object] → [Existing Pipeline]
+                                              |                    |                        |
+                                         KMS encrypt         Validate + scan          DynamoDB persist
+                                         per-tenant CMK      Malware + schema         + audit-trail emit
+                                              |                    |                        |
+                                         Audit event         Audit event              SIEM ingestion
+```
+
+| Stage | Technology | Latency SLA | Owner | Status |
+|-------|-----------|-------------|-------|--------|
+| **Ingestion** | AppStream → S3 PutObject (VPC endpoint) | ≤ 30s p95 (Save → S3) | Cloud Infra Lead | **Build** — AppStream fleet config + S3 bucket policy |
+| **Transformation** | Lambda Order Processor (validate + scan + persist) | ≤ 10s p95 | AI Platform Lead | **Build** — ~200 LOC thin glue |
+| **Feature Store** | N/A — SDTO does not introduce new ML features | n/a | n/a | **N/A** |
+| **Model Serving** | N/A — reuses existing DFM/pricing pipeline | n/a | n/a | **Reuse existing** |
+| **Output Storage** | DynamoDB (Order records) + S3 (CAD files) + SIEM (audit) | Real-time | Cloud Infra Lead | **Build** — per-tenant KMS + bucket policies |
+| **Monitoring** | SIEM dashboards (egress attempts, Save success rate, AppEng SLA) | Continuous | Security Lead | **Build** — CloudTrail + custom metrics |
+
+### 8.5 Data Governance & Privacy
+
+| Requirement | Assessment | Owner | Status |
+|------------|-----------|-------|--------|
+| **PII identification** | Minimal — user identity (name, email, employer) in KYC store; no PII in CAD files by design | Data Steward | **Assessed** — follows existing ProDesk DPA |
+| **Anonymization strategy** | N/A at pilot — no training data extracted from regulated-tenant geometry without explicit written opt-in | Privacy Lead | **Defined** — zero-extraction policy for regulated tenants |
+| **Data retention policy** | 7 years for audit trail (CMMC + AS9100 record-retention); CAD files retained per tenant contract (typically 3–5 years) | Legal | **Defined** — aligns with existing ProDesk retention + regulatory minimums |
+| **Data lineage tracking** | Full lineage: Save event → S3 object → Lambda → Order Object → DFM → Pricing → AppEng review → Quote. Every step emits audit event with session ID + geometry hash. | Data Engineer | **Designed** — audit-trail architecture in Appendix A |
+| **Access control** | Per-tenant KMS CMKs; IAM least-privilege per role; only US-person AppEng accounts can access regulated-tenant data; GovCloud variant: cleared-personnel-only | Security | **Designed** — VPC endpoints + IAM policies in Appendix A |
+| **GDPR compliance** | Limited scope — user identity data only; follows existing ProDesk DPA; no EU personal data in CAD files by design | DPO | **Assessed** — no additional DPIA required |
+| **ITAR/EAR compliance** | Architecture IS the deemed-export boundary; AppStream + S3 + KMS = controlled environment; only US-person AppEng access; ECCN screening at onboarding | Compliance | **Designed** — core architecture purpose |
+| **Training data IP** | Zero extraction from regulated-tenant geometry at v1. If future fine-tuning is proposed, it spawns its own intake with full Appendix E + explicit written opt-in per NDA. | Legal | **Defined** — contractual guardrail in tenant agreement |
+
+### 8.6 ML-Specific Data Requirements
+
+| Requirement | Specification | Current Status | Gap |
+|------------|--------------|----------------|-----|
+| **Training data volume** | N/A — SDTO is an interaction surface, not a model. No new training data required. | N/A | **None** |
+| **Label quality** | Confidence-routing calibration requires ~50–100 labeled orders (AppEng approve/revise/refuse outcomes) | 0 labels (pre-pilot) | **4–6 weeks of pilot data accumulation** |
+| **Class balance** | N/A — no classification model at v1 | N/A | **None** |
+| **Train/val/test split** | N/A | N/A | **None** |
+| **Data drift baseline** | Save→Order success rate baseline to be established in pilot week 1 | Not established | **1 week** |
+| **Feedback loop** | AppEng review outcomes → confidence-routing threshold tuning (manual at v1, automated at GA) | Not designed | **Design during pilot; implement at GA** |
+| **A/B test data** | N/A at pilot — single-path HITL for all regulated orders | N/A | **None at pilot; design for GA Collaboration tier** |
+
+### 8.7 Data Engineering Backlog (JTBDs)
+
+| JTBD | Priority | Effort | Dependencies | Owner |
+|------|----------|--------|-------------|-------|
+| "When I'm processing a Save event, I need deterministic CAD-format validation across SolidWorks/NX/CATIA/Fusion 360, so I can reliably create Order Objects without false-refusals" | **P0** | 3–4 weeks | Per-CAD-product Save-semantics testing | Cloud Infra Lead |
+| "When I'm onboarding a regulated tenant, I need automated KYC + ECCN screening, so I can approve customers in <48 hours without manual compliance review" | **P0** | 2–3 weeks | KYC provider API integration | Sales Ops + Cloud Infra |
+| "When I'm investigating a security incident, I need unified audit trail across CloudTrail + AppStream + AppEng actions, so I can reconstruct the full event chain in <1 hour" | **P0** | 1–2 weeks | SIEM schema design | Security Lead |
+| "When I'm tuning confidence-routing thresholds, I need labeled AppEng review outcomes, so I can calibrate auto-route vs. full-review bands" | **P1** | 4–6 weeks (accumulates) | Pilot order volume | AI Platform Lead |
+| "When I'm preparing for AS9100 / CMMC audit, I need exportable audit evidence packages, so I can pass surveillance audits without manual log stitching" | **P1** | 2–3 weeks | SIEM dashboards + retention policy | Compliance |
+
+### 8.8 Data Readiness Score
+
+| Dimension | Weight | Score (1-5) | Weighted |
+|-----------|--------|-------------|----------|
+| Data source availability | 20% | 3.5 | 0.70 |
+| Data quality | 25% | 4.0 | 1.00 |
+| Normalization complexity | 15% | 3.0 | 0.45 |
+| Pipeline readiness | 15% | 3.0 | 0.45 |
+| Governance compliance | 10% | 4.5 | 0.45 |
+| ML-specific readiness | 15% | 2.0 | 0.30 |
+| **Total Data Readiness Score** | 100% | | **3.35 / 5.0** |
+
+**Classification: NEEDS WORK (3.0–3.9).** Data engineering is on the critical path. The pipeline (S3 → Lambda → Order Object → existing pipeline) is well-designed but unvalidated. The biggest gap is per-CAD-product Save-semantics validation — this is a P0 discovery task that must complete before Build phase begins.
+
+### 8.9 Data Readiness vs. Technical Build Timeline
+
+**Adjustment:** `Time to Value = Data Engineering Time + Technical Build Time (sequential)`
+
+The 3.35 score means data engineering (especially CAD-format validation + KYC integration + SIEM schema) must complete or be substantially proven before the Build phase can commit to the "Save = Order" promise. This adds **3–4 weeks** to the critical path vs. a fully-ready data baseline.
+
+**Recommendation:** Run the CAD Save-semantics validation study (Box 4 Unknown #4) as the **first Discovery task**, not in parallel. If it fails (Save semantics are inconsistent across CAD products), the entire "Save = Order" UX collapses and the use case must pivot to a "Submit Order" wrapper button — which is viable but changes the value proposition.
+
+### 8.10 Integration with Box 7 (Change Readiness)
+
+- [x] **Domain expert availability for data validation** — AppEng must participate in per-CAD-product Save-semantics testing (their review workflow depends on deterministic Order Objects). Box 7 identifies AppEng as Medium identity-threat; involving them in validation design is a change-management win (gives them ownership).
+- [x] **Change resistance to data sharing** — Customer engineers must accept that every Save is recorded. This is a feature (audit trail), not a bug, but must be communicated clearly. Export-control officers will see this as a positive.
+- [x] **Compensation for data engineering contributions** — AppEng who help design the review console and validate Save semantics should be recognized as pilot champions (knowledge bounty or spot bonus).
+- [x] **Data governance training** — All AppEng accessing regulated-tenant data must complete ITAR/CMMC awareness training before pilot. This is a Box 7 training cost item.
+
+---
+
 ## Appendix A — Solution Architecture
 
 ### Component diagram (text)
@@ -483,6 +684,33 @@ The customer-facing "escalate to human" button in the sandbox always routes to a
 
 ---
 
+## Mission-Critical Improvements for the Business Case
+
+Based on the updated funnel-intake evaluation (Box 7 + Box 8), the following improvements are **mission-critical** — the business case should not advance to the feasibility probe without addressing them:
+
+### IMP-1: CAD Save-Semantics Validation is a Gate, Not a Parallel Task
+**Severity: CRITICAL.** The entire "Save = Order" value proposition depends on deterministic S3 PutObject events across SolidWorks, NX, CATIA, and Fusion 360. If each CAD product emits temp/lock/intermediate files, the Order Processor will create false orders or miss real ones. **This must be the first Discovery task, completed before Build phase commitment.** If validation fails, pivot to a "Submit Order" wrapper button — viable but weakens the UX differentiation.
+
+### IMP-2: Quality Gatekeeper Resistance is the #1 People Risk
+**Severity: HIGH.** Box 7 scores Quality Gatekeeper resistance at 12 (the highest single risk factor). AppEng will resist if they feel Save=Order bypasses their judgment. **Mitigation:** Frame every AppEng as "the compliance firewall," not a rubber stamp. The HITL gate on every regulated order at v1 is non-negotiable. Involve AppEng in review-console co-design during Discovery — ownership kills resistance.
+
+### IMP-3: GovCloud Cost Must Be Contractually Triggered, Not Default
+**Severity: HIGH.** Box 4 risk: GovCloud costs 3–5× commercial. If SDTO defaults to GovCloud, unit economics fail. **Mitigation:** Tiered tenancy — commercial + ITAR-segregated for non-DIB customers; GovCloud only when a pilot customer's contract explicitly requires it. Per-tenant cost pass-through is mandatory in regulated-vertical pricing.
+
+### IMP-4: Transformation Guarantee Must Be Signed Before Pilot Kickoff
+**Severity: HIGH.** Box 7 resistance score of 41 (High) requires executive sponsorship. The written Transformation Guarantee (no layoffs for 24 months, preserved authority, compensation floor) must be signed by CEO/COO before any engineer touches the pilot. Without it, the pilot will face passive compliance at best, active sabotage at worst.
+
+### IMP-5: Confidence-Routing Calibration Requires Labeled Data That Doesn't Exist Yet
+**Severity: MEDIUM.** Box 8 identifies that confidence-routing thresholds (≥0.85 / 0.6–0.85 / <0.6) are uncalibrated — no labeled AppEng review outcomes exist. **Mitigation:** Run the first 4–6 weeks of pilot with ALL orders routed to full-review (no auto-route). Accumulate ~50–100 labeled outcomes, then introduce quick-review sampling. This delays the Collaboration-tier value but avoids mis-routing a regulated order.
+
+### IMP-6: Export-Control Officer Buy-In Is a Kill Criterion, Not a Nice-to-Have
+**Severity: HIGH.** Box 4 Unknown #3: will customers' export-control officers approve the AppStream-as-deemed-export-boundary architecture? **Mitigation:** Run a design-partner workshop in Discovery that includes the customer's export-control officer AND Protolabs General Counsel. Get a written "architecture acceptable" opinion before Build. If even one design partner's ECO rejects it, the kill criterion at T+30 fires.
+
+### IMP-7: Latency Tax on Senior Engineers Is Underestimated
+**Severity: MEDIUM.** Box 4 Unknown #5: AppStream latency on >500MB assemblies. Senior engineers with 20 years on local workstations will reject a tool that feels sluggish. **Mitigation:** Latency SLO (≤100ms p95 input echo, ≤1s p95 viewport refresh) must be baked into pilot success criteria. G4dn/G5 fleet sizing + pre-provisioned warm sessions. If latency SLO is blown, the pilot fails — no workaround.
+
+---
+
 ## Pre-Emission Self-Check
 
 | # | Check | ✓ |
@@ -499,6 +727,22 @@ The customer-facing "escalate to human" button in the sandbox always routes to a
 | 10 | Appendix D covers all activated tiers (1A/1B/2/3) with verifiable URLs or explicit "no public evidence found" for every claim | ✓ |
 | 11 | Portfolio tier cites memoized-questing-sphinx.md §7–8 explicitly | ✓ (Tier 1 — frontmatter + reuses §7 substrate logic) |
 | 12 | All four strategic dimensions surfaced: Working-with-Machines, Governance, Market Competition, Legal & Compliance | ✓ |
+| 13 | Box 7 includes Human Impact Analysis with identity threat level assessment | ✓ |
+| 14 | Box 7 includes Resistance Risk Scoring with total score and risk threshold classification | ✓ (Total: 41 — HIGH) |
+| 15 | Box 7 includes Change Cost Estimation with total compared to Box 3 ROI | ✓ ($80–180K vs. $5–15M ARR — <2%) |
+| 16 | Box 7 includes Business Value vs. Change Cost matrix placement | ✓ (Strategic Bet) |
+| 17 | Box 7 includes Buy-In Strategy recommendation with specific approach | ✓ (Executive-Mandated + Pilot-First hybrid) |
+| 18 | If resistance risk is Medium+, Box 7 flags Phase 0 activities and adjusted ROI | ✓ (Phase 0 + Transformation Guarantee + Escalation Protocol + Adjusted ROI calculated) |
+| 19 | Box 8 includes Data Source Inventory with owner, format, access model, volume, freshness, and status | ✓ |
+| 20 | Box 8 includes Data Quality Assessment with completeness, accuracy, consistency, timeliness, validity, uniqueness | ✓ |
+| 21 | Box 8 includes Data Normalization & Transformation Requirements with effort estimates | ✓ |
+| 22 | Box 8 includes Data Pipeline Architecture with stage-by-stage breakdown | ✓ |
+| 23 | Box 8 includes Data Governance & Privacy assessment (PII, GDPR, ITAR, IP) | ✓ |
+| 24 | Box 8 includes ML-Specific Data Requirements (volume, labels, class balance, drift, feedback loop) | ✓ |
+| 25 | Box 8 includes Data Engineering Backlog as JTBDs feeding into Box 6 | ✓ |
+| 26 | Box 8 includes Data Readiness Score (1-5) with threshold classification | ✓ (3.35 — Needs Work) |
+| 27 | Box 8 includes timeline adjustment based on data readiness | ✓ (+3–4 weeks critical path) |
+| 28 | Box 8 includes integration check with Box 7 for domain expert availability | ✓ |
 
 ---
 
