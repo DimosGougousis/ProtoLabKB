@@ -16,6 +16,7 @@
 | `vertical-medical` | `agents/vertical-medical.agent.md` | Medical device guidance | medical, healthcare, biocompatible, iso 13485, fda, device, implant |
 | `vertical-automotive-ev` | `agents/vertical-automotive-ev.agent.md` | Automotive/EV guidance | automotive, car, vehicle, ev, electric, lightweight, powertrain, battery |
 | `trends-strategy` | `agents/trends-strategy.agent.md` | Strategic trend analysis | trend, strategy, industry 4.0, innovation, future, market, forecast |
+| `change-management-orchestrator` | `agents/change-management-orchestrator.agent.md` | Cobot adoption for resistant engineers | change management, cobot, resistant, adoption, knowledge transfer, AI training, workforce transformation, organizational change |
 
 ## Routing Keywords
 
@@ -34,6 +35,9 @@
 - **Medical**: medical, healthcare, biocompatible, iso 13485, fda, surgical, implant, device
 - **Automotive/EV**: automotive, car, vehicle, ev, electric vehicle, powertrain, battery, motor, lightweight
 
+### Change Management Detection
+- **Cobot Adoption**: cobot, collaborative robot, change management, resistant, adoption, knowledge transfer, workforce transformation, organizational change, engineer resistance, AI training, digital adoption, behavioral change
+
 ### Compliance & Export Control Keywords (Sets regulated=true)
 - **ITAR**: itar, defense, military, munitions, usml, export control, deemed export, technical data
 - **EAR**: ear, export administration, eccn, dual-use, commerce control list, restricted party
@@ -49,12 +53,13 @@
 
 When a user prompt is received:
 
-1. **Parse** the prompt for keywords (process, mode, vertical)
-2. **Load** `agents/dfm-router.agent.md` to classify intent
-3. **Route** to the appropriate specialist agent based on classification
-4. **Load** only the required KB files specified in the agent's `loads:` frontmatter
-5. **Execute** the agent's procedure (design eval or Q&A)
-6. **Emit** output using the appropriate template with source citations
+1. **Parse** the prompt for keywords (process, mode, vertical, change management)
+2. **If change management keywords detected** → Load `agents/change-management-orchestrator.agent.md` directly
+3. **Otherwise** → Load `agents/dfm-router.agent.md` to classify intent
+4. **Route** to the appropriate specialist agent based on classification
+5. **Load** only the required KB files specified in the agent's `loads:` frontmatter
+6. **Execute** the agent's procedure (design eval or Q&A)
+7. **Emit** output using the appropriate template with source citations
 
 ## Source Citation Format
 
