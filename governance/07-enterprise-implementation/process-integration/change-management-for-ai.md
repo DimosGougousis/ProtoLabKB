@@ -814,6 +814,58 @@ After use case implementation, feed outcomes back into the funnel intake process
 
 This feedback loop ensures that each subsequent funnel intake produces more accurate change readiness assessments.
 
+### 10.6 Data Engineering Integration with Change Management
+
+Box 8 (Data Readiness & Engineering) identifies data work that often requires domain expert involvement. This creates a dependency between data engineering and change management:
+
+**Data Work Requiring Human Engagement:**
+
+| Data Activity | Human Required | Change Management Implication |
+|--------------|---------------|------------------------------|
+| **Data labeling** | Domain expert labels training data | Must be compensated (knowledge bounties); must not exceed 20% of expert's time |
+| **Data validation** | Expert reviews data quality | Must be positioned as quality stewardship, not clerical work |
+| **Rule extraction** | Expert codifies decision rules | Use Failure Archaeology sessions (Phase 3); ego-affirming narrative format |
+| **Feature definition** | Expert defines meaningful features | Use Reverse Mentoring (Phase 2); AI asks, expert answers |
+| **Edge case identification** | Expert identifies exceptions | Use "Cobot Can't Do This" challenge (Phase 1); channels resistance into engagement |
+| **Feedback review** | Expert evaluates model outputs | Use Shadow Authority model (Phase 3); gives expert control |
+
+**Data Readiness Impact on Transformation Timeline:**
+
+| Data Readiness Score | Impact on Change Management |
+|---------------------|----------------------------|
+| **4.0-5.0 (Ready)** | Change management proceeds on standard timeline; data work runs in parallel |
+| **3.0-3.9 (Needs Work)** | Change management Phase 0 extended by data engineering duration; domain experts engaged early for data work |
+| **2.0-2.9 (Significant Gaps)** | Change management paused until data infrastructure matures; use delay to build readiness through listening tours |
+| **1.0-1.9 (Blocked)** | Transformation deferred; focus on data infrastructure investment first |
+
+**Adjusted Timeline Formula:**
+
+```
+If Data Readiness >= 4.0:
+  Time to Value = max(Technical Build, Change Management Phase 1-3)
+
+If Data Readiness 3.0-3.9:
+  Time to Value = Data Engineering Time + max(Technical Build, Change Management Phase 1-3)
+  Note: Domain experts engaged in Phase 0 for data labeling/validation
+
+If Data Readiness 2.0-2.9:
+  Time to Value = Data Infrastructure Time + Data Engineering Time + Technical Build + Change Management
+  Note: Use data infrastructure period for Phase 0 listening tours
+
+If Data Readiness < 2.0:
+  Defer use case; invest in data infrastructure; reassess in 6 months
+```
+
+**Cross-Box Integration Matrix:**
+
+| Box 7 Finding | Box 8 Finding | Combined Action |
+|--------------|--------------|-----------------|
+| Low resistance | High data readiness | Proceed immediately (Quick Win) |
+| Low resistance | Low data readiness | Do data work first; change management ready when data is ready |
+| High resistance | High data readiness | Focus change management on adoption; data is not the blocker |
+| High resistance | Low data readiness | Both are blockers; consider redesigning use case to reduce both |
+| High resistance + identity threat | Requires expert labeling | Highest risk; experts who resist transformation are also needed for data work; use knowledge bounties and Failure Archaeology to engage them |
+
 ---
 
 ## Cross-References
