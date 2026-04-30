@@ -80,6 +80,7 @@ Example: "Minimum hole diameter for CNC drilling is 0.5mm [knowledge/cnc-machini
 | `/pl-assess <target> [criteria]` | Comprehensive assessment (DFM + governance) of parts or agents |
 | `/pl-refresh-kb [folder]` | Refresh cached knowledge base articles |
 | `/pl-funnel-intake <use-case>` | Use-case funnel intake: 6-box canvas + 4 appendices (A/B/C/D) |
+| `/pl-agentic-tpm <use-case>` | Agentic TPM: enhanced funnel intake with customer discovery, RAT, business model, trust calibration, PR-FAQ, YAML companion |
 | `/pl-use-case-explorer <domain>` | Generate and rank candidate AI use cases for a Protolabs domain |
 | `/pl-feasibility-probe <use-case>` | Sharpen Solution Architecture for engineering-facing conversation |
 | `/pl-rehearse <use-case>` | Workshop rehearsal: skeptical engineer pushback simulation |

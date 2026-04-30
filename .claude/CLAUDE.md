@@ -13,6 +13,7 @@
 | `/pl-assess` | `.claude/commands/pl-assess.md` | Comprehensive assessment (DFM + governance) of parts or agents |
 | `/pl-refresh-kb` | `.claude/commands/pl-refresh-kb.md` | Refresh cached knowledge base articles |
 | `/pl-funnel-intake` | `.claude/commands/pl-funnel-intake.md` | Use-case funnel intake: 6-box canvas + 4 appendices (A/B/C/D) |
+| `/pl-agentic-tpm` | `.claude/commands/pl-agentic-tpm.md` | Agentic TPM: enhanced funnel intake with customer discovery, RAT, business model, trust calibration, PR-FAQ, YAML companion |
 | `/pl-use-case-explorer` | `.claude/commands/pl-use-case-explorer.md` | Generate and rank candidate AI use cases for a Protolabs domain |
 | `/pl-feasibility-probe` | `.claude/commands/pl-feasibility-probe.md` | Sharpen Solution Architecture for engineering-facing conversation |
 | `/pl-rehearse` | `.claude/commands/pl-rehearse.md` | Workshop rehearsal: skeptical engineer pushback simulation |
@@ -23,6 +24,7 @@
 |-------|------|-------------|
 | `protolabs-router` | `.claude/skills/protolabs-router.md` | Route user prompts to appropriate specialist agents |
 | `pl-funnel-intake` | `.claude/skills/pl-funnel-intake/SKILL.md` | Use-case funnel intake skill (canvas + appendices) |
+| `agentic-tpm` | `.claude/skills/agentic-tpm/SKILL.md` | Agentic TPM v2.0: enhanced funnel intake with discovery evidence, OST, RAT, business model, trust calibration, PR-FAQ, YAML companion |
 | `pl-use-case-explorer` | `.claude/skills/pl-use-case-explorer/SKILL.md` | Use case discovery and ranking skill |
 | `pl-feasibility-probe` | `.claude/skills/pl-feasibility-probe/SKILL.md` | Solution architecture and feasibility skill |
 | `pl-rehearse` | `.claude/skills/pl-rehearse/SKILL.md` | Workshop rehearsal and pushback simulation skill |
@@ -36,9 +38,10 @@
 5. **Comprehensive Assessment**: `/pl-assess <target> [criteria]` — Combined DFM + governance evaluation
 6. **Refresh KB**: `/pl-refresh-kb [folder]` — Updates cached articles from ProtoLabs website
 7. **Funnel Intake**: `/pl-funnel-intake <use-case>` — Generate 6-box canvas + 4 appendices for workshop prep
-8. **Use Case Explorer**: `/pl-use-case-explorer <domain>` — Rank candidate AI use cases for a domain
-9. **Feasibility Probe**: `/pl-feasibility-probe <use-case>` — Deep-dive architecture for engineering review
-10. **Workshop Rehearsal**: `/pl-rehearse <use-case>` — Simulate skeptical engineer pushback
+8. **Agentic TPM**: `/pl-agentic-tpm <use-case>` — Enhanced funnel intake: customer discovery, RAT, business model, trust calibration, PR-FAQ, YAML companion (v2.0 superset of funnel-intake)
+9. **Use Case Explorer**: `/pl-use-case-explorer <domain>` — Rank candidate AI use cases for a domain
+10. **Feasibility Probe**: `/pl-feasibility-probe <use-case>` — Deep-dive architecture for engineering review
+11. **Workshop Rehearsal**: `/pl-rehearse <use-case>` — Simulate skeptical engineer pushback
 
 ## Agent Loading
 
