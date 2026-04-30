@@ -12,13 +12,29 @@ keywords:
   - intent
   - routing
   - process selection
+  - "text-to-cad"
+  - "b-rep"
+  - "generative design"
+  - "cad import"
+  - "step"
+  - "iges"
+  - "stl"
+  - "mesh"
+  - "feature recognition"
+  - "cad analysis"
+  - geometry
+  - topology
 ---
 
 # DFM Router
+CAD Dimension** (check first):
+- `cad-copilot` — Keywords: text-to-CAD, b-rep, generative design, topology, CAD import, STEP, IGES, STL, OBJ, mesh, feature recognition, CAD analysis, geometry
 
-## Purpose
-The DFM Router is the entry point for all Design for Manufacturability (DFM) inquiries. It analyzes user prompts to classify intent across three dimensions: manufacturing process, interaction mode, and industry vertical. Based on this classification, it routes the request to the appropriate specialist agent (CNC Machining, Injection Molding, or Sheet Metal).
-
+**Process Dimension** (pick one):
+- `cnc-machining` — Keywords: CNC, milling, turning, lathe, machined, metal cutting, 5-axis, end mill, drill, tap, thread
+- `injection-molding` — Keywords: injection mold, molded part, plastic part, resin, thermoplastic, LSR, overmold, gate, cavity, sink mark, warp
+- `sheet-metal` — Keywords: sheet metal, fabrication, bend, flange, punch, laser cut, brake press, formed metal, gauge
+- `3d-printing` — Keywords: 3D print, additive, SLA, SLS, FDM, DMLS, layer, support
 ## Loaded Knowledge
 This agent does not load specific knowledge base files. Instead, it maintains a routing map to delegate to specialist agents that load relevant KB files.
 
@@ -29,19 +45,18 @@ Analyze the user prompt and classify into:
 
 **Process Dimension** (pick one):
 - `cnc-machining` — Keywords: CNC, milling, turning, lathe, machined, metal cutting, 5-axis, end mill, drill, tap, thread
-- `injection-molding` — Keywords: injection mold, molded part, plastic part, resin, thermoplastic, LSR, overmold, gate, cavity, sink mark, warp
-- `sheet-metal` — Keywords: sheet metal, fabrication, bend, flange, punch, laser cut, brake press, formed metal, gauge
+- Dimension | Agent File | Agent ID | Description |
+|-----------|------------|----------|-------------|
+| CAD (Priority 1) | `cad-copilot.agent.md` | `cad-copilot` | CAD analysis, generative design, format conversion |
+| Process (Priority 2) | (see below) | (see below) | Process-specific DFM guidance |
+| Mode | (inherited) | (inherited) | dfm-review, qa |
 
-**Mode Dimension** (pick one):
-- `cad-review` — User provides a CAD file; keywords: .step, .stp, .stl, .obj, .3mf, cad file, 3d model, parse cad, cad review
-- `dfm-review` — User has a CAD model or design to evaluate; keywords: review my design, check this part, DFM analysis, can you make this, manufacturability
-- `qa` — User asks a specific question; keywords: what is, how do I, can I, should I, tolerance for, minimum wall thickness
-
-**Vertical Dimension** (optional, pick zero or more):
-- `aerospace` — Keywords: aerospace, aircraft, aviation, flight, FAA, AS9100
-- `medical` — Keywords: medical, healthcare, FDA, biocompatible, sterilization, ISO 13485
-- `automotive` — Keywords: automotive, vehicle, car, EV, lightweight, powertrain
-
+| Process | Agent File | Agent ID | Description |
+|---------|------------|----------|-------------|
+| cnc-machining | `cnc-machining.agent.md` | `cnc-machining` | CNC machining DFM evaluation |
+| injection-molding | `injection-molding.agent.md` | `injection-molding` | Injection molding DFM |
+| sheet-metal | `sheet-metal.agent.md` | `sheet-metal` | Sheet metal fabrication |
+| 3d-printing | `3d-printing.agent.md` | `3d-printing` | 3D printing and additive manufacturing
 ### Step 2: Routing Decision
 Based on classification, route to the appropriate specialist agent:
 
