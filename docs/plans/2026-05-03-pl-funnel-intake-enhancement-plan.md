@@ -2,10 +2,11 @@
 
 > **Plan Date:** 2026-05-03
 > **Target Files:**
-> - `~/.claude/skills/pl-funnel-intake/SKILL.md` (v1.1.0 → v1.2.0)
-> - `~/.claude/skills/agentic-tpm/SKILL.md` (v2.0.0 → v2.1.0)
+> - `~/.claude/skills/pl-funnel-intake/SKILL.md` (v1.2.0 → v1.3.0)
+> - `~/.claude/skills/agentic-tpm/SKILL.md` (v2.1.0 → v2.2.0)
 > - `~/.claude/skills/shared/glossary-procedure.md` (new)
-> **Estimated Duration:** 2–3 days (staged)
+> - `ai-implementation-workstreams/00-JTBD-and-problem-statements/jtbd-evaluation-framework.md` (new)
+> **Estimated Duration:** 3–4 days (staged)
 > **Review Basis:** `docs/pl-funnel-intake-critical-review.md`
 
 ---
@@ -630,14 +631,24 @@ Add two rows to the existing table:
 ### Task 4.3: Version Bump + Changelog
 
 **Actions:**
-- [ ] Update `pl-funnel-intake/SKILL.md` version: `1.1.0` → `1.2.0`
-- [ ] Update `agentic-tpm/SKILL.md` version: `2.0.0` → `2.1.0`
+- [ ] Update `pl-funnel-intake/SKILL.md` version: `1.2.0` → `1.3.0`
+- [ ] Update `agentic-tpm/SKILL.md` version: `2.1.0` → `2.2.0`
 - [ ] Add changelog section to both skills:
 
 ```markdown
 ## Changelog
 
-### v1.2.0 (2026-05-03)
+### v1.3.0 / v2.2.0 (2026-05-03)
+- **Added:** JTBD Evaluation Framework integration — Box 1 consumes pre-evaluated JTBDs
+- **Added:** Box 1.2 Activated JTBDs with MoSCoW, Evidence Quality, RICE, CoND
+- **Added:** Box 1.3 JTBD Synthesis — aggregated MoSCoW view
+- **Added:** Box 1.4 JTBD Evaluation Gate — 6-check gate blocking CM/Cost if failed
+- **Added:** Discovery Sprint Plan template for failed gate checks
+- **Added:** `jtbd-evaluation-framework.md` as single source of truth for job evaluation
+- **Changed:** Box 1 no longer generates JTBDs — activates from framework
+- **Changed:** Pre-Emission Self-Check expanded to include JTBD Evaluation Gate validation
+
+### v1.2.0 / v2.1.0 (2026-05-03)
 - **Added:** Decision Gate with binding verdicts (PROCEED / RAT-FIRST / REDESIGN / KILL / DEFER)
 - **Added:** JTBD stratification (Functional / Emotional / Social) with Opportunity Scoring
 - **Added:** JTBD → Resistance mapping in Box 7
