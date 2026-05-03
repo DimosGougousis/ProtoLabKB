@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Executive C-Suite Presentation — Policy-as-Code Remediation Plan: 6 Real Gaps, 42 Sprints, $600K">
+<title>Policy-as-Code Remediation | ProtoLab C-Suite Presentation</title>
+<style>
+/* ── CSS Variables (inherited from governance design system) ── */
+:root {
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --bg: #fff;
+  --bg-alt: #fbfbfd;
+  --bg-dark: #000;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --border: #d2d2d7;
+  --border-light: #e8e8ed;
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --section-gap: 120px;
+  --green: #30d158;
+  --orange: #ff9f0a;
+  --red: #ff453a;
+  --purple: #af52de;
+  --blue: #0a84ff;
+  --dash-bg: #1a1a2e;
+  --dash-card: rgba(255,255,255,0.06);
+  --dash-border: rgba(255,255,255,0.1);
+  --dash-text: #e0e0e0;
+  --dash-muted: #8899aa;
+}
+
+/* ── Reset & Base ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ── Top Nav ──────────────────────────────── */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  height: 52px; display: flex; align-items: center;
+}
+.top-nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+}
+.top-nav-brand { font-size: 0.9rem; font-weight: 650; color: var(--text); text-decoration: none; white-space: nowrap; }
+.top-nav-links { display: flex; gap: 22px; list-style: none; flex-wrap: wrap; }
+.top-nav-links a {
+  font-size: 0.78rem; color: var(--text-secondary); text-decoration: none;
+  transition: color 0.2s; font-weight: 500;
+}
+.top-nav-links a:hover, .top-nav-links a.active { color: var(--accent); }
+.top-nav-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 100px;
+  background: var(--accent); color: #fff; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+/* ── Layout ────────────────────────────────── */
+.container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+.container-wide { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; }
+
+/* ── Typography ───────────────────────────── */
+.headline-large { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+.headline-medium { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
+.headline-small { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+.body-large { font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.6; color: var(--text-secondary); }
+.body { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
+.label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+
+/* ── Hero ─────────────────────────────────── */
+.hero {
+  padding: 140px 0 80px;
+  text-align: center;
+  background: linear-gradient(180deg, #f0f6ff 0%, var(--bg) 100%);
+  position: relative;
+}
+.hero-badge {
+  display: inline-block; padding: 8px 20px; border-radius: 100px;
+  background: linear-gradient(135deg, var(--accent), #5856d6);
+  color: #fff; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.hero .headline-large { margin-bottom: 16px; }
+.hero .body-large { max-width: 680px; margin: 0 auto 32px; }
+
+.hero-kpis {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  max-width: 900px; margin: 0 auto;
+}
+.hero-kpi {
+  background: var(--bg); border: 1px solid var(--border-light);
+  border-radius: 14px; padding: 22px 16px; text-align: center;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+.hero-kpi-value { font-size: 2rem; font-weight: 700; color: var(--text); }
+.hero-kpi-value.accent { color: var(--accent); }
+.hero-kpi-value.green { color: var(--green); }
+.hero-kpi-value.orange { color: var(--orange); }
+.hero-kpi-label { font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px; }
+
+/* ── Executive Summary ───────────────────── */
+.exec-summary { background: var(--bg-alt); }
+.exec-summary .headline-small { text-align: center; margin-bottom: 40px; }
+.exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.exec-card {
+  background: var(--bg); border: 1px solid var(--border-light);
+  border-radius: 14px; padding: 28px; box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.exec-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+.exec-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.exec-card p { font-size: 0.9rem; line-height: 1.55; color: var(--text-secondary); }
+.exec-card .category-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.03em;
+  margin-bottom: 10px;
+}
+.category-badge.foundation { background: rgba(0,113,227,0.1); color: var(--accent); }
+.category-badge.extension { background: rgba(175,82,222,0.1); color: var(--purple); }
+.category-badge.new { background: rgba(255,159,10,0.1); color: var(--orange); }
+
+.exec-corrected-box {
+  background: var(--bg); border: 2px solid var(--green); border-radius: 14px;
+  padding: 24px; margin-top: 24px;
+}
+.exec-corrected-box h4 { font-size: 0.95rem; font-weight: 600; color: var(--green); margin-bottom: 12px; }
+.exec-corrected-box table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
+.exec-corrected-box th, .exec-corrected-box td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border-light); }
+.exec-corrected-box th { color: var(--text-tertiary); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.exec-corrected-box td:last-child { color: var(--accent); font-weight: 500; }
+.exec-corrected-box tr:last-child td { border-bottom: none; }
+
+/* ── Gap Cards (Interactive Accordion) ───── */
+.gaps { background: var(--bg); }
+.gaps .headline-small { text-align: center; margin-bottom: 16px; }
+.gaps .section-intro { text-align: center; max-width: 640px; margin: 0 auto 48px; }
+.gap-card {
+  background: var(--bg); border: 1px solid var(--border-light);
+  border-radius: 14px; margin-bottom: 18px; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+.gap-card.open { border-color: var(--accent); box-shadow: 0 4px 28px rgba(0,113,227,0.12); }
+.gap-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 22px 28px; cursor: pointer; user-select: none;
+  transition: background 0.15s;
+}
+.gap-header:hover { background: var(--bg-alt); }
+.gap-number {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.gap-number.p0 { background: linear-gradient(135deg, #ff453a, #d93a30); }
+.gap-number.p1 { background: linear-gradient(135deg, #ff9f0a, #e08800); }
+.gap-number.p2 { background: linear-gradient(135deg, #0071e3, #5856d6); }
+.gap-info { flex: 1; min-width: 0; }
+.gap-info h3 { font-size: 1.05rem; font-weight: 600; color: var(--text); }
+.gap-info .gap-subtitle { font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px; }
+.gap-meta { text-align: right; flex-shrink: 0; }
+.gap-meta .priority-badge {
+  display: inline-block; padding: 4px 10px; border-radius: 100px;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.priority-badge.p0 { background: rgba(255,69,58,0.1); color: var(--red); }
+.priority-badge.p1 { background: rgba(255,159,10,0.1); color: var(--orange); }
+.priority-badge.p2 { background: rgba(0,113,227,0.1); color: var(--accent); }
+.gap-sprints { font-size: 0.78rem; color: var(--text-tertiary); margin-top: 4px; }
+.gap-chevron {
+  font-size: 0.9rem; color: var(--text-tertiary); transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.gap-card.open .gap-chevron { transform: rotate(180deg); }
+
+.gap-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease;
+}
+.gap-card.open .gap-body {
+  max-height: 3000px; padding: 0 28px 28px;
+}
+.gap-body-inner {
+  border-top: 1px solid var(--border-light); padding-top: 24px;
+}
+.gap-body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.gap-body-grid h5 {
+  font-size: 0.72rem; color: var(--text-tertiary); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 10px;
+}
+.gap-body-grid p { font-size: 0.88rem; line-height: 1.55; color: var(--text-secondary); margin-bottom: 12px; }
+
+.sprint-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+.sprint-table th {
+  text-align: left; padding: 8px 12px; color: var(--text-tertiary);
+  font-weight: 600; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-light);
+}
+.sprint-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-light); }
+.sprint-table tr:last-child td { border-bottom: none; }
+.sprint-table .effort { font-weight: 600; color: var(--text); }
+
+.success-criteria { list-style: none; margin-top: 12px; }
+.success-criteria li {
+  font-size: 0.84rem; line-height: 1.6; color: var(--text-secondary);
+  padding: 4px 0; padding-left: 20px; position: relative;
+}
+.success-criteria li::before {
+  content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; font-size: 0.75rem;
+}
+
+.attack-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 8px; }
+.attack-table th {
+  text-align: left; padding: 6px 10px; color: var(--text-tertiary);
+  font-weight: 600; text-transform: uppercase; font-size: 0.66rem; letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border-light);
+}
+.attack-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-light); }
+
+/* ── Policy Tree Visualization ───────────── */
+.policy-tree-viz {
+  font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.8rem; line-height: 1.7; color: var(--text-secondary);
+  padding: 16px; background: var(--bg-alt); border-radius: 10px;
+  border: 1px solid var(--border-light); overflow-x: auto; white-space: pre;
+}
+
+/* ── Roadmap Timeline ────────────────────── */
+.roadmap { background: var(--dash-bg); color: var(--dash-text); }
+.roadmap .headline-small { text-align: center; color: #fff; margin-bottom: 8px; }
+.roadmap .section-intro { text-align: center; color: var(--dash-muted); margin-bottom: 48px; }
+.phase-timeline { position: relative; }
+.phase-timeline::before {
+  content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 3px; background: var(--dash-border); transform: translateX(-50%);
+  border-radius: 2px;
+}
+.phase-block {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  align-items: start; margin-bottom: 48px; position: relative;
+}
+.phase-block:last-child { margin-bottom: 0; }
+.phase-label-col {
+  text-align: right; padding-right: 48px;
+}
+.phase-label-col h3 {
+  font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 4px;
+}
+.phase-label-col .phase-sprints {
+  font-size: 0.75rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.phase-label-col .phase-cost {
+  font-size: 0.95rem; font-weight: 600; color: var(--green); margin-top: 6px;
+}
+.phase-content-col { padding-left: 48px; }
+.phase-content-col h4 { font-size: 0.75rem; color: var(--dash-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+.phase-gap-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--dash-card); border: 1px solid var(--dash-border);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.phase-gap-item:hover { transform: translateX(4px); border-color: var(--accent); }
+.phase-gap-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.phase-gap-dot.p0 { background: var(--red); }
+.phase-gap-dot.p1 { background: var(--orange); }
+.phase-gap-dot.p2 { background: var(--blue); }
+.phase-gap-info { flex: 1; }
+.phase-gap-info strong { color: #fff; font-size: 0.9rem; }
+.phase-gap-info span { display: block; font-size: 0.75rem; color: var(--dash-muted); margin-top: 2px; }
+.phase-gap-sprints { font-size: 0.7rem; color: var(--dash-muted); flex-shrink: 0; }
+.phase-dot {
+  position: absolute; left: 50%; top: 0;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent); border: 3px solid var(--dash-bg);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* ── Budget Section ──────────────────────── */
+.budget { background: var(--bg-alt); }
+.budget .headline-small { text-align: center; margin-bottom: 40px; }
+.budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+.budget-card {
+  background: var(--bg); border: 1px solid var(--border-light);
+  border-radius: 14px; padding: 28px; text-align: center;
+  box-shadow: var(--card-shadow);
+}
+.budget-card .phase-icon { font-size: 2rem; margin-bottom: 12px; }
+.budget-card h4 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.budget-card .cost-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.budget-card .cost-detail { font-size: 0.8rem; color: var(--text-tertiary); }
+.budget-total {
+  background: linear-gradient(135deg, var(--accent), #5856d6);
+  border-radius: 14px; padding: 32px; text-align: center; color: #fff;
+}
+.budget-total h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; opacity: 0.9; }
+.budget-total .total-value { font-size: 3rem; font-weight: 700; margin-bottom: 4px; }
+.budget-total .total-detail { font-size: 0.9rem; opacity: 0.85; }
+
+/* ── Gap Summary Table ───────────────────── */
+.gap-summary { background: var(--bg); }
+.gap-summary .headline-small { text-align: center; margin-bottom: 32px; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.summary-table th {
+  text-align: left; padding: 14px 18px; background: var(--bg-alt);
+  color: var(--text-tertiary); font-weight: 600; text-transform: uppercase;
+  font-size: 0.7rem; letter-spacing: 0.05em; border-bottom: 2px solid var(--border-light);
+}
+.summary-table td {
+  padding: 14px 18px; border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+.summary-table tr:hover td { background: var(--bg-alt); }
+.summary-table .gap-link {
+  color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: none;
+}
+.summary-table .gap-link:hover { text-decoration: underline; }
+.badge-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+}
+.badge-pill.p0 { background: rgba(255,69,58,0.1); color: var(--red); }
+.badge-pill.p1 { background: rgba(255,159,10,0.1); color: var(--orange); }
+.badge-pill.p2 { background: rgba(0,113,227,0.1); color: var(--accent); }
+
+/* ── Next Steps / CTA ────────────────────── */
+.cta { background: linear-gradient(180deg, var(--bg) 0%, #f0f6ff 100%); text-align: center; }
+.cta .headline-small { margin-bottom: 16px; }
+.cta .body-large { max-width: 600px; margin: 0 auto 28px; }
+.cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 14px 28px; border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,113,227,0.3); }
+.btn-outline { background: var(--bg); color: var(--accent); border: 1.5px solid var(--accent); }
+.btn-outline:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,113,227,0.15); }
+
+/* ── Footer ──────────────────────────────── */
+footer {
+  padding: 32px 0; border-top: 1px solid var(--border-light);
+  text-align: center; color: var(--text-tertiary); font-size: 0.82rem;
+}
+footer a { color: var(--accent); text-decoration: none; }
+
+/* ── Back to Top Button ──────────────────── */
+.back-to-top {
+  position: fixed; bottom: 28px; right: 28px; z-index: 90;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none;
+  font-size: 1.2rem; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,113,227,0.3);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Fade-in Animation ───────────────────── */
+.fade-in {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 900px) {
+  .hero-kpis { grid-template-columns: repeat(2, 1fr); }
+  .exec-grid { grid-template-columns: 1fr; }
+  .gap-body-grid { grid-template-columns: 1fr; }
+  .phase-block { grid-template-columns: 1fr; }
+  .phase-label-col { text-align: left; padding-right: 0; }
+  .phase-content-col { padding-left: 0; }
+  .phase-timeline::before { display: none; }
+  .budget-grid { grid-template-columns: 1fr; }
+  .top-nav-links { display: none; }
+}
+@media (max-width: 600px) {
+  .hero-kpis { grid-template-columns: 1fr 1fr; }
+  section { padding: 50px 0; }
+  .hero { padding: 110px 0 50px; }
+  .btn { width: 100%; justify-content: center; }
+}
+
+/* ── Print Styles ────────────────────────── */
+@media print {
+  .top-nav, .back-to-top, .cta-actions { display: none !important; }
+  .gap-body { max-height: none !important; }
+  .gap-card { break-inside: avoid; }
+  body { font-size: 11pt; }
+  .hero { padding: 40px 0 20px; }
+  section { padding: 30px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="top-nav" aria-label="Presentation navigation">
+  <div class="top-nav-inner">
+    <span class="top-nav-brand">ProtoLab Policy-as-Code</span>
+    <ul class="top-nav-links">
+      <li><a href="#executive-summary">Summary</a></li>
+      <li><a href="#gaps">The 6 Gaps</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#budget">Budget</a></li>
+      <li><a href="#gap-summary-table">At-a-Glance</a></li>
+      <li><a href="#cta">Next Steps</a></li>
+    </ul>
+    <span class="top-nav-badge">C-Suite Briefing</span>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <span class="hero-badge">Executive Briefing</span>
+    <h1 class="headline-large">Policy-as-Code<br>Remediation Plan</h1>
+    <p class="body-large">Six genuine gaps identified. Three phases of implementation. One unified governance enforcement architecture. This is the roadmap to automated, provable AI governance for ProtoLab.</p>
+    <div class="hero-kpis">
+      <div class="hero-kpi">
+        <div class="hero-kpi-value accent">6</div>
+        <div class="hero-kpi-label">Real Gaps</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-value">42</div>
+        <div class="hero-kpi-label">Sprints Total</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-value green">$600K</div>
+        <div class="hero-kpi-label">Budget (est.)</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-value orange">18</div>
+        <div class="hero-kpi-label">Sprints in Parallel</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ EXECUTIVE SUMMARY ═══════════ -->
+<section class="exec-summary fade-in" id="executive-summary">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;margin-bottom:8px;">Understanding the Landscape</p>
+    <h2 class="headline-small">Executive Summary</h2>
+    <div class="exec-grid">
+      <div>
+        <div class="exec-card">
+          <span class="category-badge foundation">Architecture exists, needs implementation</span>
+          <h4>Gap 1 — Executable Checklists</h4>
+          <p>The 7-Layer Governance Enforcement Pipeline is fully designed with OPA/Cedar policies, but the governance checklists remain human-readable YAML. The bridge between "policy document" and "policy engine" must be built. <strong>This gap blocks all automated enforcement.</strong></p>
+        </div>
+        <div class="exec-card" style="margin-top:16px;">
+          <span class="category-badge extension">Architecture exists, needs extension</span>
+          <h4>Gap 5 — Policy Tree & Gap 7 — Adversarial Testing</h4>
+          <p>Flat checklists need hierarchical inheritance with conflict resolution (EU AI Act vs ITAR). Testing is functional but not adversarial — no OWASP LLM Top 10 coverage in CI/CD.</p>
+        </div>
+        <div class="exec-card" style="margin-top:16px;">
+          <span class="category-badge new">No architecture exists — new design required</span>
+          <h4>Gap 3 — Formal Verification, Gap 4 — Multi-Modal CAD Guardrails, Gap 10 — Control Tax</h4>
+          <p>Safety-critical Tier 3 outputs need mathematical proofs. CAD pipelines need geometry-level guardrails. Control costs must be quantified for portfolio optimization.</p>
+        </div>
+      </div>
+      <div>
+        <div class="exec-corrected-box">
+          <h4>✓ What Already Exists (Correcting the External Review)</h4>
+          <table>
+            <thead>
+              <tr><th>Claimed Gap</th><th>Actual State</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Gap 2: No Policy Engine</td><td>7-Layer Enforcement Pipeline with OPA/Cedar, fail-closed design, <25ms latency budget</td></tr>
+              <tr><td>Gap 6: No Runtime Compliance</td><td>Safety Agent Architecture + continuous Layer 1 compliance checks</td></tr>
+              <tr><td>Gap 8: No Client-Specific Enforcement</td><td>6-Layer Multi-Tenant Isolation + per-tenant budgets + RBAC</td></tr>
+              <tr><td>Gap 9: No Provenance Chain</td><td>Layer 6 Audit Log with SHA-256 integrity chain + delegation linking</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="body" style="margin-top:20px;font-size:0.85rem;">The original evaluation claimed 10 gaps. After rigorous review of governance artifacts, <strong>4 were already designed</strong>. This plan addresses the 6 genuine gaps only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ THE 6 GAPS ═══════════ -->
+<section class="gaps fade-in" id="gaps">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;margin-bottom:8px;">Deep Dive</p>
+    <h2 class="headline-small">The 6 Genuine Gaps — Detail & Remediation</h2>
+    <p class="body section-intro">Click any gap to expand its full remediation plan, sprint breakdown, and success criteria.</p>
+
+    <!-- GAP 1 -->
+    <div class="gap-card" id="gap1-card">
+      <div class="gap-header" onclick="toggleGap('gap1')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p0">1</div>
+        <div class="gap-info">
+          <h3>Checklists Are Not Executable</h3>
+          <div class="gap-subtitle">Current checklists are documentation — not compiled into OPA Rego or Cedar policies</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p0">P0 — Blocks Everything</div>
+          <div class="gap-sprints">6.5 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap1-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Current State</h5>
+              <p>The 7-layer enforcement pipeline is fully specified with OPA Rego and Cedar code examples. However, governance checklists (<code>pre-deployment-gate.yaml</code>, <code>model-card-completeness-checklist.yaml</code>) remain human-readable YAML with <code>evidence_ref</code> fields for manual review — not machine-evaluable conditions.</p>
+              <h5>What's Missing</h5>
+              <p>The bridge between "policy document" and "policy engine." Checklists must be compiled into executable Rego policies that run in CI/CD with automated evidence collection.</p>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1</td><td>Audit checklists → machine-evaluable inventory</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S1</td><td>Define OPA Rego package structure</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S2</td><td>Compile pre-deployment-gate.yaml → Rego</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S2</td><td>Compile model-card checklist → Rego</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S3</td><td>Integrate OPA into CI/CD pipeline</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3</td><td>Build evidence collection adapters</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S4</td><td>Add remaining checklists + dashboard</td><td class="effort">1.5 sprints</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Success Criteria</h5>
+              <ul class="success-criteria">
+                <li>100% of critical checklist items have Rego policies</li>
+                <li>CI/CD blocks deployment on critical policy failure</li>
+                <li>Policy compliance dashboard: real-time status per agent</li>
+                <li>Evidence collection is fully automated</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAP 5 -->
+    <div class="gap-card" id="gap5-card">
+      <div class="gap-header" onclick="toggleGap('gap5')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p1">5</div>
+        <div class="gap-info">
+          <h3>No Policy Tree with Inheritance</h3>
+          <div class="gap-subtitle">Flat checklists with no conflict resolution between frameworks (e.g., EU AI Act vs ITAR)</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p1">P1 — Cross-Framework</div>
+          <div class="gap-sprints">6 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap5-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Current State</h5>
+              <p>Governance has horizontal coverage (checklists per lifecycle stage) and framework mapping (NIST ↔ EU AI Act ↔ ISO 42001 ↔ Singapore MGF). But there is no vertical hierarchy: when EU AI Act "explainability" conflicts with ITAR "no technical data disclosure," there's no programmatic resolution mechanism.</p>
+              <h5>Proposed Policy Tree</h5>
+              <div class="policy-tree-viz">ROOT: ProtoLabs AI Governance Policy
+├── REGULATORY: EU AI Act
+│   ├── Art. 9: Risk Management → Tier 1/2/3 Controls
+│   ├── Art. 14: Human Oversight ⚠ [conflict: ITAR]
+│   │   └── Resolution: ITAR takes precedence
+│   └── Art. 50: Transparency → Client Disclosure
+├── REGULATORY: ITAR/EAR
+│   ├── Technical Data Controls [overrides Art. 14]
+│   └── Export Control Screening
+├── SECTOR: AS9100D (Aerospace) → Aerospace Agents
+├── SECTOR: ISO 13485 (Medical) → Medical Agents
+├── INTERNAL: ProtoLabs Standards
+└── CONTRACTUAL: Per-Client Overrides</div>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1</td><td>Design policy tree schema</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S1</td><td>Map existing checklists to tree nodes</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S2</td><td>Define inheritance & override rules</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S2</td><td>Build conflict detection engine</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3</td><td>Implement conflict resolution (regulatory > contractual > internal)</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3</td><td>Build policy tree compiler → flat OPA Rego</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S4</td><td>Integrate with Gap 1 + add provenance tracking</td><td class="effort">1 sprint</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Success Criteria</h5>
+              <ul class="success-criteria">
+                <li>All checklists mapped to policy tree nodes</li>
+                <li>Conflict detection identifies all known regulatory conflicts</li>
+                <li>Resolution produces deterministic, auditable decisions</li>
+                <li>Compiled Rego policies reflect resolved policy tree</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAP 7 -->
+    <div class="gap-card" id="gap7-card">
+      <div class="gap-header" onclick="toggleGap('gap7')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p1">7</div>
+        <div class="gap-info">
+          <h3>No Adversarial Testing Framework</h3>
+          <div class="gap-subtitle">Functional testing exists — but no OWASP LLM Top 10 coverage or agentic attack taxonomy in CI/CD</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p1">P1 — Blocks Tier 2+</div>
+          <div class="gap-sprints">7.5 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap7-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Current State</h5>
+              <p>Existing eval suites test for functional accuracy — does the agent produce correct outputs? They do <em>not</em> test whether the agent can be manipulated into producing harmful outputs. WP02 Adversarial Defense is mentioned but not codified into CI/CD.</p>
+              <h5>OWASP LLM Top 10 (2025) Coverage Plan</h5>
+              <table class="attack-table">
+                <thead><tr><th>#</th><th>Category</th><th>Priority</th></tr></thead>
+                <tbody>
+                  <tr><td>LLM01</td><td>Prompt Injection</td><td style="color:var(--red);font-weight:600;">P0</td></tr>
+                  <tr><td>LLM02</td><td>Sensitive Info Disclosure</td><td style="color:var(--red);font-weight:600;">P0</td></tr>
+                  <tr><td>LLM03</td><td>Supply Chain Vulnerabilities</td><td>P1</td></tr>
+                  <tr><td>LLM04</td><td>Data & Model Poisoning</td><td>P1</td></tr>
+                  <tr><td>LLM05</td><td>Improper Output Handling</td><td style="color:var(--red);font-weight:600;">P0</td></tr>
+                  <tr><td>LLM06</td><td>Excessive Agency</td><td style="color:var(--red);font-weight:600;">P0</td></tr>
+                  <tr><td>LLM07</td><td>System Prompt Leakage</td><td>P1</td></tr>
+                  <tr><td>LLM08</td><td>Vector/Embedding Weaknesses</td><td>P1</td></tr>
+                  <tr><td>LLM09</td><td>Misinformation</td><td>P1</td></tr>
+                  <tr><td>LLM10</td><td>Unbounded Consumption</td><td>P2</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1</td><td>Codify OWASP LLM Top 10 as test suites</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S1</td><td>Define agentic attack taxonomy</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S2</td><td>Build adversarial test harness</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S2</td><td>50+ prompt injection patterns</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3</td><td>Tool misuse + delegation attack tests</td><td class="effort">1.5 sprints</td></tr>
+                  <tr><td>S4</td><td>CI/CD integration + red-team automation + dashboard</td><td class="effort">2.5 sprints</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Agentic Attack Taxonomy</h5>
+              <ul class="success-criteria">
+                <li>Tool misuse — invoking tools outside agent permissions</li>
+                <li>Delegation chain abuse — privilege escalation through agent chains</li>
+                <li>Memory poisoning — corrupting agent context/memory</li>
+                <li>Context manipulation — adversarial prompt crafting</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAP 4 -->
+    <div class="gap-card" id="gap4-card">
+      <div class="gap-header" onclick="toggleGap('gap4')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p1">4</div>
+        <div class="gap-info">
+          <h3>No Multi-Modal CAD Guardrails</h3>
+          <div class="gap-subtitle">CAD pipeline is an analysis pipeline, not a guarded pipeline — vulnerable to adversarial geometry</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p1">P1 — Blocks CAD Deploy</div>
+          <div class="gap-sprints">6 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap4-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Attack Vectors Identified</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Vector</th><th>Impact</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Adversarial geometry</strong></td><td>Crafted mesh/STEP files cause feature recognition to misidentify → incorrect DFM, wrong pricing</td></tr>
+                  <tr><td><strong>Malformed file exploitation</strong></td><td>Parser vulnerability exploitation → code execution, denial of service</td></tr>
+                  <tr><td><strong>Metadata injection</strong></td><td>Malicious metadata in STEP AP242 → prompt injection via file metadata</td></tr>
+                  <tr><td><strong>Dimensional spoofing</strong></td><td>Valid-looking files with contradictory dimensions → conflicting DFM recommendations</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1</td><td>Define CAD file threat model</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S1</td><td>Build file format validator</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S2</td><td>Geometry sanity checks + metadata sanitizer</td><td class="effort">1.5 sprints</td></tr>
+                  <tr><td>S3</td><td>Adversarial geometry detection + consistency checker</td><td class="effort">2 sprints</td></tr>
+                  <tr><td>S4</td><td>Pipeline integration + monitoring dashboard</td><td class="effort">1 sprint</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Success Criteria</h5>
+              <ul class="success-criteria">
+                <li>100% of uploaded CAD files pass through guardrail layer before parsing</li>
+                <li>Adversarial geometry detection catches >95% of known patterns</li>
+                <li>Metadata injection vectors eliminated</li>
+                <li>Guardrail latency <2 seconds per file</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAP 3 -->
+    <div class="gap-card" id="gap3-card">
+      <div class="gap-header" onclick="toggleGap('gap3')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p2">3</div>
+        <div class="gap-info">
+          <h3>No Formal Verification for Safety-Critical Outputs</h3>
+          <div class="gap-subtitle">All verification is probabilistic — no mathematical proofs for Tier 3 agent outputs</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p2">P2 — Tier 3 Safety</div>
+          <div class="gap-sprints">10.5 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap3-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Why It Matters</h5>
+              <p>When PL-LMM prices a flight-critical aerospace part or generates a DFM recommendation for a medical implant, "95% accuracy" is insufficient. Regulators and clients require deterministic guarantees for safety-critical applications.</p>
+              <h5>Scope Limitation</h5>
+              <p>Formal verification applies only to <strong>deterministic, rule-based outputs</strong> (DFM constraint checking, tolerance validation). It does NOT apply to VLM-based visual assessments, natural language explanations, or cost estimation. Strategy: apply formal verification to the constraint satisfaction layer, not the reasoning layer.</p>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1-S2</td><td>Research: candidate analysis for formal verification</td><td class="effort">2 sprints</td></tr>
+                  <tr><td>S2</td><td>Define formal spec language (Lean 4)</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3-S4</td><td>Build constraint checker → Lean 4 theorems</td><td class="effort">2 sprints</td></tr>
+                  <tr><td>S5-S6</td><td>Implement proof kernel integration</td><td class="effort">2 sprints</td></tr>
+                  <tr><td>S7</td><td>Integrate into Safety Agent output gate</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S8</td><td>Build audit trail for formal proofs</td><td class="effort">0.5 sprint</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Success Criteria</h5>
+              <ul class="success-criteria">
+                <li>100% of Tier 3 DFM constraint outputs have formal proofs</li>
+                <li>Verification latency <500ms per output</li>
+                <li>Audit trail includes Lean 4 proof objects</li>
+                <li>Regulators can inspect proof objects independently</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAP 10 -->
+    <div class="gap-card" id="gap10-card">
+      <div class="gap-header" onclick="toggleGap('gap10')" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+        <div class="gap-number p2">10</div>
+        <div class="gap-info">
+          <h3>No Control Tax Analysis</h3>
+          <div class="gap-subtitle">52+ controls defined — but zero quantification of operational and financial cost per control</div>
+        </div>
+        <div class="gap-meta">
+          <div class="priority-badge p2">P2 — Enables Optimization</div>
+          <div class="gap-sprints">5.5 Sprints</div>
+        </div>
+        <span class="gap-chevron">▾</span>
+      </div>
+      <div class="gap-body" id="gap10-body">
+        <div class="gap-body-inner">
+          <div class="gap-body-grid">
+            <div>
+              <h5>Current State</h5>
+              <p>Governance framework defines <em>what</em> controls exist and <em>when</em> they apply, but not <em>how much they cost</em> or <em>whether the cost is justified</em>. This makes it impossible to optimize the control portfolio.</p>
+              <h5>Control Tax Categories</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Category</th><th>Cost Drivers</th><th>Measurement</th></tr></thead>
+                <tbody>
+                  <tr><td>Compute</td><td>GPU/CPU for guardrails, evals, monitoring</td><td>$/execution</td></tr>
+                  <tr><td>Latency</td><td>Added response time</td><td>ms/execution</td></tr>
+                  <tr><td>Human Review</td><td>Engineer/compliance officer time</td><td>hours/quarter</td></tr>
+                  <tr><td>Tooling</td><td>License costs for OPA, monitoring, audit tools</td><td>$/month</td></tr>
+                  <tr><td>Maintenance</td><td>Engineering time for policy updates</td><td>hours/quarter</td></tr>
+                  <tr><td>Opportunity Cost</td><td>Delayed deployments</td><td>days/feature</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h5>Sprint Breakdown</h5>
+              <table class="sprint-table">
+                <thead><tr><th>Sprint</th><th>Task</th><th class="effort">Effort</th></tr></thead>
+                <tbody>
+                  <tr><td>S1</td><td>Define control cost model</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S1</td><td>Inventory all controls with cost tags</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S2</td><td>Instrument controls with cost tracking</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S2</td><td>Define risk mitigation value model</td><td class="effort">0.5 sprint</td></tr>
+                  <tr><td>S3</td><td>Build control tax dashboard</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S3</td><td>Implement optimization recommendations</td><td class="effort">1 sprint</td></tr>
+                  <tr><td>S4</td><td>Integrate with policy tree + board reporting</td><td class="effort">1 sprint</td></tr>
+                </tbody>
+              </table>
+              <h5 style="margin-top:16px;">Success Criteria</h5>
+              <ul class="success-criteria">
+                <li>Every control has a quantified cost estimate</li>
+                <li>Real-time cost dashboard per control per agent</li>
+                <li>Board report includes governance cost breakdown</li>
+                <li>At least 2 controls optimized in first quarter</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ROADMAP ═══════════ -->
+<section class="roadmap fade-in" id="roadmap">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;margin-bottom:8px;color:var(--dash-muted);">Implementation Timeline</p>
+    <h2 class="headline-small" style="color:#fff;">Three-Phase Roadmap</h2>
+    <p class="body section-intro" style="color:var(--dash-muted);">42 sprints sequenced into 3 phases to maximize parallel execution and minimize blocking dependencies.</p>
+
+    <div class="phase-timeline">
+      <!-- Phase 1 -->
+      <div class="phase-block">
+        <div class="phase-label-col">
+          <div class="phase-dot" style="background:var(--red);top:8px;"></div>
+          <p class="label" style="color:var(--red);margin-bottom:4px;">Phase 1</p>
+          <h3>Foundation</h3>
+          <div class="phase-sprints">Sprints 1–6</div>
+          <div class="phase-cost">$180K · 3 engineers</div>
+        </div>
+        <div class="phase-content-col">
+          <h4>Workstreams</h4>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p0"></div>
+            <div class="phase-gap-info"><strong>Gap 1: Executable Checklists</strong><span>Compile YAML → OPA Rego · CI/CD integration · Evidence automation</span></div>
+            <div class="phase-gap-sprints">6.5 sprints</div>
+          </div>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p1"></div>
+            <div class="phase-gap-info"><strong>Gap 5: Policy Tree</strong><span>Schema design · Conflict detection engine · Inheritance rules</span></div>
+            <div class="phase-gap-sprints">6 sprints (parallel)</div>
+          </div>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p1"></div>
+            <div class="phase-gap-info"><strong>Gap 7: Adversarial Testing</strong><span>OWASP test suites · Attack taxonomy · Test harness (S1-S2)</span></div>
+            <div class="phase-gap-sprints">2 of 7.5 sprints</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-block">
+        <div class="phase-label-col">
+          <div class="phase-dot" style="background:var(--orange);top:8px;"></div>
+          <p class="label" style="color:var(--orange);margin-bottom:4px;">Phase 2</p>
+          <h3>Production Readiness</h3>
+          <div class="phase-sprints">Sprints 7–12</div>
+          <div class="phase-cost">$240K · 4 engineers</div>
+        </div>
+        <div class="phase-content-col">
+          <h4>Workstreams</h4>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p1"></div>
+            <div class="phase-gap-info"><strong>Gap 4: Multi-Modal CAD Guardrails</strong><span>Format validator · Adversarial detection · Pipeline integration</span></div>
+            <div class="phase-gap-sprints">6 sprints</div>
+          </div>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p1"></div>
+            <div class="phase-gap-info"><strong>Gap 7: Adversarial Testing (complete)</strong><span>Tool misuse tests · CI/CD integration · Red-team automation</span></div>
+            <div class="phase-gap-sprints">5.5 of 7.5 sprints</div>
+          </div>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p2"></div>
+            <div class="phase-gap-info"><strong>Gap 10: Control Tax</strong><span>Cost model · Instrumentation · Optimization dashboard</span></div>
+            <div class="phase-gap-sprints">5.5 sprints</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-block">
+        <div class="phase-label-col">
+          <div class="phase-dot" style="background:var(--blue);top:8px;"></div>
+          <p class="label" style="color:var(--blue);margin-bottom:4px;">Phase 3</p>
+          <h3>Advanced Capabilities</h3>
+          <div class="phase-sprints">Sprints 13–18</div>
+          <div class="phase-cost">$180K · 3 engineers</div>
+        </div>
+        <div class="phase-content-col">
+          <h4>Workstreams</h4>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p2"></div>
+            <div class="phase-gap-info"><strong>Gap 3: Formal Verification</strong><span>Lean 4 theorems · Proof kernel integration · Safety Agent output gate</span></div>
+            <div class="phase-gap-sprints">10.5 sprints</div>
+          </div>
+          <div class="phase-gap-item">
+            <div class="phase-gap-dot p2"></div>
+            <div class="phase-gap-info"><strong>Gap 10: Control Tax Optimization</strong><span>Ongoing optimization · Board reporting · Continuous refinement</span></div>
+            <div class="phase-gap-sprints">Ongoing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ BUDGET ═══════════ -->
+<section class="budget fade-in" id="budget">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;margin-bottom:8px;">Investment Required</p>
+    <h2 class="headline-small">Budget Overview</h2>
+    <div class="budget-grid">
+      <div class="budget-card">
+        <div class="phase-icon">🏗</div>
+        <h4>Phase 1 — Foundation</h4>
+        <div class="cost-value">$180K</div>
+        <div class="cost-detail">6 sprints · 3 engineers<br>Sprints 1–6</div>
+      </div>
+      <div class="budget-card">
+        <div class="phase-icon">🚀</div>
+        <h4>Phase 2 — Production Readiness</h4>
+        <div class="cost-value">$240K</div>
+        <div class="cost-detail">6 sprints · 4 engineers<br>Sprints 7–12</div>
+      </div>
+      <div class="budget-card">
+        <div class="phase-icon">🔬</div>
+        <h4>Phase 3 — Advanced Capabilities</h4>
+        <div class="cost-value">$180K</div>
+        <div class="cost-detail">6 sprints · 3 engineers<br>Sprints 13–18</div>
+      </div>
+    </div>
+    <div class="budget-total">
+      <h3>Total Estimated Investment</h3>
+      <div class="total-value">$600,000</div>
+      <div class="total-detail">18 sprints · Avg 3.3 engineers · 42 sprints of work via parallel execution</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GAP SUMMARY TABLE ═══════════ -->
+<section class="gap-summary fade-in" id="gap-summary-table">
+  <div class="container-wide">
+    <p class="label" style="text-align:center;margin-bottom:8px;">At-a-Glance</p>
+    <h2 class="headline-small">Gap Summary & Quick Navigation</h2>
+    <div style="overflow-x:auto;">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Gap</th>
+          <th>Name</th>
+          <th>Priority</th>
+          <th>Sprints</th>
+          <th>Category</th>
+          <th>Blocks</th>
+          <th>Dependencies</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap1')">Gap 1</a></td>
+          <td>Executable Checklists</td>
+          <td><span class="badge-pill p0">P0</span></td>
+          <td>6.5</td>
+          <td>Architecture exists, needs implementation</td>
+          <td>All automated enforcement</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap5')">Gap 5</a></td>
+          <td>Policy Tree with Inheritance</td>
+          <td><span class="badge-pill p1">P1</span></td>
+          <td>6</td>
+          <td>Architecture exists, needs extension</td>
+          <td>Cross-framework compliance</td>
+          <td>Gap 1</td>
+        </tr>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap7')">Gap 7</a></td>
+          <td>Adversarial Testing Framework</td>
+          <td><span class="badge-pill p1">P1</span></td>
+          <td>7.5</td>
+          <td>Architecture exists, needs extension</td>
+          <td>Tier 2+ deployment</td>
+          <td>Gap 1</td>
+        </tr>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap4')">Gap 4</a></td>
+          <td>Multi-Modal CAD Guardrails</td>
+          <td><span class="badge-pill p1">P1</span></td>
+          <td>6</td>
+          <td>No architecture — new design</td>
+          <td>CAD system deployment</td>
+          <td>Gap 1</td>
+        </tr>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap3')">Gap 3</a></td>
+          <td>Formal Verification</td>
+          <td><span class="badge-pill p2">P2</span></td>
+          <td>10.5</td>
+          <td>No architecture — new design</td>
+          <td>Tier 3 safety-critical applications</td>
+          <td>Gap 1</td>
+        </tr>
+        <tr>
+          <td><a class="gap-link" onclick="scrollToGap('gap10')">Gap 10</a></td>
+          <td>Control Tax Analysis</td>
+          <td><span class="badge-pill p2">P2</span></td>
+          <td>5.5</td>
+          <td>No architecture — new design</td>
+          <td>Governance cost optimization</td>
+          <td>Gap 1, Gap 5</td>
+        </tr>
+        <tr style="font-weight:600;background:var(--bg-alt);">
+          <td colspan="3"><strong>TOTAL</strong></td>
+          <td><strong>42</strong></td>
+          <td colspan="3"><strong>3 Phases · 18 Sprints (parallel) · $600K</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NEXT STEPS ═══════════ -->
+<section class="cta fade-in" id="cta">
+  <div class="container">
+    <p class="label" style="margin-bottom:8px;">Recommended Action</p>
+    <h2 class="headline-small">Next Steps for the C-Suite</h2>
+    <p class="body-large">Phase 1 can begin immediately with zero dependencies. Gap 1 (executable checklists) unblocks all downstream gaps and is the foundation for automated governance enforcement.</p>
+    <div class="cta-actions">
+      <a class="btn btn-primary" href="#gap-summary-table">Review Gap Summary →</a>
+      <a class="btn btn-outline" href="../governance/index.html">Explore Governance Platform →</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Back to Top -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<footer>
+  <div class="container">
+    <p>
+      <strong>ProtoLab Policy-as-Code Remediation Plan</strong> — Version 1.0 · 2026-04-28 · Owned by Chief AI Officer · Approved by AI Governance Council
+    </p>
+    <p style="margin-top:4px;">
+      <a href="../governance/index.html">AI Governance Platform</a> · <a href="#executive-summary">Executive Summary</a> · <a href="#gaps">The 6 Gaps</a> · <a href="#roadmap">Roadmap</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ── Gap Accordion ─────────────────── */
+function toggleGap(id) {
+  const card = document.getElementById(id + '-card');
+  const body = document.getElementById(id + '-body');
+  const isOpen = card.classList.contains('open');
+
+  // Close all other gaps
+  document.querySelectorAll('.gap-card.open').forEach(c => {
+    if (c !== card) { c.classList.remove('open'); c.querySelector('.gap-header').setAttribute('aria-expanded', 'false'); }
+  });
+
+  if (isOpen) {
+    card.classList.remove('open');
+    card.querySelector('.gap-header').setAttribute('aria-expanded', 'false');
+  } else {
+    card.classList.add('open');
+    card.querySelector('.gap-header').setAttribute('aria-expanded', 'true');
+    // Scroll to card after animation
+    setTimeout(() => { card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
+  }
+}
+
+/* ── Scroll to Gap (from summary table) ── */
+function scrollToGap(id) {
+  const card = document.getElementById(id + '-card');
+  if (!card.classList.contains('open')) {
+    toggleGap(id);
+  }
+  setTimeout(() => { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+}
+
+/* ── Back to Top visibility ───────── */
+const backToTop = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 600) {
+    backToTop.classList.add('visible');
+  } else {
+    backToTop.classList.remove('visible');
+  }
+});
+
+/* ── Fade-in animations ────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+/* ── Active nav highlighting ──────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.top-nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    const top = s.offsetTop - 80;
+    if (window.scrollY >= top) current = s.getAttribute('id');
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+
+/* ── Open Gap 1 by default ────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  toggleGap('gap1');
+});
+</script>
+
+</body>
+</html>
