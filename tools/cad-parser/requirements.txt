@@ -7,10 +7,9 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # CAD processing (OpenCASCADE)
-# PythonOCC for B-Rep operations (optional: may require OCCT build)
-# pyocp==7.7.2  # Uncomment once OCCT is available
-cadquery==2.4.0
-OCP==7.7.2
+# cadquery-ocp bundles OpenCASCADE for Python 3.10+
+cadquery-ocp
+cadquery>=2.5.0
 
 # Geometry processing
 numpy==1.24.3

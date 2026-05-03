@@ -4,9 +4,16 @@ Detects manufacturing features (holes, pockets, bosses, etc.) from geometry.
 """
 
 import numpy as np
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Set
 from dataclasses import dataclass
 import logging
+from collections import defaultdict
+
+try:
+    import trimesh
+    HAS_TRIMESH = True
+except ImportError:
+    HAS_TRIMESH = False
 
 logger = logging.getLogger(__name__)
 
@@ -181,35 +188,129 @@ class FeatureDetector:
         return holes
     
     def _group_edges_into_loops(self, edges, mesh) -> List[List[int]]:
-        """Group edges into closed loops"""
-        # Simplified implementation
-        # Full implementation would build edge connectivity graph
-        return [edges.tolist()] if len(edges) > 0 else []
-    
-    def _fit_circle_to_loop(self, loop, mesh) -> Optional[Dict]:
-        """Fit a circle to a loop of edges"""
+        """
+        Group boundary edges into closed loops using edge connectivity graph.
+        
+        Returns list of vertex index loops.
+        """
+        if len(edges) == 0:
+            return []
+        
         try:
-            # Get vertices in loop
-            vertices = mesh.vertices[loop]
+            # Build vertex connectivity graph
+            # edges is array of [v1, v2] pairs
+            graph = defaultdict(list)
+            for edge in edges:
+                v1, v2 = int(edge[0]), int(edge[1])
+                graph[v1].append(v2)
+                graph[v2].append(v1)
+            
+            # Find closed loops by traversing the graph
+            visited = set()
+            loops = []
+            
+            for start_vertex in graph:
+                if start_vertex in visited:
+                    continue
+                
+                loop = []
+                current = start_vertex
+                prev = None
+                
+                while current not in visited:
+                    visited.add(current)
+                    loop.append(current)
+                    
+                    # Find next vertex in loop
+                    neighbors = [n for n in graph[current] if n != prev]
+                    if not neighbors:
+                        break
+                    
+                    prev = current
+                    current = neighbors[0]
+                    
+                    # Check if loop closed
+                    if current == start_vertex:
+                        break
+                
+                if len(loop) >= 3:
+                    loops.append(loop)
+            
+            return loops
+        
+        except Exception as e:
+            logger.error(f"Error grouping edges into loops: {e}")
+            return []
+    
+    def _fit_circle_to_loop(self, loop_vertices, mesh) -> Optional[Dict]:
+        """
+        Fit a circle to a loop of vertex indices using least-squares circle fitting.
+        
+        Uses algebraic least squares for robustness.
+        """
+        try:
+            # Get 3D vertices from loop
+            vertices = mesh.vertices[loop_vertices]
             
             if len(vertices) < 3:
                 return None
             
-            # Fit circle using least squares
-            # This is a simplified 2D circle fit
-            center = np.mean(vertices, axis=0)
-            distances = np.linalg.norm(vertices - center, axis=1)
-            radius = np.mean(distances)
+            # Project to best-fit plane for 2D circle fitting
+            center_3d = np.mean(vertices, axis=0)
             
-            # Calculate circularity (how well points fit circle)
+            # Compute PCA to find plane normal
+            centered = vertices - center_3d
+            cov = np.dot(centered.T, centered) / len(vertices)
+            eigenvalues, eigenvectors = np.linalg.eigh(cov)
+            
+            # Normal is eigenvector with smallest eigenvalue
+            normal = eigenvectors[:, 0]
+            
+            # Create local coordinate system
+            # u, v are orthonormal basis for the plane
+            if abs(normal[2]) < 0.9:
+                u = np.cross(normal, [0, 0, 1])
+            else:
+                u = np.cross(normal, [0, 1, 0])
+            u = u / np.linalg.norm(u)
+            v = np.cross(normal, u)
+            v = v / np.linalg.norm(v)
+            
+            # Project vertices to 2D plane coordinates
+            x = np.dot(centered, u)
+            y = np.dot(centered, v)
+            
+            # Algebraic least squares circle fit
+            # Circle equation: (x-a)^2 + (y-b)^2 = r^2
+            # Linearized: x^2 + y^2 = 2ax + 2by + (r^2 - a^2 - b^2)
+            # Let c = r^2 - a^2 - b^2, then: x^2 + y^2 = 2ax + 2by + c
+            
+            A = np.column_stack([2 * x, 2 * y, np.ones(len(x))])
+            b_vec = x**2 + y**2
+            
+            # Solve least squares
+            coeffs, residuals, rank, s = np.linalg.lstsq(A, b_vec, rcond=None)
+            
+            a, b, c = coeffs
+            radius = np.sqrt(a**2 + b**2 + c)
+            
+            # Convert 2D center back to 3D
+            center_2d = np.array([a, b])
+            center_3d_fit = center_3d + center_2d[0] * u + center_2d[1] * v
+            
+            # Calculate circularity: how well points fit the circle
+            distances = np.sqrt((x - a)**2 + (y - b)**2)
             std_dev = np.std(distances)
             circularity = 1.0 - (std_dev / radius) if radius > 0 else 0
+            circularity = max(0, min(1, circularity))
             
             return {
-                'center': center.tolist(),
-                'radius': radius,
-                'diameter': radius * 2,
-                'circularity': max(0, circularity)
+                'center': center_3d_fit.tolist(),
+                'radius': float(radius),
+                'diameter': float(radius * 2),
+                'circularity': float(circularity),
+                'normal': normal.tolist(),
+                'vertex_count': len(vertices)
             }
         
         except Exception as e:
