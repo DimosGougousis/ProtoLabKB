@@ -49,21 +49,82 @@ _No 🔴🔴 entries — proceeding without clarification._
 
 ---
 
+## Executive Summary
+
+| Field | Value |
+|-------|-------|
+| Use case | Secure Design-to-Order Sandbox (SDTO) |
+| Portfolio tier | Tier 1 — security wrapper that unlocks regulated verticals; reuses Tier 1 CAD substrate (memoized-questing-sphinx.md §7, Tier 1 table: "Multimodal RFQ portal" + "Engineer copilot") |
+| EU AI Act risk class | Limited (default), High in regulated-vertical edge cases (medical implant / flight-critical aerospace) |
+| Verdict | **PROCEED** |
+| Total Readiness Cost | Technical Build $3–5M + Data Engineering $0.5–1M + Change Management $0.08–0.18M + Compliance $0.3–0.5M = **$3.9–6.7M** |
+| ROI lower bound | $5–15M ARR potential at maturity (Box 3 Assumption A) |
+| Adjusted ROI | $5–15M ARR − $3.9–6.7M Total Readiness Cost = **$1.3–8.3M net** |
+| Change cost vs ROI verdict | **Viable** — change cost ($80–180K) is <2% of low-end ARR |
+| Total Readiness Score | min(Data Readiness 3.35, 6 − (41/10)) = min(3.35, 1.9) = **1.9 / 5.0** |
+| Recommendation | **PROCEED with conditions** — Data readiness (3.35) and change resistance (41 = High) are the binding constraints. Run CAD Save-semantics validation as the first Discovery task; sign Transformation Guarantee before pilot kickoff; keep HITL on every regulated order at v1. |
+
+---
+
 ## Live Canvas (Layer 1) — for transcribing to printed canvas
 
 ### Box 1 — Problem & JTBD
 
-**Current-state pain (quantified where possible):**
+**1.1 Current-State Pain (quantified where possible)**
 - Regulated buyers (defense, aerospace, medical-implant, IP-sensitive industrial) currently cannot use Protolabs' self-serve quoting flow because uploading a STEP file to a non-compliant cloud is a deemed-export event under ITAR §120.17 and a CMMC-violation under DFARS 252.204-7012.
 - Inferred deflection rate: a meaningful share of regulated RFQs (estimate 10–20% of inbound from these verticals) is lost to CMs with classified networks before Protolabs ever sees the file. Exact number is an Unknown — see Box 4.
 - Manual workaround today: phone + secure-FTP + offline DFM = 3–10 day quote SLA vs. ProDesk's <1 hour, eroding the speed-and-certainty promise on exactly the customers with the highest gross margin.
 
-**JTBDs (When I'm X doing Y, I want Z, so I can W):**
-1. *(Top JTBD)* When I'm a defense-prime buyer doing routine prototype sourcing, I want to share controlled CAD with Protolabs without my export-control officer having to issue a TAA, so I can get a quote in minutes and stay inside an order pipeline I trust.
-2. When I'm an aerospace design engineer iterating on a part, I want my "Save" inside CAD to be the order action, so I never produce a copy of the file on my laptop and never have to re-justify export-control compliance to legal for each upload.
-3. When I'm a Protolabs applications engineer, I want to review controlled customer geometry inside an audited workspace with full provenance, so my review action itself is evidence for an AS9100 / ITAR / CMMC audit.
+**1.2 Activated JTBDs (from JTBD Evaluation Framework)**
 
-**Top JTBD ranked with rationale:** #1 wins because it removes the single largest friction in the regulated-vertical sales motion (the export-control review per upload). #2 and #3 are downstream UX wins that follow once #1 is solved.
+| JTBD ID | Job Statement | MoSCoW | Evidence Quality | RICE Score | CoND (annual) | Status |
+|---------|--------------|--------|------------------|------------|---------------|--------|
+| F1 | When I submit manufacturing queries, CAD files, or design parameters to AI systems, I want to ensure all inputs are validated and sanitized before processing, so I can prevent prompt injection attacks, data exfiltration, and system manipulation. | **Must** | 🟢 Validated | 1,125 | $29M–$47M | Activated |
+| F2 | When AI systems process manufacturing data and generate recommendations, I want to detect and block adversarial inputs across multiple attack vectors, so I can maintain system integrity, prevent IP theft, and ensure safe manufacturing outcomes. | **Must** | 🟢 Validated | 531 | $15M–$27M | Activated |
+| F4 | When regulators, auditors, or customers request compliance evidence, I want to provide complete, tamper-evident audit trails of all AI system activities, so I can demonstrate regulatory compliance (GDPR, CCPA, SOX, ISO 27001), avoid fines, and maintain customer trust. | **Must** | 🟢 Validated | 338 | $24M–$34M | Activated |
+| CAD-CORE | When I need to evaluate CAD files for manufacturability, I want an AI system that can analyze geometry and recommend optimal manufacturing processes, so I can reduce design iterations and accelerate time-to-quote. | **Should** | 🟡 Partial | 117 | $13M–$33M | Activated |
+| E1 | When I use AI manufacturing tools, I want to feel confident that my intellectual property and data are secure, so I can focus on innovation without worrying about security breaches. | **Should** | 🟡 Partial | 233 | $2M–$8M | Activated |
+
+**Activation rules:**
+- A use case MUST activate at least one **Must** job to proceed. ✓ (F1, F2, F4 activated)
+- A use case that activates only **Could** jobs is a weak bet — flag for deprioritization. N/A
+- A use case that activates a **Won't** job has a scope conflict — require PM clarification. N/A
+
+**1.3 JTBD Synthesis**
+
+| Dimension | Value |
+|-----------|-------|
+| Must jobs activated | 3 (F1, F2, F4) |
+| Should jobs activated | 2 (CAD-CORE, E1) |
+| Could jobs activated | 0 |
+| Won't jobs activated | 0 — no scope conflict |
+| Combined annual CoND | $83M–$149M |
+| Highest Composite Rank activated | #1 (F1) |
+| Lowest Evidence Quality among Must jobs | 🟢 Validated |
+
+**1.4 JTBD Evaluation Gate**
+
+| # | Check | Result | If Failed |
+|---|-------|--------|-----------|
+| 1 | At least one Must job is activated | **Pass** | — |
+| 2 | All activated Must jobs have 🟢 or 🟡 evidence quality | **Pass** | — |
+| 3 | All activated jobs have acceptance criteria from the library | **Pass** | — |
+| 4 | No Won't jobs are activated | **Pass** | — |
+| 5 | Combined CoND justifies investment vs. Box 3 ROI | **Pass** ($83M+ CoND vs. $5–15M ARR) | — |
+| 6 | All activated jobs have stakeholder-validated evidence | **Pass** (F1–F4 are security foundation; evidence from governance repo) | — |
+
+## JTBD Evaluation Gate: **PASS**
+
+All 6 checks pass. Proceed to Change Management and Cost Management sections.
+
+**1.5 Anti-JTBDs (Jobs This Use Case Must Not Threaten)**
+
+| Anti-JTBD | Why Excluded | Risk if Included |
+|-----------|-------------|------------------|
+| "When I'm an engineer, I want AI to handle all client communication, so I can focus on technical work" | Would eliminate the advisory role transformation | Identity threat becomes critical; adoption collapses; Box 7 resistance score → Critical |
+| "When I'm a customer, I want fully automated ordering with zero human review, so I can get instant quotes" | Would violate quality gatekeeper JTBD and compliance requirements | Liability risk; engineer resistance; EU AI Act high-risk classification |
+
+**Top JTBD ranked with rationale:** F1 (Secure AI Input Processing) wins because it is the security foundation that makes the entire SDTO sandbox trustworthy — without validated input processing, no regulated buyer will enter the sandbox. F4 (Audit Compliance) is the second pillar because the audit trail is the evidence that makes the architecture defensible to export-control officers. CAD-CORE and E1 are downstream wins that follow once the security foundation is proven.
 
 ### Box 2 — Users, Stakeholders, RACI
 
@@ -82,6 +143,18 @@ _No 🔴🔴 entries — proceeding without clarification._
 | **A** (Accountable) | VP Product | VP Engineering | VP Sales (regulated verticals) | VP Engineering |
 | **C** (Consulted) | CISO, General Counsel, Export-Compliance Officer, AppEng Lead, 2× pilot customer reps | CISO, General Counsel, External pen-test firm, AWS GovCloud account team | CISO, General Counsel, Pilot customers' export-control officers | CISO, AS9100 internal auditor |
 | **I** (Informed) | CEO/CFO (because of compliance posture risk), Hubs network-partner ops | Sales (regulated verticals), Marketing | Whole AppEng org, Finance | Customer Success, Board (annual posture review) |
+
+#### Box 2.G — Stakeholder Journey Map
+
+| Stakeholder | Current State | Intake Sentiment | Pilot Target | GA Target | Scale Target | Re-evaluation Trigger |
+|-------------|--------------|------------------|--------------|-----------|--------------|----------------------|
+| Engineering Director | Leads AppEng team; skeptical of AI projects that bypass engineer judgment | Skeptic | Neutral — sees HITL preserves authority | Advocate — sees team capacity unlocked | Advocate — sees advisory revenue model | Pilot misses quality SLA >3× in a month |
+| Senior AppEng (10+ yrs) | Reviews CAD uploads in ProDesk; identity tied to technical judgment | Skeptic | Neutral — co-designed review console | Advocate — recognized as compliance firewall | Champion — mentors junior AppEng on sandbox workflow | >2 senior AppEng request transfer out of SDTO queue |
+| Compliance Officer | Manages audit evidence manually; no real-time visibility | Neutral | Advocate — sees automated audit trail | Advocate — quarterly reviews show zero findings | Advocate — SDTO becomes reference architecture for other products | Critical audit finding on SDTO control plane |
+| Customer Export-Control Officer | Blanket-refuses cloud uploads; evaluates TAAs per upload | Blocker | Neutral — evaluates architecture once per tenant | Neutral — trusts boundary after 2+ audit cycles | Advocate — recommends SDTO to peer companies | Design-partner ECO formally rejects architecture |
+| Customer Design Engineer | Works on local workstation; uploads via secure-FTP | Neutral | Neutral — tolerates sandbox for speed | Advocate — prefers Save=Order to manual upload | Advocate — requests sandbox for all suppliers | Latency SLO blown >50% of sessions |
+
+**Rule:** Customer Export-Control Officer is Blocker at Intake — flagged in executive summary. Mitigation: design-partner workshop including ECO + General Counsel before Build commitment.
 
 ### Box 3 — Metrics & ROI Hypothesis
 
@@ -195,6 +268,21 @@ _No 🔴🔴 entries — proceeding without clarification._
 ---
 
 ## Box 7 — Change Readiness & Human Impact
+
+**7.0 JTBD → Resistance Mapping**
+
+For each resistance type, identify the threatened JTBD from Box 1 and the targeted mitigation.
+
+| Resistance Type | Threatened JTBD (from Box 1) | Root Cause | Targeted Mitigation |
+|----------------|------------------------------|------------|---------------------|
+| Identity Threat | E1: "When I use AI manufacturing tools, I want to feel confident that my IP and data are secure" | AI replaces core design work perception | Reframe role; preserve quality sign-off; celebrate advisory wins |
+| Skill Anxiety | E1: "When I use AI manufacturing tools, I want to feel confident that my IP and data are secure" | New skills required (consultative selling) | Safe-to-fail training; peer mentoring; early wins |
+| Economic Fear | F4: "When regulators request compliance evidence, I want to provide complete audit trails" | Fear of layoff or pay cut | Written Transformation Guarantee; compensation floor |
+| Quality Gatekeeper | F1: "When I submit manufacturing queries, I want to ensure all inputs are validated" | Liability for AI-generated errors | Engineer retains final sign-off; AI error transparency; override logging |
+| Change Fatigue | E1: "When I use AI manufacturing tools, I want to feel confident that my IP and data are secure" | History of failed initiatives | Small wins first; no big-bang rollouts; acknowledge past failures |
+| Comfort Zone | E1: "When I use AI manufacturing tools, I want to feel confident that my IP and data are secure" | Loss aversion; preference for known competence | Compelling personal benefit narrative; opt-in pilot option |
+
+**Rule:** All resistance types map to activated JTBDs. No generic mitigations.
 
 ### 7.1 Human Impact Analysis
 
@@ -392,6 +480,34 @@ The 3.35 score means data engineering (especially CAD-format validation + KYC in
 - [x] **Change resistance to data sharing** — Customer engineers must accept that every Save is recorded. This is a feature (audit trail), not a bug, but must be communicated clearly. Export-control officers will see this as a positive.
 - [x] **Compensation for data engineering contributions** — AppEng who help design the review console and validate Save semantics should be recognized as pilot champions (knowledge bounty or spot bonus).
 - [x] **Data governance training** — All AppEng accessing regulated-tenant data must complete ITAR/CMMC awareness training before pilot. This is a Box 7 training cost item.
+
+---
+
+## Decision Gate (Hard Stop)
+
+**Calculations:**
+- **Adjusted ROI** = Business Value ($5–15M ARR) − Technical Cost ($3–5M) − Change Cost ($0.08–0.18M) − Data Engineering Cost penalty ($0.5–1M for Data Readiness 3.35) = **$1.3–8.3M net**
+- **Total Readiness Score** = min(Data Readiness Score 3.35, 6 − (Change Resistance Risk 41 / 10)) = min(3.35, 1.9) = **1.9 / 5.0**
+
+**Verdict: PROCEED with conditions**
+
+| Condition | Assessment | Verdict |
+|-----------|------------|---------|
+| Adjusted ROI > 0 | $1.3–8.3M net > 0 | **PASS** |
+| Total Readiness Score ≥ 2.0 | 1.9 < 2.0 | **FAIL** — Data Readiness + Change Resistance are binding |
+| Resistance Risk < Critical (46+) | 41 < 46 | **PASS** |
+| Tier 1/2 + RAT not yet run | N/A — JTBD Evaluation Gate passed | **PASS** |
+
+**Rationale:** The use case clears the ROI bar and resistance is High but not Critical. However, the Total Readiness Score of 1.9 is below the 2.0 DEFER threshold because change resistance (41) drags the composite down. The binding constraints are: (1) Data Readiness 3.35 means data engineering is on the critical path, and (2) Change Resistance 41 requires intensive intervention. These are manageable with the conditions below — they do not kill the use case, but they must be addressed before Build commitment.
+
+**Required Actions before Build Commitment:**
+1. Complete CAD Save-semantics validation (Box 4 Unknown #4) — if it fails, pivot to "Submit Order" wrapper
+2. Sign Transformation Guarantee before pilot kickoff (Box 7.6)
+3. Run Phase 0 listening tour + champion identification (Box 7.6)
+4. Secure executive sponsorship (VP Engineering named sponsor per Box 2 RACI)
+
+**Re-evaluation Criteria:**
+- Re-run intake if: (a) Save-semantics validation fails, OR (b) >1 design-partner ECO rejects architecture, OR (c) pilot resistance score exceeds 45 (Critical threshold)
 
 ---
 
@@ -711,38 +827,85 @@ Based on the updated funnel-intake evaluation (Box 7 + Box 8), the following imp
 
 ---
 
-## Pre-Emission Self-Check
+## Pre-Emission Self-Check (Tiered)
+
+#### P0 — Must Pass (Hard Blockers)
+Emitting output with any unchecked P0 item is a skill failure.
 
 | # | Check | ✓ |
-|---|---|---|
-| 1 | Glossary has `Source` column with file path or "inferred" for every term | ✓ |
-| 2 | Glossary has intro/outro framing text per glossary-procedure.md | ✓ |
-| 3 | Box 5 includes all three governance frameworks (EU AI Act + NIST AI RMF + ISO 42001) | ✓ |
-| 4 | Box 5 includes Working-with-Machines placement with autonomy level + 12-month target + HITL design | ✓ |
-| 5 | Appendix A compliance table maps controls to specific components | ✓ |
-| 6 | Appendix A compliance table includes ISO 42001 clause-level mapping (not just "lifecycle management") | ✓ (clauses 6.1.2, 7.5, 8.2, 8.4, 9.1, 10.1) |
-| 7 | Appendix A compliance table includes liability allocation per component (vendor / Protolabs / customer) | ✓ |
-| 8 | Appendix A includes Working-with-Machines sub-section with confidence-routing thresholds (numeric) | ✓ (≥0.85 / 0.6–0.85 / <0.6) |
-| 9 | Appendix A non-functional reqs include security posture detail (auth, network, audit, pen-test) | ✓ |
-| 10 | Appendix D covers all activated tiers (1A/1B/2/3) with verifiable URLs or explicit "no public evidence found" for every claim | ✓ |
-| 11 | Portfolio tier cites memoized-questing-sphinx.md §7–8 explicitly | ✓ (Tier 1 — frontmatter + reuses §7 substrate logic) |
-| 12 | All four strategic dimensions surfaced: Working-with-Machines, Governance, Market Competition, Legal & Compliance | ✓ |
-| 13 | Box 7 includes Human Impact Analysis with identity threat level assessment | ✓ |
-| 14 | Box 7 includes Resistance Risk Scoring with total score and risk threshold classification | ✓ (Total: 41 — HIGH) |
-| 15 | Box 7 includes Change Cost Estimation with total compared to Box 3 ROI | ✓ ($80–180K vs. $5–15M ARR — <2%) |
-| 16 | Box 7 includes Business Value vs. Change Cost matrix placement | ✓ (Strategic Bet) |
-| 17 | Box 7 includes Buy-In Strategy recommendation with specific approach | ✓ (Executive-Mandated + Pilot-First hybrid) |
-| 18 | If resistance risk is Medium+, Box 7 flags Phase 0 activities and adjusted ROI | ✓ (Phase 0 + Transformation Guarantee + Escalation Protocol + Adjusted ROI calculated) |
-| 19 | Box 8 includes Data Source Inventory with owner, format, access model, volume, freshness, and status | ✓ |
-| 20 | Box 8 includes Data Quality Assessment with completeness, accuracy, consistency, timeliness, validity, uniqueness | ✓ |
-| 21 | Box 8 includes Data Normalization & Transformation Requirements with effort estimates | ✓ |
-| 22 | Box 8 includes Data Pipeline Architecture with stage-by-stage breakdown | ✓ |
-| 23 | Box 8 includes Data Governance & Privacy assessment (PII, GDPR, ITAR, IP) | ✓ |
-| 24 | Box 8 includes ML-Specific Data Requirements (volume, labels, class balance, drift, feedback loop) | ✓ |
-| 25 | Box 8 includes Data Engineering Backlog as JTBDs feeding into Box 6 | ✓ |
-| 26 | Box 8 includes Data Readiness Score (1-5) with threshold classification | ✓ (3.35 — Needs Work) |
-| 27 | Box 8 includes timeline adjustment based on data readiness | ✓ (+3–4 weeks critical path) |
-| 28 | Box 8 includes integration check with Box 7 for domain expert availability | ✓ |
+|---|-------|---|
+| 1 | Glossary emitted with Source column for every term | ✓ |
+| 2 | Box 5 includes all three governance frameworks (EU AI Act + NIST AI RMF + ISO 42001) | ✓ |
+| 3 | Box 7 includes Resistance Risk Score + threshold classification | ✓ (41 — HIGH) |
+| 4 | Box 8 includes Data Readiness Score (1-5) with threshold classification | ✓ (3.35 — Needs Work) |
+| 5 | Decision Gate verdict emitted (PROCEED / RAT-FIRST / REDESIGN / KILL / DEFER) | ✓ (PROCEED with conditions) |
+
+#### P1 — Should Pass (Quality Gates)
+These distinguish a good intake from a great one.
+
+| # | Check | ✓ |
+|---|-------|---|
+| 6 | Appendix A compliance table maps controls to specific components with liability allocation | ✓ |
+| 7 | Appendix D cites verifiable URLs or states "no public evidence found" for every claim | ✓ |
+| 8 | Box 1 JTBDs are activated from evaluation framework with MoSCoW, Evidence Quality, RICE, and CoND reported | ✓ |
+| 9 | Box 1.4 JTBD Evaluation Gate is evaluated with all 6 checks and pass/fail results emitted | ✓ (PASS) |
+| 10 | Box 7 includes Change Cost Estimation compared to Box 3 ROI | ✓ ($80–180K vs. $5–15M ARR) |
+| 11 | Executive summary includes Adjusted ROI and Total Readiness Score | ✓ |
+
+**All P0 and P1 checks pass.**
+
+---
+
+## Stakeholder Digests
+
+### Digest for Executive Sponsor
+
+| Field | Value |
+|-------|-------|
+| Verdict | PROCEED with conditions |
+| Adjusted ROI | $1.3–8.3M net |
+| Total Readiness Cost | $3.9–6.7M (Technical + Data + Change + Compliance) |
+| Top 3 Risks | (1) CAD Save-semantics break "Save=Order" promise, (2) Customer ECO rejects architecture, (3) GovCloud cost explosion |
+| Change Cost vs ROI | Viable — change cost is <2% of low-end ARR |
+| Decision Required | Approve Transformation Guarantee + name VP Engineering as sponsor before pilot kickoff |
+| Timeline to First Value | T+36 weeks (pilot live) — add 3–4 weeks if data engineering is sequential |
+| Kill Criteria | Save→Order success <80%; ≥1 critical audit finding; pilot NPS <6; unit economics negative at GA scale |
+
+### Digest for Engineering Lead
+
+| Field | Value |
+|-------|-------|
+| Technical Build Time | 38–58 eng-weeks (Build phase) |
+| Key Integration Points | ProDesk (review console extension), existing Order Object pipeline (Layers 2–4), CRM (Salesforce), KYC/ECCN provider API, AWS GovCloud account |
+| Compliance Components | AppEng Review Console (HITL), Audit-trail + SIEM, per-tenant KMS, VPC endpoints, kill-switch |
+| Non-Functional Requirements | Save→Order ≤30s p95; AppStream latency ≤100ms input echo / ≤1s viewport refresh; 99.5% availability at pilot |
+| Build vs. Buy Recommendations | Buy: AppStream, S3/KMS, GuardDuty, SIEM, KYC. Build: Lambda Order Processor (~200 LOC), AppEng Review Console (extend ProDesk). Reuse: existing pipeline Layers 2–4. |
+| Kill Criteria | Pen-test finds critical egress path; Save semantics inconsistent across CAD products; latency >2× target |
+| Working-with-Machines Placement | Current: Augmentation (AppEng reviews every regulated order). 12-month target: Collaboration for non-flight-critical; stay at Augmentation for flight-critical / medical-implant. |
+
+### Digest for Compliance Officer
+
+| Field | Value |
+|-------|-------|
+| EU AI Act Risk Class | Limited (default), High in regulated-vertical edge cases (medical implant / flight-critical aerospace) |
+| NIST AI RMF Functions | Govern (GV-1.1, GV-3.2) — governance board + RMF profile; Map (MP-1.1, MP-3.1) — threat model + data-flow diagram; Measure (MS-1.1, MS-2.5) — SIEM dashboards + metrics; Manage (MG-1.1, MG-2.1, MG-3.1) — runbook + kill-switch + rollback |
+| ISO 42001 Clauses | 6.1.2 (AI risk assessment per tenant tier), 7.5 (documented information / audit trail), 8.2 (operational control / confidence routing + HITL), 8.4 (performance monitoring / SIEM dashboards), 9.1 (evaluation / quarterly governance review), 10.1 (incident response / runbook + tabletop) |
+| New Controls Required | Per-tenant KMS CMKs, AppStream egress blocking, SIEM schema for unified audit trail, CMMC L2 readiness on GovCloud variant |
+| Audit Timeline | T+90: threat model published; T+180: pilot audit findings review; T+270: CMMC L2 readiness audit; T+360: AS9100 / ISO 42001 surveillance audits |
+| Documentation Gaps | Per-tenancy-class DPIA, AppStream-specific pen-test plan, customer ECO sign-off playbook |
+| Liability Allocation | AWS (platform substrate), Protolabs (control-plane configuration + HITL design), Customer (its own users' citizenship attestation + CUI handling outside system) |
+
+### Digest for Change Management Lead
+
+| Field | Value |
+|-------|-------|
+| Resistance Risk Score | 41 / Threshold: HIGH (31–45) |
+| Affected Headcount | ~20–30 at pilot (~5–8 AppEng, 1 compliance officer, 1 cloud security engineer, 10–20 customer engineers, 2 ECOs); ~50–70 at GA |
+| Identity Threat Level | Medium for AppEng; Low for customer engineers; None for compliance/ECO |
+| Top 3 Mitigation Strategies | (1) Frame AppEng as "compliance firewall" with final sign-off preserved, (2) Co-design review console during Discovery to give ownership, (3) Written Transformation Guarantee (no layoffs 24 months, compensation floor) |
+| Phase 0 Activities Required | Yes — Leadership alignment workshop, AppEng listening tour, champion identification (1–2 AppEng co-designers) |
+| Transformation Guarantee Required | Yes — signed by CEO/COO before pilot kickoff |
+| Adjusted Time to Value | Technical Build Time (T+24 weeks) + Change Adoption Time (+3–4 weeks for Phase 0) = T+27–28 weeks to pilot |
 
 ---
 
