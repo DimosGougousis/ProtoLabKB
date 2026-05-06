@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-protolabs-navy text-gray-100 antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
+  }
+}
+
+@layer components {
+  .chat-message-user {
+    @apply bg-protolabs-blue/30 border border-protolabs-blue/20 rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%] ml-auto;
+  }
+
+  .chat-message-agent {
+    @apply bg-protolabs-surface border border-protolabs-border rounded-2xl rounded-bl-sm px-4 py-3 max-w-[80%];
+  }
+
+  .prose-custom h1 { @apply text-xl font-bold text-white mb-2; }
+  .prose-custom h2 { @apply text-lg font-semibold text-white mb-2; }
+  .prose-custom h3 { @apply text-base font-semibold text-gray-200 mb-1; }
+  .prose-custom p { @apply text-gray-300 mb-3 leading-relaxed; }
+  .prose-custom ul { @apply list-disc list-inside text-gray-300 mb-3 space-y-1; }
+  .prose-custom ol { @apply list-decimal list-inside text-gray-300 mb-3 space-y-1; }
+  .prose-custom code { @apply bg-gray-800 text-protolabs-accent px-1.5 py-0.5 rounded text-sm font-mono; }
+  .prose-custom pre { @apply bg-gray-900 border border-gray-700 rounded-lg p-4 overflow-x-auto mb-3; }
+  .prose-custom blockquote { @apply border-l-4 border-protolabs-accent pl-4 italic text-gray-400 mb-3; }
+  .prose-custom table { @apply w-full text-sm text-left text-gray-300 mb-3 border border-gray-700; }
+  .prose-custom th { @apply bg-gray-800 px-3 py-2 font-semibold text-white border-b border-gray-700; }
+  .prose-custom td { @apply px-3 py-2 border-b border-gray-700; }
+  .prose-custom a { @apply text-protolabs-accent hover:underline; }
+}
