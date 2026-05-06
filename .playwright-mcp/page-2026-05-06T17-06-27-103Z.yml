@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - heading "ProtoLabs Agents" [level=2] [ref=e5]
+        - paragraph [ref=e6]: Select an agent or let the router decide
+      - generic [ref=e7]:
+        - button "Auto-Route Let the router classify your prompt" [ref=e8]:
+          - generic [ref=e9]: Auto-Route
+          - generic [ref=e10]: Let the router classify your prompt
+        - generic [ref=e11]: Loading agents...
+    - generic [ref=e12]:
+      - banner [ref=e13]:
+        - generic [ref=e14]:
+          - heading "ProtoLabs Product Office" [level=1] [ref=e15]
+          - paragraph [ref=e16]: Auto-routing enabled
+        - generic [ref=e17]: Online
+      - generic [ref=e19]:
+        - generic [ref=e20]: ProtoLabs
+        - paragraph [ref=e21]: Ask about CNC machining, injection molding, DFM review, or manufacturing strategy.
+        - generic [ref=e22]: What is the minimum wall thickness for ABS?Review my CNC bracket designCompare SLA vs SLS for aerospace
+      - generic [ref=e24]:
+        - textbox "Ask about CNC machining, injection molding, DFM review..." [ref=e25]
+        - button "Send" [disabled] [ref=e26]
+  - alert [ref=e27]
